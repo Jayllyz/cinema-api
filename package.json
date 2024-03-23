@@ -9,6 +9,7 @@
     "start": "npx prisma generate && tsx dist/app.js",
     "prisma:generate": "npx prisma generate",
     "prisma:push": "npx prisma db push",
+    "prisma:init": "npx prisma generate && npx prisma db push",
     "test": "vitest --run"
   },
   "dependencies": {
