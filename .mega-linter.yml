@@ -1,0 +1,35 @@
+# Configuration file for MegaLinter
+#
+# See all available variables at https://megalinter.io/latest/config-file/ and in
+# linters documentation
+
+APPLY_FIXES: none
+
+DISABLE_LINTERS:
+  - JSON_JSONLINT
+  - TYPESCRIPT_STANDARD
+  - CSS_STYLELINT
+  - JSON_V8R
+  - YAML_V8R
+  - REPOSITORY_CHECKOV
+  - REPOSITORY_GITLEAKS
+  - REPOSITORY_TRUFFLEHOG
+
+DISABLE_ERRORS_LINTERS:
+  - REPOSITORY_TRIVY
+
+DISABLE:
+  - COPYPASTE
+  - SPELL
+  - JAVASCRIPT
+
+SHOW_ELAPSED_TIME: true
+FILEIO_REPORTER: false
+DISABLE_ERRORS: false
+FLAVOR_SUGGESTIONS: false
+EMAIL_REPORTER: false
+MARKDOWN_MARKDOWN_LINK_CHECK_DISABLE_ERRORS: true
+MARKDOWN_SUMMARY_REPORTER: false
+YAML_FILTER_REGEX_EXCLUDE: 'pnpm-lock.yaml'
+PRE_COMMANDS:
+  - command: 'npm install @next/eslint-plugin-next @typescript-eslint/eslint-plugin @typescript-eslint/parser'
