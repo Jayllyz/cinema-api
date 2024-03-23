@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "npx prisma generate && tsx dist/app.js",
     "prisma:generate": "npx prisma generate",
-    "prisma:push": "npx prisma db push"
+    "prisma:push": "npx prisma db push",
+    "test": "vitest --run"
   },
   "dependencies": {
     "@hono/node-server": "^1.8.2",
@@ -27,7 +28,8 @@
     "prisma": "^5.11.0",
     "tsx": "^4.7.1",
     "typescript": "^5.4.3",
-    "typescript-eslint": "^7.3.1"
+    "typescript-eslint": "^7.3.1",
+    "vitest": "^1.4.0"
   },
   "packageManager": "^pnpm@8.15.5"
 }
