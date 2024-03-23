@@ -1,0 +1,31 @@
+{
+  "name": "cinema-api",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "npx prisma generate && tsx watch src/app.ts",
+    "build": "tsc",
+    "start": "npx prisma generate && tsx dist/app.js",
+    "prisma:generate": "npx prisma generate",
+    "prisma:push": "npx prisma db push"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.8.2",
+    "@hono/swagger-ui": "^0.2.1",
+    "@hono/zod-openapi": "^0.9.9",
+    "@prisma/client": "^5.11.0",
+    "hono": "^4.1.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "prisma": "^5.11.0",
+    "tsx": "^3.14.0",
+    "typescript-eslint": "^7.3.1",
+    "typescript": "^5.4.3"
+  },
+  "packageManager": "^pnpm@8.15.5"
+}

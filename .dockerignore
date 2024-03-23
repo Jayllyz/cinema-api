@@ -1,0 +1,9 @@
+**/*.git*
+**/*.md*
+**/*Dockerfile*
+**/*docker-compose*
+**/*LICENSE*
+**/*.env*
+dist/
+node_modules/
+.mega-linter.yml
