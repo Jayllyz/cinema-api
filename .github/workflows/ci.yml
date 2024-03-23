@@ -21,6 +21,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/cinema-api?schema=public
+
     services:
       db:
         image: postgres:16-alpine
@@ -58,6 +61,4 @@ jobs:
         run: pnpm run prisma:init
 
       - name: Run tests
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/cinema-api?schema=public
         run: pnpm test
