@@ -8,8 +8,9 @@ datasource db {
 }
 
 model Rooms {
-  id          Int    @id @default(autoincrement())
-  capacity    Int
-  room_number Int
-  room_type   String
+  id       Int    @id @default(autoincrement())
+  capacity Int
+  number   Int
+  type     String
+  status   String
 }
