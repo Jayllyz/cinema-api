@@ -11,21 +11,19 @@ export const userValidator = z.object({
 export const listUsersValidator = z.array(userValidator);
 
 export const insertUserValidator = z.object({
-  first_name: z
-    .string()
-    .min(2, {message: 'The first name must be atlest 2 letters'})
-    .max(30, {message: 'The first name must be at most 30 letters'}),
-  last_name: z
-    .string()
-    .min(2, {message: 'The last name must be atlest 2 letters'})
-    .max(30, {message: 'The last name must be at most 30 letters'}),
-  email: z.string().email({message: 'Invalid email'}),
-  password: z
-    .string()
-    .min(8, {message: 'The password must be at least 8 characters'})
-    .max(30, {message: 'The password must be at most 30 characters'}),
+  first_name: z.string().min(2).max(30),
+  last_name: z.string().min(2).max(30),
+  email: z.string().email(),
+  password: z.string().min(8).max(30),
 });
 
 export const idValidator = z.object({
   id: z.coerce.number().int({message: 'Invalid id'}).positive({message: 'Invalid id'}),
+});
+
+export const updateUserValidator = z.object({
+  first_name: z.string().min(2).max(30).optional(),
+  last_name: z.string().min(2).max(30).optional(),
+  email: z.string().email().optional(),
+  money: z.number().min(0).optional(),
 });

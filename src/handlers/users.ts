@@ -1,7 +1,7 @@
 import {OpenAPIHono} from '@hono/zod-openapi';
 import {prisma} from '../lib/database';
-import {getUserById, getUsers, insertUser} from '../routes/users';
-import {ErrorHandler} from '../handlers/error';
+import {getUserById, getUsers, insertUser, updateUser} from '../routes/users';
+import {ErrorHandler} from './error';
 
 export const users = new OpenAPIHono();
 
@@ -23,35 +23,27 @@ users.openapi(getUsers, async (c) => {
   }
 });
 
-users.openapi(
-  getUserById,
-  async (c) => {
-    const {id} = c.req.valid('param');
-    try {
-      const user = await prisma.uSERS.findUnique({where: {id}});
-      if (!user) return c.json({error: `User with id ${id} not found`}, 404);
+users.openapi(getUserById, async (c) => {
+  const {id} = c.req.valid('param');
+  try {
+    const user = await prisma.uSERS.findUnique({where: {id}});
+    if (!user) return c.json({error: `User with id ${id} not found`}, 404);
 
-      return c.json(
-        {
-          id: Number(user.id),
-          first_name: user.first_name,
-          last_name: user.last_name,
-          email: user.email,
-          money: Number(user.money),
-        },
-        200
-      );
-    } catch (error) {
-      console.error(error);
-      return c.json({error: error}, 500);
-    }
-  },
-  (result, c) => {
-    if (!result.success) {
-      return c.json({error: 'Invalid parameter'}, 400);
-    }
+    return c.json(
+      {
+        id: Number(user.id),
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        money: Number(user.money),
+      },
+      200
+    );
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
   }
-);
+});
 
 // POST ROUTES
 users.openapi(
@@ -66,9 +58,37 @@ users.openapi(
 
     try {
       const user = await prisma.uSERS.create({
-        data: {first_name, last_name, email, password, money: '0', token: ''},
+        data: {first_name, last_name, email, password, money: 0, token: ''},
       });
       return c.json(user, 201);
+    } catch (error) {
+      console.error(error);
+      return c.json({error: error}, 500);
+    }
+  },
+  (result, c) => {
+    if (!result.success) {
+      return c.json(ErrorHandler(result.error), 400);
+    }
+  }
+);
+
+// PATCH ROUTES
+users.openapi(
+  updateUser,
+  async (c) => {
+    const {id} = c.req.valid('param');
+    const {first_name, last_name, email, money} = c.req.valid('json');
+
+    try {
+      const userExists = await prisma.uSERS.findUnique({where: {id}});
+      if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
+
+      const user = await prisma.uSERS.update({
+        where: {id},
+        data: {first_name, last_name, email, money},
+      });
+      return c.json(user, 200);
     } catch (error) {
       console.error(error);
       return c.json({error: error}, 500);
