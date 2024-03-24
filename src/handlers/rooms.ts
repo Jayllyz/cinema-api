@@ -1,11 +1,10 @@
-import {Hono} from 'hono';
+import {OpenAPIHono} from '@hono/zod-openapi';
 import {prisma} from '../lib/database.js';
-import {zValidator} from '@hono/zod-validator';
-import {idValidator, insertRoomValidator, updateRoomValidator} from '../validators/rooms.js';
+import {getRooms, getRoomById, insertRoom, deleteRoom, updateRoom} from '../routes/rooms.js';
 
-export const rooms = new Hono();
+export const rooms = new OpenAPIHono();
 
-rooms.get('/rooms', async (c) => {
+rooms.openapi(getRooms, async (c) => {
   try {
     const rooms = await prisma.rooms.findMany();
     return c.json(rooms, 200);
@@ -15,13 +14,8 @@ rooms.get('/rooms', async (c) => {
   }
 });
 
-rooms.get(
-  '/rooms/:id',
-  zValidator('param', idValidator, (result, c) => {
-    if (!result.success) {
-      return c.json({error: 'Invalid parameter'}, 400);
-    }
-  }),
+rooms.openapi(
+  getRoomById,
   async (c) => {
     const {id} = c.req.valid('param');
     try {
@@ -33,16 +27,16 @@ rooms.get(
       console.error(error);
       return c.json({error: error}, 500);
     }
+  },
+  (result, c) => {
+    if (!result.success) {
+      return c.json({error: 'Invalid parameter'}, 400);
+    }
   }
 );
 
-rooms.post(
-  '/rooms',
-  zValidator('json', insertRoomValidator, (result, c) => {
-    if (!result.success) {
-      return c.json({error: 'Invalid body'}, 400);
-    }
-  }),
+rooms.openapi(
+  insertRoom,
   async (c) => {
     const {number, capacity, type, status} = c.req.valid('json');
     try {
@@ -54,16 +48,16 @@ rooms.post(
       console.error(error);
       return c.json({error: error}, 500);
     }
+  },
+  (result, c) => {
+    if (!result.success) {
+      return c.json({error: 'Invalid body'}, 400);
+    }
   }
 );
 
-rooms.delete(
-  '/rooms/:id',
-  zValidator('param', idValidator, (result, c) => {
-    if (!result.success) {
-      return c.json({error: 'Invalid parameter'}, 400);
-    }
-  }),
+rooms.openapi(
+  deleteRoom,
   async (c) => {
     const {id} = c.req.valid('param');
     try {
@@ -77,21 +71,16 @@ rooms.delete(
       console.error(error);
       return c.json({error: error}, 500);
     }
-  }
-);
-
-rooms.patch(
-  '/rooms/:id',
-  zValidator('param', idValidator, (result, c) => {
+  },
+  (result, c) => {
     if (!result.success) {
       return c.json({error: 'Invalid parameter'}, 400);
     }
-  }),
-  zValidator('json', updateRoomValidator, (result, c) => {
-    if (!result.success) {
-      return c.json({error: 'Invalid body'}, 400);
-    }
-  }),
+  }
+);
+
+rooms.openapi(
+  updateRoom,
   async (c) => {
     const {id} = c.req.valid('param');
     const {number, capacity, type, status} = c.req.valid('json');
@@ -108,6 +97,11 @@ rooms.patch(
     } catch (error) {
       console.error(error);
       return c.json({error: error}, 500);
+    }
+  },
+  (result, c) => {
+    if (!result.success) {
+      return c.json({error: 'Bad request'}, 400);
     }
   }
 );
