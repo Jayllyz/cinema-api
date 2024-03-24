@@ -3,6 +3,8 @@ import {prettyJSON} from 'hono/pretty-json';
 import {OpenAPIHono} from '@hono/zod-openapi';
 import {swaggerUI} from '@hono/swagger-ui';
 import {rooms} from './handlers/rooms.js';
+import {categories} from './handlers/categories.js';
+import {movies} from './handlers/movies.js';
 
 const app = new OpenAPIHono();
 app.use(prettyJSON());
@@ -11,6 +13,8 @@ app.get('/health', (c) => c.json({status: 'ok'}, 200));
 app.notFound((c) => c.json({error: 'Path not found'}, 404));
 
 app.route('/', rooms);
+app.route('/', movies);
+app.route('/', categories);
 
 app.doc('/doc', (c) => ({
   openapi: '3.0.0',
