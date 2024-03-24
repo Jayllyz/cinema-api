@@ -1,9 +1,11 @@
 import {OpenAPIHono} from '@hono/zod-openapi';
 import {prisma} from '../lib/database';
-import {getUsers} from '../routes/users';
+import {getUsers, insertUser} from '../routes/users';
+import {ErrorHandler} from '../handlers/error';
 
 export const users = new OpenAPIHono();
 
+// GET ROUTES
 users.openapi(getUsers, async (c) => {
   try {
     const users = await prisma.uSERS.findMany();
@@ -20,3 +22,25 @@ users.openapi(getUsers, async (c) => {
     return c.json({error: error}, 500);
   }
 });
+
+// POST ROUTES
+users.openapi(
+  insertUser,
+  async (c) => {
+    const {first_name, last_name, email, password} = c.req.valid('json');
+    try {
+      const user = await prisma.uSERS.create({
+        data: {first_name, last_name, email, password, money: '0', token: ''},
+      });
+      return c.json(user, 201);
+    } catch (error) {
+      console.error(error);
+      return c.json({error: error}, 500);
+    }
+  },
+  (result, c) => {
+    if (!result.success) {
+      return c.json(ErrorHandler(result.error), 400);
+    }
+  }
+);
