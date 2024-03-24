@@ -21,21 +21,21 @@ describe('Rooms', () => {
   });
 
   test('GET /rooms', async () => {
-    const res = await app.request('http://localhost/rooms');
+    const res = await app.request('/rooms');
     expect(res.status).toBe(200);
     const rooms = await res.json();
     expect(rooms).toBeInstanceOf(Array);
   });
 
   test('GET /rooms/:id', async () => {
-    const res = await app.request(`http://localhost/rooms/${createdRoomId}`);
+    const res = await app.request(`/rooms/${createdRoomId}`);
     expect(res.status).toBe(200);
     const room = await res.json();
     expect(room).toMatchObject({number: 101});
   });
 
   test('PATCH /rooms/:id', async () => {
-    const res = await app.request(`http://localhost/rooms/${createdRoomId}`, {
+    const res = await app.request(`/rooms/${createdRoomId}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -51,9 +51,9 @@ describe('Rooms', () => {
   });
 
   test('DELETE /rooms/:id', async () => {
-    const res = await app.request(`http://localhost/rooms/${createdRoomId}`, {
+    const res = await app.request(`/rooms/${createdRoomId}`, {
       method: 'DELETE',
     });
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(204);
   });
 });
