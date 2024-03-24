@@ -155,3 +155,41 @@ export const updateUser = createRoute({
   },
   tags: ['users'],
 });
+
+// DELETE ROUTES
+export const deleteUser = createRoute({
+  method: 'delete',
+  path: '/users/:id',
+  summary: 'Delete a user',
+  description: 'Delete a user',
+  request: {
+    params: idValidator,
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z.object({message: z.string()}),
+        },
+      },
+    },
+    404: {
+      description: 'User not found',
+      content: {
+        'application/json': {
+          schema: z.object({error: z.string()}),
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: z.object({error: z.string()}),
+        },
+      },
+    },
+  },
+  tags: ['users'],
+});

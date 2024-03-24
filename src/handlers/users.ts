@@ -1,6 +1,6 @@
 import {OpenAPIHono} from '@hono/zod-openapi';
 import {prisma} from '../lib/database';
-import {getUserById, getUsers, insertUser, updateUser} from '../routes/users';
+import {getUserById, getUsers, insertUser, updateUser, deleteUser} from '../routes/users';
 import {ErrorHandler} from './error';
 
 export const users = new OpenAPIHono();
@@ -23,27 +23,35 @@ users.openapi(getUsers, async (c) => {
   }
 });
 
-users.openapi(getUserById, async (c) => {
-  const {id} = c.req.valid('param');
-  try {
-    const user = await prisma.uSERS.findUnique({where: {id}});
-    if (!user) return c.json({error: `User with id ${id} not found`}, 404);
+users.openapi(
+  getUserById,
+  async (c) => {
+    const {id} = c.req.valid('param');
+    try {
+      const user = await prisma.uSERS.findUnique({where: {id}});
+      if (!user) return c.json({error: `User with id ${id} not found`}, 404);
 
-    return c.json(
-      {
-        id: Number(user.id),
-        first_name: user.first_name,
-        last_name: user.last_name,
-        email: user.email,
-        money: Number(user.money),
-      },
-      200
-    );
-  } catch (error) {
-    console.error(error);
-    return c.json({error: error}, 500);
+      return c.json(
+        {
+          id: Number(user.id),
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          money: Number(user.money),
+        },
+        200
+      );
+    } catch (error) {
+      console.error(error);
+      return c.json({error: error}, 500);
+    }
+  },
+  (result, c) => {
+    if (!result.success) {
+      return c.json(ErrorHandler(result.error), 400);
+    }
   }
-});
+);
 
 // POST ROUTES
 users.openapi(
@@ -89,6 +97,30 @@ users.openapi(
         data: {first_name, last_name, email, money},
       });
       return c.json(user, 200);
+    } catch (error) {
+      console.error(error);
+      return c.json({error: error}, 500);
+    }
+  },
+  (result, c) => {
+    if (!result.success) {
+      return c.json(ErrorHandler(result.error), 400);
+    }
+  }
+);
+
+// DELETE ROUTES
+users.openapi(
+  deleteUser,
+  async (c) => {
+    const {id} = c.req.valid('param');
+    try {
+      const user = await prisma.uSERS.findUnique({where: {id}});
+      if (!user) return c.json({error: `User with id ${id} not found`}, 404);
+
+      await prisma.uSERS.delete({where: {id}});
+
+      return c.json({message: `User with id ${id} deleted`}, 200);
     } catch (error) {
       console.error(error);
       return c.json({error: error}, 500);
