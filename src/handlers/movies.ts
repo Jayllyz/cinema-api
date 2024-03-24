@@ -93,6 +93,9 @@ movies.openapi(
   async (c) => {
     const {id} = c.req.valid('param');
     try {
+      const movie = await prisma.movies.findUnique({where: {id}});
+      if (!movie) return c.json({error: `Movie with id ${id} not found`}, 404);
+
       await prisma.movies.delete({where: {id}});
       return c.json({message: 'Movie deleted'}, 200);
     } catch (error) {
