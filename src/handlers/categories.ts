@@ -72,7 +72,7 @@ categories.openapi(
       if (!category) return c.json({error: `Category with id ${id} not found`}, 404);
 
       await prisma.categories.delete({where: {id}});
-      return c.json({message: 'Category deleted successfully'}, 204);
+      return c.json({message: 'Category deleted successfully'}, 200);
     } catch (error) {
       console.error(error);
       return c.json({error: error}, 500);

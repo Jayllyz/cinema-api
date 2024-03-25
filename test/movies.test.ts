@@ -1,17 +1,9 @@
-import {randomUUID} from 'crypto';
 import app from '../src/app.js';
+import {randomString} from './utils.js';
 
 let createdMovieId = 1;
 let createdCategoryId = 1;
-
-const randomName = () => {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  for (let i = 0; i < 10; i++) {
-    result += characters.charAt(Math.floor(Math.random() * 10));
-  }
-  return result;
-};
+const randomMovie = randomString(5);
 
 describe('Movies', () => {
   test('POST /categories', async () => {
@@ -19,7 +11,7 @@ describe('Movies', () => {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        name: randomName(),
+        name: randomString(5),
       }),
     });
     expect(res.status).toBe(201);
@@ -32,8 +24,8 @@ describe('Movies', () => {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        title: 'The Matrix',
-        description: 'A computer hacker learns about the true nature of reality',
+        title: randomMovie,
+        description: 'A movie',
         duration: 120,
         status: 'available',
         category_id: createdCategoryId,
@@ -41,7 +33,7 @@ describe('Movies', () => {
     });
     expect(res.status).toBe(201);
     const movie = await res.json();
-    expect(movie).toMatchObject({title: 'The Matrix'});
+    expect(movie).toMatchObject({title: randomMovie});
     createdMovieId = movie.id;
   });
 
@@ -56,15 +48,16 @@ describe('Movies', () => {
     const res = await app.request(`/movies/${createdMovieId}`);
     expect(res.status).toBe(200);
     const movie = await res.json();
-    expect(movie).toMatchObject({title: 'The Matrix'});
+    expect(movie).toMatchObject({title: randomMovie});
   });
 
   test('PATCH /movies/:id', async () => {
+    const updatedMovie = randomString(5);
     const res = await app.request(`/movies/${createdMovieId}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        title: 'The Matrix Reloaded',
+        title: updatedMovie,
         duration: 130,
         status: 'unavailable',
         category_id: createdCategoryId,
@@ -72,13 +65,13 @@ describe('Movies', () => {
     });
     expect(res.status).toBe(200);
     const movie = await res.json();
-    expect(movie).toMatchObject({title: 'The Matrix Reloaded'});
+    expect(movie).toMatchObject({title: updatedMovie, status: 'unavailable'});
   });
 
   test('DELETE /movies/:id', async () => {
     const res = await app.request(`/movies/${createdMovieId}`, {
       method: 'DELETE',
     });
-    expect(res.status).toBe(204);
+    expect(res.status).toBe(200);
   });
 });

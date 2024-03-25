@@ -69,7 +69,7 @@ rooms.openapi(
 
       await prisma.rooms.delete({where: {id: Number(id)}});
 
-      return c.json({message: `Room with id ${id} deleted`}, 204);
+      return c.json({message: `Room with id ${id} deleted`}, 200);
     } catch (error) {
       console.error(error);
       return c.json({error: error}, 500);

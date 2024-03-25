@@ -97,7 +97,7 @@ movies.openapi(
       if (!movie) return c.json({error: `Movie with id ${id} not found`}, 404);
 
       await prisma.movies.delete({where: {id}});
-      return c.json({message: 'Movie deleted'}, 204);
+      return c.json({message: 'Movie deleted'}, 200);
     } catch (error) {
       console.error(error);
       return c.json({error: error}, 500);

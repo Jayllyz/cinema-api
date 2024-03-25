@@ -207,8 +207,13 @@ export const deleteMovie = createRoute({
     params: idValidator,
   },
   responses: {
-    204: {
+    200: {
       description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z.object({message: z.string()}),
+        },
+      },
     },
     404: {
       description: 'Movie not found',

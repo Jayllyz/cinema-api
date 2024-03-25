@@ -1,6 +1,8 @@
 import app from '../src/app.js';
+import {randomString} from './utils.js';
 
 let createdCategoryId = 1;
+const randomCategory = randomString(5);
 
 describe('Categories', () => {
   test('POST /categories', async () => {
@@ -8,12 +10,12 @@ describe('Categories', () => {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        name: 'Action',
+        name: randomCategory,
       }),
     });
     expect(res.status).toBe(201);
     const category = await res.json();
-    expect(category).toMatchObject({name: 'Action'});
+    expect(category).toMatchObject({name: randomCategory});
     createdCategoryId = category.id;
   });
 
@@ -28,13 +30,13 @@ describe('Categories', () => {
     const res = await app.request(`/categories/${createdCategoryId}`);
     expect(res.status).toBe(200);
     const category = await res.json();
-    expect(category).toMatchObject({name: 'Action'});
+    expect(category).toMatchObject({name: randomCategory});
   });
 
   test('DELETE /categories/:id', async () => {
     const res = await app.request(`/categories/${createdCategoryId}`, {
       method: 'DELETE',
     });
-    expect(res.status).toBe(204);
+    expect(res.status).toBe(200);
   });
 });

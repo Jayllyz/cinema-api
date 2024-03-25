@@ -109,7 +109,7 @@ export const deleteCategory = createRoute({
     params: idValidator,
   },
   responses: {
-    204: {
+    200: {
       description: 'Category deleted',
       content: {
         'application/json': {

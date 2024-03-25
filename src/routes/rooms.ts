@@ -127,8 +127,13 @@ export const deleteRoom = createRoute({
     params: idValidator,
   },
   responses: {
-    204: {
+    200: {
       description: 'Room deleted',
+      content: {
+        'application/json': {
+          schema: z.object({message: z.string()}),
+        },
+      },
     },
     404: {
       description: 'Room not found',

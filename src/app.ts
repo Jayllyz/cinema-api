@@ -32,7 +32,7 @@ app.doc('/doc', (c) => ({
 
 app.get('/ui', swaggerUI({url: '/doc'}));
 
-const port = Number(process.env.PORT) || 3000;
+const port = Number(process.env.PORT || 3000);
 console.log(`Server is running on port ${port}`);
 
 serve({
