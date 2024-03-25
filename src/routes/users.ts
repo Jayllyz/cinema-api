@@ -5,6 +5,7 @@ import {
   userValidator,
   idValidator,
   updateUserValidator,
+  updateUserMoneyValidator,
 } from '../validators/users';
 
 // GET ROUTES
@@ -131,6 +132,46 @@ export const updateUser = createRoute({
       content: {
         'application/json': {
           schema: updateUserValidator,
+        },
+      },
+    },
+    400: {
+      description: 'Bad request',
+      content: {
+        'application/json': {
+          schema: z.object({
+            error: z.string(),
+          }),
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: z.object({error: z.string()}),
+        },
+      },
+    },
+  },
+  tags: ['users'],
+});
+
+export const updateUserMoney = createRoute({
+  method: 'patch',
+  path: '/users/:id/money',
+  summary: 'Update user money',
+  description: 'Update user money',
+  request: {
+    params: idValidator,
+    query: updateUserMoneyValidator,
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: userValidator,
         },
       },
     },
