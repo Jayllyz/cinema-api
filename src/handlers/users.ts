@@ -9,6 +9,7 @@ import {
   updateUserMoney,
 } from '../routes/users';
 import {ErrorHandler} from './error';
+import bcrypt from 'bcryptjs';
 
 export const users = new OpenAPIHono();
 
@@ -72,8 +73,10 @@ users.openapi(
     }
 
     try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+
       const user = await prisma.uSERS.create({
-        data: {first_name, last_name, email, password, money: 0, token: ''},
+        data: {first_name, last_name, email, password: hashedPassword, money: 0, token: ''},
       });
       return c.json(user, 201);
     } catch (error) {
