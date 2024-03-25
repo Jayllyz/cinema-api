@@ -14,6 +14,7 @@ export const getUsers = createRoute({
   path: '/users',
   summary: 'Get all users',
   description: 'Get all users',
+  security: [{Bearer: []}],
   responses: {
     200: {
       description: 'Successful response',

@@ -32,6 +32,12 @@ app.doc('/doc', (c) => ({
   ],
 }));
 
+app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
+  type: 'http',
+  scheme: 'bearer',
+  bearerFormat: 'JWT',
+});
+
 app.get('/ui', swaggerUI({url: '/doc'}));
 
 const port = Number(process.env.PORT || 3000);

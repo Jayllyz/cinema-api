@@ -6,7 +6,7 @@ export const rooms = new OpenAPIHono();
 
 rooms.openapi(getRooms, async (c) => {
   try {
-    const rooms = await prisma.rooms.findMany();
+    const rooms = await prisma.rOOMS.findMany();
     return c.json(rooms, 200);
   } catch (error) {
     console.error(error);
@@ -19,7 +19,7 @@ rooms.openapi(
   async (c) => {
     const {id} = c.req.valid('param');
     try {
-      const room = await prisma.rooms.findUnique({where: {id}});
+      const room = await prisma.rOOMS.findUnique({where: {id}});
       if (!room) return c.json({error: `Room with id ${id} not found`}, 404);
 
       return c.json(room, 200);
@@ -40,10 +40,10 @@ rooms.openapi(
   async (c) => {
     const {number, capacity, type, status} = c.req.valid('json');
     try {
-      const exist = await prisma.rooms.findUnique({where: {number}});
+      const exist = await prisma.rOOMS.findUnique({where: {number}});
       if (exist) return c.json({error: 'Room number already exists'}, 400);
 
-      const room = await prisma.rooms.create({
+      const room = await prisma.rOOMS.create({
         data: {number, capacity, type, status},
       });
       return c.json(room, 201);
@@ -64,10 +64,10 @@ rooms.openapi(
   async (c) => {
     const {id} = c.req.valid('param');
     try {
-      const room = await prisma.rooms.findUnique({where: {id}});
+      const room = await prisma.rOOMS.findUnique({where: {id}});
       if (!room) return c.json({error: `Room with id ${id} not found`}, 404);
 
-      await prisma.rooms.delete({where: {id: Number(id)}});
+      await prisma.rOOMS.delete({where: {id: Number(id)}});
 
       return c.json({message: `Room with id ${id} deleted`}, 200);
     } catch (error) {
@@ -88,10 +88,10 @@ rooms.openapi(
     const {id} = c.req.valid('param');
     const {number, capacity, type, status} = c.req.valid('json');
     try {
-      const room = await prisma.rooms.findUnique({where: {id}});
+      const room = await prisma.rOOMS.findUnique({where: {id}});
       if (!room) return c.json({error: `Room with id ${id} not found`}, 404);
 
-      const res = await prisma.rooms.update({
+      const res = await prisma.rOOMS.update({
         where: {id: Number(id)},
         data: {number, capacity, type, status},
       });
