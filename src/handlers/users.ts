@@ -153,7 +153,7 @@ users.openapi(
       const token = c.req.header('Authorization');
       if (!token) return c.json({error: 'Token is required'}, 400);
 
-      const {payload} = await decode(token);
+      const {payload} = decode(token);
 
       const id = payload.id;
 
