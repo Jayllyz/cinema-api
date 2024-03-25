@@ -209,11 +209,10 @@ export const updateUser = createRoute({
 
 export const updateUserMoney = createRoute({
   method: 'patch',
-  path: '/users/:id/money',
+  path: '/users/money',
   summary: 'Update user money',
   description: 'Update user money',
   request: {
-    params: idValidator,
     query: updateUserMoneyValidator,
   },
   responses: {

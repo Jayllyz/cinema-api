@@ -1,5 +1,5 @@
 import {OpenAPIHono} from '@hono/zod-openapi';
-import {sign} from 'hono/jwt';
+import {decode, sign, verify} from 'hono/jwt';
 import {prisma} from '../lib/database';
 import {
   getUserById,
@@ -18,6 +18,16 @@ export const users = new OpenAPIHono();
 // GET ROUTES
 users.openapi(getUsers, async (c) => {
   try {
+    const token = c.req.header('Authorization');
+    if (!token) return c.json({error: 'Token is required'}, 400);
+
+    const secret = process.env.SECRET_KEY || 'secret';
+    const decodedPayload = await verify(token, secret);
+
+    if (decodedPayload.role !== 'admin') {
+      return c.json({error: 'Unauthorized'}, 401);
+    }
+
     const users = await prisma.uSERS.findMany();
     const responseJson = users.map((user) => ({
       id: Number(user.id),
@@ -39,6 +49,16 @@ users.openapi(
   async (c) => {
     const {id} = c.req.valid('param');
     try {
+      const token = c.req.header('Authorization');
+      if (!token) return c.json({error: 'Token is required'}, 400);
+
+      const secret = process.env.SECRET_KEY || 'secret';
+      const decodedPayload = await verify(token, secret);
+
+      if (decodedPayload.role !== 'admin') {
+        return c.json({error: 'Unauthorized'}, 401);
+      }
+
       const user = await prisma.uSERS.findUnique({where: {id}});
       if (!user) return c.json({error: `User with id ${id} not found`}, 404);
 
@@ -126,38 +146,17 @@ users.openapi(
 
 // PATCH ROUTES
 users.openapi(
-  updateUser,
-  async (c) => {
-    const {id} = c.req.valid('param');
-    const {first_name, last_name, email, money} = c.req.valid('json');
-
-    try {
-      const userExists = await prisma.uSERS.findUnique({where: {id}});
-      if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
-
-      const user = await prisma.uSERS.update({
-        where: {id},
-        data: {first_name, last_name, email, money},
-      });
-      return c.json(user, 200);
-    } catch (error) {
-      console.error(error);
-      return c.json({error: error}, 500);
-    }
-  },
-  (result, c) => {
-    if (!result.success) {
-      return c.json(ErrorHandler(result.error), 400);
-    }
-  }
-);
-
-users.openapi(
   updateUserMoney,
   async (c) => {
-    const {id} = c.req.valid('param');
     const {deposit, withdraw} = c.req.valid('query');
     try {
+      const token = c.req.header('Authorization');
+      if (!token) return c.json({error: 'Token is required'}, 400);
+
+      const {payload} = await decode(token);
+
+      const id = payload.id;
+
       const userExists = await prisma.uSERS.findUnique({where: {id}});
       if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
 
@@ -222,8 +221,46 @@ users.openapi(
 
       return c.json(returnedJson, 200);
     } catch (error) {
+      console.log('test');
       console.error(error);
       return c.json({error: 'An error occurred while updating the user money value'}, 500);
+    }
+  },
+  (result, c) => {
+    if (!result.success) {
+      return c.json(ErrorHandler(result.error), 400);
+    }
+  }
+);
+
+users.openapi(
+  updateUser,
+  async (c) => {
+    const {id} = c.req.valid('param');
+    const {first_name, last_name, email, money} = c.req.valid('json');
+
+    try {
+      const token = c.req.header('Authorization');
+      if (!token) return c.json({error: 'Token is required'}, 400);
+
+      const secret = process.env.SECRET_KEY || 'secret';
+      const decodedPayload = await verify(token, secret);
+
+      if (decodedPayload.role !== 'admin') {
+        return c.json({error: 'Unauthorized'}, 401);
+      }
+
+      const userExists = await prisma.uSERS.findUnique({where: {id}});
+      if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
+
+      const user = await prisma.uSERS.update({
+        where: {id},
+        data: {first_name, last_name, email, money},
+      });
+      return c.json(user, 200);
+    } catch (error) {
+      console.error(error);
+      return c.json({error: error}, 500);
     }
   },
   (result, c) => {
@@ -239,6 +276,16 @@ users.openapi(
   async (c) => {
     const {id} = c.req.valid('param');
     try {
+      const token = c.req.header('Authorization');
+      if (!token) return c.json({error: 'Token is required'}, 400);
+
+      const secret = process.env.SECRET_KEY || 'secret';
+      const decodedPayload = await verify(token, secret);
+
+      if (decodedPayload.role !== 'admin') {
+        return c.json({error: 'Unauthorized'}, 401);
+      }
+
       const user = await prisma.uSERS.findUnique({where: {id}});
       if (!user) return c.json({error: `User with id ${id} not found`}, 404);
 
