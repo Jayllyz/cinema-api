@@ -1,5 +1,4 @@
 # Development
-version: '3.8'
 services:
   db:
     image: postgres:16-alpine
@@ -32,7 +31,7 @@ services:
       - /app/node_modules
       - .:/app:rw
     ports:
-      - '${PORT}:${PORT}'
+      - '${NODE_PORT}:${NODE_PORT}'
 
   adminer:
     image: adminer
