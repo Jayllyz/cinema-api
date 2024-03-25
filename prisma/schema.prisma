@@ -22,5 +22,5 @@ model USERS {
   email       String
   password    String
   money       Int
-  token       String
+  role        String @default("user")
 }
