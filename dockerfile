@@ -9,7 +9,7 @@ WORKDIR /app
 
 COPY --chown=node:node package*.json .
 
-ENV PORT $PORT
+ENV PORT $NODE_PORT
 EXPOSE $PORT
 
 HEALTHCHECK --interval=5s --timeout=1s \

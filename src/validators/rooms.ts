@@ -3,6 +3,12 @@ import {z} from 'zod';
 export const idValidator = z.object({
   id: z
     .string()
+    .openapi({
+      param: {
+        name: 'id',
+        in: 'path',
+      },
+    })
     .transform((v) => parseInt(v))
     .refine((v) => !isNaN(v), {message: 'not a number'}),
 });

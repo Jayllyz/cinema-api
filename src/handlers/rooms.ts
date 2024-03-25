@@ -40,6 +40,9 @@ rooms.openapi(
   async (c) => {
     const {number, capacity, type, status} = c.req.valid('json');
     try {
+      const exist = await prisma.rooms.findUnique({where: {number}});
+      if (exist) return c.json({error: 'Room number already exists'}, 400);
+
       const room = await prisma.rooms.create({
         data: {number, capacity, type, status},
       });

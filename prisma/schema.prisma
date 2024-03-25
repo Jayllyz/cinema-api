@@ -10,7 +10,23 @@ datasource db {
 model Rooms {
   id       Int    @id @default(autoincrement())
   capacity Int
-  number   Int
+  number   Int    @unique
   type     String
   status   String
+}
+
+model Categories {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  Movies Movies[]
+}
+
+model Movies {
+  id          Int        @id @default(autoincrement())
+  title       String     @unique
+  description String
+  status      String
+  duration    Int
+  category_id Int
+  category    Categories @relation(fields: [category_id], references: [id])
 }
