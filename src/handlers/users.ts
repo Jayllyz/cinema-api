@@ -1,5 +1,4 @@
 import {OpenAPIHono} from '@hono/zod-openapi';
-import {sign} from 'hono/jwt';
 import {prisma} from '../lib/database';
 import {
   getUserById,
@@ -8,7 +7,6 @@ import {
   updateUser,
   deleteUser,
   updateUserMoney,
-  loginUser,
 } from '../routes/users';
 import {ErrorHandler} from './error';
 import bcrypt from 'bcryptjs';
@@ -93,38 +91,13 @@ users.openapi(
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const user = await prisma.uSERS.create({
-        data: {first_name, last_name, email, password: hashedPassword, money: 0},
+        data: {first_name, last_name, email, password: hashedPassword},
       });
       return c.json(user, 201);
     } catch (error) {
       console.error(error);
       return c.json({error: error}, 500);
     }
-  },
-  (result, c) => {
-    if (!result.success) {
-      return c.json(ErrorHandler(result.error), 400);
-    }
-  }
-);
-
-users.openapi(
-  loginUser,
-  async (c) => {
-    const {email, password} = c.req.valid('json');
-
-    const user = await prisma.uSERS.findFirst({where: {email}});
-    if (!user) return c.json({error: 'email not found'}, 404);
-
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) return c.json({error: 'password does not match'}, 400);
-
-    const payload = {id: user.id, role: user.role};
-    const secret = process.env.SECRET_KEY || 'secret';
-
-    const token = await sign(payload, secret);
-
-    return c.json({token}, 200);
   },
   (result, c) => {
     if (!result.success) {

@@ -4,6 +4,7 @@ import {OpenAPIHono} from '@hono/zod-openapi';
 import {swaggerUI} from '@hono/swagger-ui';
 import {rooms} from './handlers/rooms.js';
 import {users} from './handlers/users';
+import {auth} from './handlers/auth';
 import {categories} from './handlers/categories.js';
 import {movies} from './handlers/movies.js';
 import {jwt} from 'hono/jwt';
@@ -24,6 +25,7 @@ app.notFound((c) => c.json({error: 'Path not found'}, 404));
 
 app.route('/', rooms);
 app.route('/', users);
+app.route('/auth/', auth);
 app.route('/', movies);
 app.route('/', categories);
 

@@ -21,8 +21,9 @@ model USERS {
   last_name   String
   email       String @unique
   password    String
-  money       Int
+  money       Int    @default(0)
   role        String @default("user")
+  token       String @default("")
 }
 
 model CATEGORIES {

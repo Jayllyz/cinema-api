@@ -33,8 +33,3 @@ export const updateUserMoneyValidator = z.object({
   deposit: z.coerce.number().min(0).optional(),
   withdraw: z.coerce.number().min(0).optional(),
 });
-
-export const loginValidator = z.object({
-  email: z.string().email(),
-  password: z.string(),
-});
