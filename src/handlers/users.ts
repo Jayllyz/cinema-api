@@ -1,5 +1,5 @@
 import {OpenAPIHono} from '@hono/zod-openapi';
-import {decode, sign, verify} from 'hono/jwt';
+import {sign} from 'hono/jwt';
 import {prisma} from '../lib/database';
 import {
   getUserById,
@@ -12,21 +12,16 @@ import {
 } from '../routes/users';
 import {ErrorHandler} from './error';
 import bcrypt from 'bcryptjs';
+import {payloadValidator} from '../validators/auth';
 
 export const users = new OpenAPIHono();
 
 // GET ROUTES
 users.openapi(getUsers, async (c) => {
   try {
-    const token = c.req.header('Authorization');
-    if (!token) return c.json({error: 'Token is required'}, 400);
-
-    const secret = process.env.SECRET_KEY || 'secret';
-    const decodedPayload = await verify(token, secret);
-
-    if (decodedPayload.role !== 'admin') {
-      return c.json({error: 'Unauthorized'}, 401);
-    }
+    const payload: payloadValidator = c.get('jwtPayload');
+    if (!payload) return c.json({error: 'Unauthorized'}, 401);
+    if (payload.role !== 'admin') return c.json({error: 'Permission denied'}, 403);
 
     const users = await prisma.uSERS.findMany();
     const responseJson = users.map((user) => ({
@@ -49,15 +44,10 @@ users.openapi(
   async (c) => {
     const {id} = c.req.valid('param');
     try {
-      const token = c.req.header('Authorization');
-      if (!token) return c.json({error: 'Token is required'}, 400);
-
-      const secret = process.env.SECRET_KEY || 'secret';
-      const decodedPayload = await verify(token, secret);
-
-      if (decodedPayload.role !== 'admin') {
-        return c.json({error: 'Unauthorized'}, 401);
-      }
+      const payload: payloadValidator = c.get('jwtPayload');
+      if (!payload) return c.json({error: 'Unauthorized'}, 401);
+      if (payload.role !== 'admin') return c.json({error: 'Permission denied'}, 403);
+      if (id !== payload.id) return c.json({error: 'Permission denied'}, 403);
 
       const user = await prisma.uSERS.findUnique({where: {id}});
       if (!user) return c.json({error: `User with id ${id} not found`}, 404);
@@ -89,6 +79,10 @@ users.openapi(
 users.openapi(
   insertUser,
   async (c) => {
+    const payload: payloadValidator = c.get('jwtPayload');
+    if (!payload) return c.json({error: 'Unauthorized'}, 401);
+    if (payload.role !== 'admin') return c.json({error: 'Permission denied'}, 403);
+
     const {first_name, last_name, email, password} = c.req.valid('json');
 
     const emailUsed = await prisma.uSERS.findFirst({where: {email}});
@@ -121,14 +115,10 @@ users.openapi(
     const {email, password} = c.req.valid('json');
 
     const user = await prisma.uSERS.findFirst({where: {email}});
-    if (!user) {
-      return c.json({error: 'email not found'}, 404);
-    }
+    if (!user) return c.json({error: 'email not found'}, 404);
 
     const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      return c.json({error: 'password does not match'}, 400);
-    }
+    if (!passwordMatch) return c.json({error: 'password does not match'}, 400);
 
     const payload = {id: user.id, role: user.role};
     const secret = process.env.SECRET_KEY || 'secret';
@@ -150,10 +140,8 @@ users.openapi(
   async (c) => {
     const {deposit, withdraw} = c.req.valid('query');
     try {
-      const token = c.req.header('Authorization');
-      if (!token) return c.json({error: 'Token is required'}, 400);
-
-      const {payload} = decode(token);
+      const payload: payloadValidator = c.get('jwtPayload');
+      if (!payload) return c.json({error: 'Unauthorized'}, 401);
 
       const id = payload.id;
 
@@ -240,15 +228,9 @@ users.openapi(
     const {first_name, last_name, email, money} = c.req.valid('json');
 
     try {
-      const token = c.req.header('Authorization');
-      if (!token) return c.json({error: 'Token is required'}, 400);
-
-      const secret = process.env.SECRET_KEY || 'secret';
-      const decodedPayload = await verify(token, secret);
-
-      if (decodedPayload.role !== 'admin') {
-        return c.json({error: 'Unauthorized'}, 401);
-      }
+      const payload: payloadValidator = c.get('jwtPayload');
+      if (!payload) return c.json({error: 'Unauthorized'}, 401);
+      if (id !== payload.id) return c.json({error: 'Permission denied'}, 403);
 
       const userExists = await prisma.uSERS.findUnique({where: {id}});
       if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
@@ -276,15 +258,9 @@ users.openapi(
   async (c) => {
     const {id} = c.req.valid('param');
     try {
-      const token = c.req.header('Authorization');
-      if (!token) return c.json({error: 'Token is required'}, 400);
-
-      const secret = process.env.SECRET_KEY || 'secret';
-      const decodedPayload = await verify(token, secret);
-
-      if (decodedPayload.role !== 'admin') {
-        return c.json({error: 'Unauthorized'}, 401);
-      }
+      const payload: payloadValidator = c.get('jwtPayload');
+      if (!payload) return c.json({error: 'Unauthorized'}, 401);
+      if (id !== payload.id) return c.json({error: 'Permission denied'}, 403);
 
       const user = await prisma.uSERS.findUnique({where: {id}});
       if (!user) return c.json({error: `User with id ${id} not found`}, 404);

@@ -6,9 +6,18 @@ import {rooms} from './handlers/rooms.js';
 import {users} from './handlers/users';
 import {categories} from './handlers/categories.js';
 import {movies} from './handlers/movies.js';
+import {jwt} from 'hono/jwt';
 
 const app = new OpenAPIHono();
 app.use(prettyJSON());
+app.use('/users/*', (c, next) => {
+  const jwtMiddleware = jwt({
+    secret: process.env.SECRET_KEY || 'secret',
+  });
+
+  return jwtMiddleware(c, next);
+});
+
 app.get('/', (c) => c.text('Welcome to the API!'));
 app.get('/health', (c) => c.json({status: 'ok'}, 200));
 app.notFound((c) => c.json({error: 'Path not found'}, 404));
