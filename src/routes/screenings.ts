@@ -1,4 +1,5 @@
 import {createRoute, z} from '@hono/zod-openapi';
+import {listScreeningValidator} from '../validators/screenings';
 
 export const getScreenings = createRoute({
   method: 'get',
@@ -10,7 +11,7 @@ export const getScreenings = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: {test: 'ok'},
+          schema: listScreeningValidator,
         },
       },
     },

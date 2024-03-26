@@ -18,8 +18,8 @@ export const idValidator = z.object({
 export const listScreeningValidator = z.array(
   z.object({
     id: z.number(),
-    startTime: z.coerce.date(),
-    endTime: z.coerce.date(),
+    start_time: z.coerce.date(),
+    end_time: z.coerce.date(),
     movie: MovieValidator,
     room: RoomValidator,
   })
