@@ -26,13 +26,12 @@ export const updateRoomValidator = z.object({
   type: z.string().optional(),
   status: z.string().optional(),
 });
+export const RoomValidator = z.object({
+  id: z.number(),
+  number: z.number(),
+  capacity: z.number(),
+  type: z.string(),
+  status: z.string(),
+});
 
-export const listRoomsValidator = z.array(
-  z.object({
-    id: z.number(),
-    number: z.number(),
-    capacity: z.number(),
-    type: z.string(),
-    status: z.string(),
-  })
-);
+export const listRoomsValidator = z.array(RoomValidator);

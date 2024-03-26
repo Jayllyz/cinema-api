@@ -5,6 +5,7 @@ import {swaggerUI} from '@hono/swagger-ui';
 import {rooms} from './handlers/rooms.js';
 import {categories} from './handlers/categories.js';
 import {movies} from './handlers/movies.js';
+import {screenings} from './handlers/screenings.js';
 
 const app = new OpenAPIHono();
 app.use(prettyJSON());
@@ -15,6 +16,7 @@ app.notFound((c) => c.json({error: 'Path not found'}, 404));
 app.route('/', rooms);
 app.route('/', movies);
 app.route('/', categories);
+app.route('/', screenings);
 
 app.doc('/doc', (c) => ({
   openapi: '3.0.0',
