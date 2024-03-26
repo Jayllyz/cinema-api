@@ -13,6 +13,7 @@ model Rooms {
   number   Int    @unique
   type     String
   status   String
+  screenings Screening[]
 }
 
 model Categories {
@@ -29,4 +30,15 @@ model Movies {
   duration    Int
   category_id Int
   category    Categories @relation(fields: [category_id], references: [id])
+  screenings Screening[]
+}
+
+model Screening { 
+  id Int @id @default(autoincrement())
+  start_time DateTime
+  end_time DateTime
+  movie_id Int
+  movie Movies @relation(fields: [movie_id], references: [id])
+  room_id Int
+  room  Rooms @relation(fields: [room_id], references: [id])
 }
