@@ -52,6 +52,9 @@ movies.openapi(
       const category = await prisma.categories.findUnique({where: {id: category_id}});
       if (!category) return c.json({error: `Category with id ${category_id} not found`}, 404);
 
+      const movieExists = await prisma.movies.findUnique({where: {title}});
+      if (movieExists) return c.json({error: `Movie with title ${title} already exists`}, 400);
+
       const movie = await prisma.movies.create({
         data: {title, description, author, release_date, duration, status, category_id},
       });
