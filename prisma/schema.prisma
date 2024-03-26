@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Rooms {
+model ROOMS {
   id       Int    @id @default(autoincrement())
   capacity Int
   number   Int    @unique
@@ -15,18 +15,29 @@ model Rooms {
   status   String
 }
 
-model Categories {
-  id     Int      @id @default(autoincrement())
-  name   String   @unique
-  Movies Movies[]
+model USERS {
+  id          Int    @id @default(autoincrement())
+  first_name  String
+  last_name   String
+  email       String @unique
+  password    String
+  money       Int    @default(0)
+  role        String @default("user")
+  token       String @default("")
 }
 
-model Movies {
+model CATEGORIES {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  movies MOVIES[]
+}
+
+model MOVIES {
   id          Int        @id @default(autoincrement())
   title       String     @unique
   description String
   status      String
   duration    Int
   category_id Int
-  category    Categories @relation(fields: [category_id], references: [id])
+  category    CATEGORIES @relation(fields: [category_id], references: [id])
 }

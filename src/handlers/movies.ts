@@ -13,7 +13,7 @@ export const movies = new OpenAPIHono();
 
 movies.openapi(getMovies, async (c) => {
   try {
-    const movies = await prisma.movies.findMany();
+    const movies = await prisma.mOVIES.findMany();
     return c.json(movies, 200);
   } catch (error) {
     console.error(error);
@@ -26,7 +26,7 @@ movies.openapi(
   async (c) => {
     const {id} = c.req.valid('param');
     try {
-      const movie = await prisma.movies.findUnique({where: {id}});
+      const movie = await prisma.mOVIES.findUnique({where: {id}});
       if (!movie) return c.json({error: `Movie with id ${id} not found`}, 404);
 
       return c.json(movie, 200);
@@ -47,10 +47,10 @@ movies.openapi(
   async (c) => {
     const {id} = c.req.valid('param');
     try {
-      const category = await prisma.categories.findUnique({where: {id}});
+      const category = await prisma.cATEGORIES.findUnique({where: {id}});
       if (!category) return c.json({error: `Category with id ${id} not found`}, 404);
 
-      const movies = await prisma.movies.findMany({where: {category_id: id}});
+      const movies = await prisma.mOVIES.findMany({where: {category_id: id}});
       return c.json(movies, 200);
     } catch (error) {
       console.error(error);
@@ -69,10 +69,10 @@ movies.openapi(
   async (c) => {
     const {title, description, duration, status, category_id} = c.req.valid('json');
     try {
-      const category = await prisma.categories.findUnique({where: {id: category_id}});
+      const category = await prisma.cATEGORIES.findUnique({where: {id: category_id}});
       if (!category) return c.json({error: `Category with id ${category_id} not found`}, 404);
 
-      const movie = await prisma.movies.create({
+      const movie = await prisma.mOVIES.create({
         data: {title, description, duration, status, category_id},
       });
       return c.json(movie, 201);
@@ -93,10 +93,10 @@ movies.openapi(
   async (c) => {
     const {id} = c.req.valid('param');
     try {
-      const movie = await prisma.movies.findUnique({where: {id}});
+      const movie = await prisma.mOVIES.findUnique({where: {id}});
       if (!movie) return c.json({error: `Movie with id ${id} not found`}, 404);
 
-      await prisma.movies.delete({where: {id}});
+      await prisma.mOVIES.delete({where: {id}});
       return c.json({message: 'Movie deleted'}, 200);
     } catch (error) {
       console.error(error);
@@ -117,11 +117,11 @@ movies.openapi(
     const {title, description, duration, status, category_id} = c.req.valid('json');
     try {
       if (category_id) {
-        const category = await prisma.categories.findUnique({where: {id: category_id}});
+        const category = await prisma.cATEGORIES.findUnique({where: {id: category_id}});
         if (!category) return c.json({error: `Category with id ${category_id} not found`}, 404);
       }
 
-      const movie = await prisma.movies.update({
+      const movie = await prisma.mOVIES.update({
         where: {id},
         data: {title, description, duration, status, category_id},
       });
