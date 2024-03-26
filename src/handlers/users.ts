@@ -202,7 +202,8 @@ users.openapi(
     try {
       const payload: payloadValidator = c.get('jwtPayload');
       if (!payload) return c.json({error: 'Unauthorized'}, 401);
-      if (id !== payload.id) return c.json({error: 'Permission denied'}, 403);
+      if (id !== payload.id && payload.role !== 'admin')
+        return c.json({error: 'Permission denied'}, 403);
 
       const userExists = await prisma.uSERS.findUnique({where: {id}});
       if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
@@ -232,7 +233,8 @@ users.openapi(
     try {
       const payload: payloadValidator = c.get('jwtPayload');
       if (!payload) return c.json({error: 'Unauthorized'}, 401);
-      if (id !== payload.id) return c.json({error: 'Permission denied'}, 403);
+      if (id !== payload.id && payload.role !== 'admin')
+        return c.json({error: 'Permission denied'}, 403);
 
       const user = await prisma.uSERS.findUnique({where: {id}});
       if (!user) return c.json({error: `User with id ${id} not found`}, 404);

@@ -56,7 +56,7 @@ auth.openapi(
       },
     });
 
-    return c.json(user, 200);
+    return c.json(user, 201);
   },
   (result, c) => {
     if (!result.success) {
