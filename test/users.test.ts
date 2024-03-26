@@ -2,36 +2,13 @@ import app from '../src/app';
 import {randomString} from './utils';
 import {sign} from 'hono/jwt';
 
-const createdUserId = 1;
 const randomUser = randomString(10);
 const secret = process.env.SECRET_KEY || 'secret';
-const adminToken = await sign({id: createdUserId, role: 'admin'}, secret);
+const adminToken = await sign({id: 1, role: 'admin'}, secret);
 let toDelete: number;
 let trackedMoney: number;
 
 describe('Users', () => {
-  test('GET /users', async () => {
-    const res = await app.request('/users', {
-      headers: {
-        Authorization: `Bearer ${adminToken}`,
-      },
-    });
-    expect(res.status).toBe(200);
-    const users = await res.json();
-    expect(users).toBeInstanceOf(Array);
-  });
-
-  test('GET /users/:id', async () => {
-    const res = await app.request(`/users/${createdUserId}`, {
-      headers: {
-        Authorization: `Bearer ${adminToken}`,
-      },
-    });
-    expect(res.status).toBe(200);
-    const user = await res.json();
-    expect(user).toMatchObject({id: createdUserId});
-  });
-
   test('POST /users', async () => {
     const res = await app.request('/users', {
       method: 'POST',
@@ -52,8 +29,30 @@ describe('Users', () => {
     expect(user).toMatchObject({first_name: randomUser});
   });
 
+  test('GET /users', async () => {
+    const res = await app.request('/users', {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
+    expect(res.status).toBe(200);
+    const users = await res.json();
+    expect(users).toBeInstanceOf(Array);
+  });
+
+  test('GET /users/:id', async () => {
+    const res = await app.request(`/users/${toDelete}`, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
+    expect(res.status).toBe(200);
+    const user = await res.json();
+    expect(user).toMatchObject({id: toDelete});
+  });
+
   test('PATCH /users/:id', async () => {
-    const res = await app.request(`/users/${createdUserId}`, {
+    const res = await app.request(`/users/${toDelete}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -61,6 +60,7 @@ describe('Users', () => {
       },
       body: JSON.stringify({
         first_name: 'modified',
+        money: 100,
       }),
     });
     expect(res.status).toBe(200);
