@@ -1,19 +1,34 @@
 import {z} from 'zod';
 
+export const movieValidator = z.object({
+  id: z.number(),
+  title: z.string(),
+  description: z.string(),
+  author: z.string(),
+  release_date: z.string().datetime(),
+  duration: z.number().positive(),
+  status: z.string(),
+  category_id: z.number().positive(),
+});
+
 export const insertMovieValidator = z.object({
   title: z.string(),
   description: z.string(),
-  duration: z.number(),
+  author: z.string(),
+  release_date: z.coerce.date(),
+  duration: z.number().positive(),
   status: z.string(),
-  category_id: z.number(),
+  category_id: z.number().positive(),
 });
 
 export const updateMovieValidator = z.object({
   title: z.string().optional(),
+  author: z.string().optional(),
+  release_date: z.coerce.date().optional(),
   description: z.string().optional(),
-  duration: z.number().optional(),
+  duration: z.number().positive().optional(),
   status: z.string().optional(),
-  category_id: z.number().optional(),
+  category_id: z.number().positive().optional(),
 });
 
 export const listMoviesValidator = z.array(
@@ -21,8 +36,10 @@ export const listMoviesValidator = z.array(
     id: z.number(),
     title: z.string(),
     description: z.string(),
-    duration: z.number(),
+    author: z.string(),
+    release_date: z.string().datetime(),
+    duration: z.number().positive(),
     status: z.string(),
-    category_id: z.number(),
+    category_id: z.number().positive(),
   })
 );

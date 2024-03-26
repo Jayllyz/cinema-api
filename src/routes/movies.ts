@@ -3,6 +3,7 @@ import {
   insertMovieValidator,
   updateMovieValidator,
   listMoviesValidator,
+  movieValidator,
 } from '../validators/movies.js';
 import {idValidator} from '../validators/rooms.js';
 
@@ -11,6 +12,16 @@ export const getMovies = createRoute({
   path: '/movies',
   summary: 'Get all movies',
   description: 'Get all movies',
+  request: {
+    query: z.object({
+      title: z.string().optional(),
+      author: z.string().optional(),
+      lt: z.date().optional(),
+      gt: z.date().optional(),
+      status: z.string().optional(),
+      category_id: z.number().positive().optional(),
+    }),
+  },
   responses: {
     200: {
       description: 'Successful response',
@@ -45,56 +56,12 @@ export const getMovieById = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: z.object({
-            id: z.number(),
-            title: z.string(),
-            description: z.string(),
-            duration: z.number(),
-            status: z.string(),
-            category_id: z.number(),
-          }),
+          schema: movieValidator,
         },
       },
     },
     404: {
       description: 'Movie not found',
-      content: {
-        'application/json': {
-          schema: z.object({error: z.string()}),
-        },
-      },
-    },
-  },
-  tags: ['movies'],
-});
-
-export const getMoviesByCategory = createRoute({
-  method: 'get',
-  path: '/movies/category/:id',
-  summary: 'Get movies by category',
-  description: 'Get movies by category',
-  request: {
-    params: idValidator,
-  },
-  responses: {
-    200: {
-      description: 'Successful response',
-      content: {
-        'application/json': {
-          schema: listMoviesValidator,
-        },
-      },
-    },
-    404: {
-      description: 'Category not found',
-      content: {
-        'application/json': {
-          schema: z.object({error: z.string()}),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
       content: {
         'application/json': {
           schema: z.object({error: z.string()}),
@@ -124,14 +91,7 @@ export const insertMovie = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: z.object({
-            id: z.number(),
-            title: z.string(),
-            description: z.string(),
-            duration: z.number(),
-            status: z.string(),
-            category_id: z.number(),
-          }),
+          schema: movieValidator,
         },
       },
     },
@@ -167,14 +127,7 @@ export const updateMovie = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: z.object({
-            id: z.number(),
-            title: z.string(),
-            description: z.string(),
-            duration: z.number(),
-            status: z.string(),
-            category_id: z.number(),
-          }),
+          schema: movieValidator,
         },
       },
     },
