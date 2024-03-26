@@ -21,7 +21,7 @@ users.openapi(getUsers, async (c) => {
     if (!payload) return c.json({error: 'Unauthorized'}, 401);
     if (payload.role !== 'admin') return c.json({error: 'Permission denied'}, 403);
 
-    const users = await prisma.uSERS.findMany();
+    const users = await prisma.users.findMany();
     const responseJson = users.map((user) => ({
       id: Number(user.id),
       first_name: user.first_name,
@@ -46,7 +46,7 @@ users.openapi(
       if (!payload) return c.json({error: 'Unauthorized'}, 401);
       if (payload.role !== 'admin') return c.json({error: 'Permission denied'}, 403);
 
-      const user = await prisma.uSERS.findUnique({where: {id}});
+      const user = await prisma.users.findUnique({where: {id}});
       if (!user) return c.json({error: `User with id ${id} not found`}, 404);
 
       return c.json(
@@ -82,7 +82,7 @@ users.openapi(
 
     const {first_name, last_name, email, password} = c.req.valid('json');
 
-    const emailUsed = await prisma.uSERS.findFirst({where: {email}});
+    const emailUsed = await prisma.users.findFirst({where: {email}});
     if (emailUsed) {
       return c.json({error: 'email already used'}, 400);
     }
@@ -90,7 +90,7 @@ users.openapi(
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const user = await prisma.uSERS.create({
+      const user = await prisma.users.create({
         data: {first_name, last_name, email, password: hashedPassword},
       });
       return c.json(user, 201);
@@ -117,7 +117,7 @@ users.openapi(
 
       const id = payload.id;
 
-      const userExists = await prisma.uSERS.findUnique({where: {id}});
+      const userExists = await prisma.users.findUnique({where: {id}});
       if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
 
       if (!deposit && !withdraw) {
@@ -145,7 +145,7 @@ users.openapi(
       };
 
       if (deposit) {
-        const user = await prisma.uSERS.update({
+        const user = await prisma.users.update({
           where: {id},
           data: {money: {increment: deposit}},
         });
@@ -164,7 +164,7 @@ users.openapi(
           return c.json({error: 'Not enough money to withdraw'}, 400);
         }
 
-        const user = await prisma.uSERS.update({
+        const user = await prisma.users.update({
           where: {id},
           data: {money: {decrement: withdraw}},
         });
@@ -205,10 +205,10 @@ users.openapi(
       if (id !== payload.id && payload.role !== 'admin')
         return c.json({error: 'Permission denied'}, 403);
 
-      const userExists = await prisma.uSERS.findUnique({where: {id}});
+      const userExists = await prisma.users.findUnique({where: {id}});
       if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
 
-      const user = await prisma.uSERS.update({
+      const user = await prisma.users.update({
         where: {id},
         data: {first_name, last_name, email, money},
       });
@@ -236,10 +236,10 @@ users.openapi(
       if (id !== payload.id && payload.role !== 'admin')
         return c.json({error: 'Permission denied'}, 403);
 
-      const user = await prisma.uSERS.findUnique({where: {id}});
+      const user = await prisma.users.findUnique({where: {id}});
       if (!user) return c.json({error: `User with id ${id} not found`}, 404);
 
-      await prisma.uSERS.delete({where: {id}});
+      await prisma.users.delete({where: {id}});
 
       return c.json({message: `User with id ${id} deleted`}, 200);
     } catch (error) {

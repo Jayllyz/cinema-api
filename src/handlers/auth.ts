@@ -12,7 +12,7 @@ auth.openapi(
   async (c) => {
     const {email, password} = c.req.valid('json');
 
-    const user = await prisma.uSERS.findFirst({where: {email}});
+    const user = await prisma.users.findFirst({where: {email}});
     if (!user) return c.json({error: 'email not found'}, 404);
 
     const passwordMatch = await bcrypt.compare(password, user.password);
@@ -23,7 +23,7 @@ auth.openapi(
 
     const token = await sign(payload, secret);
 
-    await prisma.uSERS.update({
+    await prisma.users.update({
       where: {id: user.id},
       data: {token: token},
     });
@@ -42,12 +42,12 @@ auth.openapi(
   async (c) => {
     const {first_name, last_name, email, password} = c.req.valid('json');
 
-    const used = await prisma.uSERS.findFirst({where: {email}});
+    const used = await prisma.users.findFirst({where: {email}});
     if (used) return c.json({error: 'email already used'}, 400);
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.uSERS.create({
+    const user = await prisma.users.create({
       data: {
         first_name,
         last_name,
