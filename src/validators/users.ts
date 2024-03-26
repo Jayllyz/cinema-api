@@ -19,7 +19,7 @@ export const insertUserValidator = z.object({
 });
 
 export const idValidator = z.object({
-  id: z.coerce.number().int({message: 'Invalid id'}).positive({message: 'Invalid id'}),
+  id: z.coerce.number().int({message: 'Invalid id'}).min(1, {message: 'Invalid id'}),
 });
 
 export const updateUserValidator = z.object({

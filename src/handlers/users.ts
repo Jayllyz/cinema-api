@@ -21,16 +21,17 @@ users.openapi(getUsers, async (c) => {
     if (!payload) return c.json({error: 'Unauthorized'}, 401);
     if (payload.role !== 'admin') return c.json({error: 'Permission denied'}, 403);
 
-    const users = await prisma.users.findMany();
-    const responseJson = users.map((user) => ({
-      id: Number(user.id),
-      first_name: user.first_name,
-      last_name: user.last_name,
-      email: user.email,
-      money: Number(user.money),
-      role: user.role,
-    }));
-    return c.json(responseJson, 200);
+    const users = await prisma.users.findMany({
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+        money: true,
+        role: true,
+      },
+    });
+    return c.json(users, 200);
   } catch (error) {
     console.error(error);
     return c.json({error: error}, 500);
@@ -46,20 +47,21 @@ users.openapi(
       if (!payload) return c.json({error: 'Unauthorized'}, 401);
       if (payload.role !== 'admin') return c.json({error: 'Permission denied'}, 403);
 
-      const user = await prisma.users.findUnique({where: {id}});
+      const user = await prisma.users.findUnique({
+        where: {id},
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+          money: true,
+          role: true,
+        },
+      });
+
       if (!user) return c.json({error: `User with id ${id} not found`}, 404);
 
-      return c.json(
-        {
-          id: Number(user.id),
-          first_name: user.first_name,
-          last_name: user.last_name,
-          email: user.email,
-          money: Number(user.money),
-          role: user.role,
-        },
-        200
-      );
+      return c.json(user, 200);
     } catch (error) {
       console.error(error);
       return c.json({error: error}, 500);
@@ -82,7 +84,7 @@ users.openapi(
 
     const {first_name, last_name, email, password} = c.req.valid('json');
 
-    const emailUsed = await prisma.users.findFirst({where: {email}});
+    const emailUsed = await prisma.users.findUnique({where: {email}});
     if (emailUsed) {
       return c.json({error: 'email already used'}, 400);
     }
@@ -117,7 +119,17 @@ users.openapi(
 
       const id = payload.id;
 
-      const userExists = await prisma.users.findUnique({where: {id}});
+      const userExists = await prisma.users.findUnique({
+        where: {id},
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+          money: true,
+          role: true,
+        },
+      });
       if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
 
       if (!deposit && !withdraw) {
@@ -128,58 +140,42 @@ users.openapi(
         return c.json({error: 'You can only deposit or withdraw at a time'}, 400);
       }
 
-      let returnedJson: {
-        id: number;
-        first_name: string;
-        last_name: string;
-        email: string;
-        money: number;
-        role: string;
-      } = {
-        id: userExists.id,
-        first_name: userExists.first_name,
-        last_name: userExists.last_name,
-        email: userExists.email,
-        money: userExists.money,
-        role: userExists.role,
-      };
+      let user = userExists;
 
       if (deposit) {
-        const user = await prisma.users.update({
+        user = await prisma.users.update({
           where: {id},
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            money: true,
+            role: true,
+          },
           data: {money: {increment: deposit}},
         });
-
-        returnedJson = {
-          id: Number(user.id),
-          first_name: user.first_name,
-          last_name: user.last_name,
-          email: user.email,
-          money: Number(user.money),
-          role: user.role,
-        };
       }
       if (withdraw) {
         if (userExists.money < withdraw) {
           return c.json({error: 'Not enough money to withdraw'}, 400);
         }
 
-        const user = await prisma.users.update({
+        user = await prisma.users.update({
           where: {id},
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            money: true,
+            role: true,
+          },
           data: {money: {decrement: withdraw}},
         });
-
-        returnedJson = {
-          id: Number(user.id),
-          first_name: user.first_name,
-          last_name: user.last_name,
-          email: user.email,
-          money: Number(user.money),
-          role: user.role,
-        };
       }
 
-      return c.json(returnedJson, 200);
+      return c.json(user, 200);
     } catch (error) {
       console.log('test');
       console.error(error);
