@@ -13,13 +13,17 @@ model Rooms {
   number   Int    @unique
   type     String
   status   String
-  screenings Screening[]
+  screenings Screenings[]
+
+  @@map(name: "ROOMS")
 }
 
 model Categories {
   id     Int      @id @default(autoincrement())
   name   String   @unique
   Movies Movies[]
+
+  @@map(name: "CATEGORIES")
 }
 
 model Movies {
@@ -30,10 +34,12 @@ model Movies {
   duration    Int
   category_id Int
   category    Categories @relation(fields: [category_id], references: [id])
-  screenings Screening[]
+  screenings Screenings[]
+
+  @@map(name: "MOVIES")
 }
 
-model Screening { 
+model Screenings { 
   id Int @id @default(autoincrement())
   start_time DateTime
   end_time DateTime
@@ -41,4 +47,6 @@ model Screening {
   movie Movies @relation(fields: [movie_id], references: [id])
   room_id Int
   room  Rooms @relation(fields: [room_id], references: [id])
+
+  @@map(name: "SCREENINGS")
 }
