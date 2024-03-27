@@ -1,19 +1,51 @@
 import {serve} from '@hono/node-server';
 import {prettyJSON} from 'hono/pretty-json';
-import {OpenAPIHono} from '@hono/zod-openapi';
+import {OpenAPIHono, createRoute} from '@hono/zod-openapi';
 import {swaggerUI} from '@hono/swagger-ui';
 import {rooms} from './handlers/rooms.js';
+import {users} from './handlers/users';
+import {auth} from './handlers/auth';
 import {categories} from './handlers/categories.js';
 import {movies} from './handlers/movies.js';
 import {screenings} from './handlers/screenings.js';
+import {jwt} from 'hono/jwt';
 
 const app = new OpenAPIHono();
 app.use(prettyJSON());
+app.use('/users/*', (c, next) => {
+  const jwtMiddleware = jwt({
+    secret: process.env.SECRET_KEY || 'secret',
+  });
+
+  return jwtMiddleware(c, next);
+});
+
+const healthCheck = createRoute({
+  method: 'get',
+  path: '/health',
+  summary: 'Health check',
+  description: 'Health check',
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: {type: 'string'},
+        },
+      },
+    },
+  },
+  tags: ['health'],
+});
+
 app.get('/', (c) => c.text('Welcome to the API!'));
-app.get('/health', (c) => c.json({status: 'ok'}, 200));
+app.openapi(healthCheck, (c) => c.json('OK', 200));
 app.notFound((c) => c.json({error: 'Path not found'}, 404));
+app.onError((err, c) => c.text(err.message, 500));
 
 app.route('/', rooms);
+app.route('/', users);
+app.route('/auth/', auth);
 app.route('/', movies);
 app.route('/', categories);
 app.route('/', screenings);
@@ -31,6 +63,12 @@ app.doc('/doc', (c) => ({
     },
   ],
 }));
+
+app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
+  type: 'http',
+  scheme: 'bearer',
+  bearerFormat: 'JWT',
+});
 
 app.get('/ui', swaggerUI({url: '/doc'}));
 

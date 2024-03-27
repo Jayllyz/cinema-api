@@ -18,10 +18,23 @@ model Rooms {
   @@map(name: "ROOMS")
 }
 
+model Users {
+  id         Int    @id @default(autoincrement())
+  first_name String
+  last_name  String
+  email      String @unique
+  password   String
+  money      Int    @default(0)
+  role       String @default("user")
+  token      String @default("")
+
+  @@map(name: "USERS")
+}
+
 model Categories {
   id     Int      @id @default(autoincrement())
   name   String   @unique
-  Movies Movies[]
+  movies Movies[]
 
   @@map(name: "CATEGORIES")
 }
@@ -29,6 +42,8 @@ model Categories {
 model Movies {
   id          Int        @id @default(autoincrement())
   title       String     @unique
+  author       String
+  release_date DateTime   @db.Date
   description String
   status      String
   duration    Int
@@ -50,4 +65,6 @@ model Screenings {
   room  Rooms @relation(fields: [room_id], references: [id])
 
   @@map(name: "SCREENINGS")
+
 }
+

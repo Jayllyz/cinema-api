@@ -25,6 +25,8 @@ describe('Movies', () => {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         title: randomMovie,
+        author: 'John Doe',
+        release_date: '2021-01-01',
         description: 'A movie',
         duration: 120,
         status: 'available',
