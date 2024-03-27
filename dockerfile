@@ -10,7 +10,7 @@ WORKDIR /app
 COPY --chown=node:node package*.json .
 
 ENV PORT $NODE_PORT
-EXPOSE $PORT
+EXPOSE $NODE_PORT
 
 HEALTHCHECK --interval=5s --timeout=1s \
     CMD wget --no-verbose --tries=1 --spider http://localhost:${NODE_PORT}/health || exit 1
