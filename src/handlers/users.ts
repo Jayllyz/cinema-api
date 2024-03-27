@@ -117,6 +117,14 @@ users.openapi(
       const payload: payloadValidator = c.get('jwtPayload');
       if (!payload) return c.json({error: 'Unauthorized'}, 401);
 
+      if (!deposit && !withdraw) {
+        return c.json({error: 'One of deposit or withdraw is required'}, 400);
+      }
+
+      if (deposit && withdraw) {
+        return c.json({error: 'You can only deposit or withdraw at a time'}, 400);
+      }
+
       const id = payload.id;
 
       const userExists = await prisma.users.findUnique({
@@ -131,14 +139,6 @@ users.openapi(
         },
       });
       if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
-
-      if (!deposit && !withdraw) {
-        return c.json({error: 'One of deposit or withdraw is required'}, 400);
-      }
-
-      if (deposit && withdraw) {
-        return c.json({error: 'You can only deposit or withdraw at a time'}, 400);
-      }
 
       let user = userExists;
 
