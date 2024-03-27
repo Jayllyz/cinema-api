@@ -43,6 +43,7 @@ model Screenings {
   id Int @id @default(autoincrement())
   start_time DateTime
   end_time DateTime
+  screening_duration_minutes Int
   movie_id Int
   movie Movies @relation(fields: [movie_id], references: [id])
   room_id Int
