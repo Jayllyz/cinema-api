@@ -5,7 +5,7 @@ export const MovieValidator = z.object({
   title: z.string(),
   description: z.string(),
   author: z.string(),
-  release_date: z.coerce.date(),
+  release_date: z.string().datetime(),
   duration: z.number().positive(),
   status: z.string(),
   category_id: z.number().positive(),
