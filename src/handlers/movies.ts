@@ -97,7 +97,8 @@ movies.openapi(
   updateMovie,
   async (c) => {
     const {id} = c.req.valid('param');
-    const {title, description, duration, status, category_id} = c.req.valid('json');
+    const {title, description, duration, status, category_id, author, release_date} =
+      c.req.valid('json');
     try {
       if (category_id) {
         const category = await prisma.categories.findUnique({where: {id: category_id}});
@@ -106,7 +107,7 @@ movies.openapi(
 
       const movie = await prisma.movies.update({
         where: {id},
-        data: {title, description, duration, status, category_id},
+        data: {title, description, duration, status, category_id, author, release_date},
       });
       return c.json(movie, 200);
     } catch (error) {
