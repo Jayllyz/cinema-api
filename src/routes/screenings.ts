@@ -1,5 +1,10 @@
 import {createRoute, z} from '@hono/zod-openapi';
-import {insertScreeningValidator, listScreeningValidator} from '../validators/screenings';
+import {
+  insertScreeningValidator,
+  listScreeningValidator,
+  screeningValidator,
+  updateScreeningValidator,
+} from '../validators/screenings';
 
 export const getScreenings = createRoute({
   method: 'get',
@@ -43,10 +48,54 @@ export const insertScreening = createRoute({
   },
   responses: {
     201: {
-      description: 'Room created',
+      description: 'Screening created',
       content: {
         'application/json': {
-          schema: insertScreeningValidator,
+          schema: screeningValidator,
+        },
+      },
+    },
+    400: {
+      description: 'Invalid body',
+      content: {
+        'application/json': {
+          schema: z.object({error: z.string()}),
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: z.object({error: z.string()}),
+        },
+      },
+    },
+  },
+  tags: ['screenings'],
+});
+
+export const udpateScreening = createRoute({
+  method: 'patch',
+  path: '/screenings/:id',
+  summary: 'Update a screening',
+  description: 'Update a screening',
+  request: {
+    params: z.object({id: z.coerce.number().min(1)}),
+    body: {
+      content: {
+        'application/json': {
+          schema: updateScreeningValidator,
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Screening updated',
+      content: {
+        'application/json': {
+          schema: screeningValidator,
         },
       },
     },
