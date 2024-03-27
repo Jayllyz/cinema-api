@@ -2,7 +2,7 @@ import {createRoute, z} from '@hono/zod-openapi';
 import {
   insertScreeningValidator,
   listScreeningValidator,
-  screeningValidator,
+  responseScreeningValidator,
   updateScreeningValidator,
 } from '../validators/screenings';
 
@@ -51,7 +51,7 @@ export const insertScreening = createRoute({
       description: 'Screening created',
       content: {
         'application/json': {
-          schema: screeningValidator,
+          schema: responseScreeningValidator,
         },
       },
     },
@@ -75,7 +75,7 @@ export const insertScreening = createRoute({
   tags: ['screenings'],
 });
 
-export const udpateScreening = createRoute({
+export const updateScreening = createRoute({
   method: 'patch',
   path: '/screenings/:id',
   summary: 'Update a screening',
@@ -95,7 +95,7 @@ export const udpateScreening = createRoute({
       description: 'Screening updated',
       content: {
         'application/json': {
-          schema: screeningValidator,
+          schema: responseScreeningValidator,
         },
       },
     },

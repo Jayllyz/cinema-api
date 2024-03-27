@@ -1,10 +1,9 @@
 import {OpenAPIHono} from '@hono/zod-openapi';
 import {prisma} from '../lib/database.js';
-import {getScreenings, insertScreening, udpateScreening} from '../routes/screenings.js';
+import {getScreenings, insertScreening, updateScreening} from '../routes/screenings.js';
 import {isAfterHour, isBeforeHour} from '../lib/date.js';
 import {} from '../validators/screenings.js';
 import {ErrorHandler} from './error.js';
-import {endTime} from 'hono/timing';
 
 export const screenings = new OpenAPIHono();
 
@@ -99,7 +98,7 @@ screenings.openapi(
       const screening = await prisma.screenings.create({
         data: {
           start_time,
-          end_time: end_time.toISOString(),
+          end_time,
           screening_duration_minutes,
           movie_id,
           room_id,
@@ -120,7 +119,7 @@ screenings.openapi(
 );
 
 screenings.openapi(
-  udpateScreening,
+  updateScreening,
   async (c) => {
     const {id} = c.req.valid('param');
     const {movie_id, start_time, room_id} = c.req.valid('json');
@@ -135,9 +134,7 @@ screenings.openapi(
         },
       });
 
-      if (!movie) {
-        return c.json({error: `Movie with id ${movie_id}`}, 400);
-      }
+      if (!movie) return c.json({error: `Movie with id ${movie_id}`}, 400);
 
       const room = await prisma.rooms.findUnique({
         where: {
@@ -145,13 +142,9 @@ screenings.openapi(
         },
       });
 
-      if (!room) {
-        return c.json({error: `Room with id ${room_id}`}, 400);
-      }
+      if (!room) return c.json({error: `Room with id ${room_id}`}, 400);
 
-      if (room_id) {
-        screening.room_id = room_id;
-      }
+      if (room_id) screening.room_id = room_id;
 
       if (start_time) {
         const start_date = new Date(start_time);

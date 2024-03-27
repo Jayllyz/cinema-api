@@ -9,6 +9,7 @@ import {categories} from './handlers/categories.js';
 import {movies} from './handlers/movies.js';
 import {screenings} from './handlers/screenings.js';
 import {jwt} from 'hono/jwt';
+import {HTTPException} from 'hono/http-exception';
 
 const app = new OpenAPIHono();
 app.use(prettyJSON());
@@ -41,7 +42,13 @@ const healthCheck = createRoute({
 app.get('/', (c) => c.text('Welcome to the API!'));
 app.openapi(healthCheck, (c) => c.json('OK', 200));
 app.notFound((c) => c.json({error: 'Path not found'}, 404));
-app.onError((err, c) => c.text(err.message, 500));
+app.onError((err, c) => {
+  console.error(err);
+  if (err instanceof HTTPException) {
+    return err.getResponse();
+  }
+  return c.json({error: err.message}, err.stack ? 400 : 500);
+});
 
 app.route('/', rooms);
 app.route('/', users);
