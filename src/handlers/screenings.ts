@@ -56,7 +56,7 @@ screenings.openapi(
         return c.json({error: 'The screening cannot end after 8 pm'});
       }
 
-      const roomExist = await prisma.rooms.count({
+      const roomExist = await prisma.rooms.findUnique({
         where: {
           id: room_id,
         },

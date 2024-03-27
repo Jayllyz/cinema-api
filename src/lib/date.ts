@@ -6,7 +6,7 @@ const CLOSED_DAYS = {
 export function validateDay(date: Date) {
   const day = date.getDay();
 
-  if (day == CLOSED_DAYS.Saturday || day == CLOSED_DAYS.Sunday) {
+  if (day === CLOSED_DAYS.Saturday || day === CLOSED_DAYS.Sunday) {
     return false;
   }
 
