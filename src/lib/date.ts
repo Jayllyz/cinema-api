@@ -15,3 +15,13 @@ export function validateDay(date: Date) {
 
   return true;
 }
+
+export function isBeforeHour(date: Date, hour: number) {
+  if (date.getUTCHours() < hour) return true;
+  return false;
+}
+
+export function isAfterHour(date: Date, hour: number) {
+  if (date.getUTCHours() > hour) return true;
+  return false;
+}

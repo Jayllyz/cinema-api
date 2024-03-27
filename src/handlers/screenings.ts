@@ -2,6 +2,7 @@ import {OpenAPIHono} from '@hono/zod-openapi';
 import {prisma} from '../lib/database.js';
 import {getScreenings, insertScreening} from '../routes/screenings.js';
 import {log} from 'console';
+import {isAfterHour, isBeforeHour} from '../lib/date.js';
 
 export const screenings = new OpenAPIHono();
 
@@ -45,6 +46,18 @@ screenings.openapi(
         return c.json({error: `movie with id ${movie_id} not found`}, 400);
       }
 
+      const screening_duration_minutes = movie.duration + 30;
+      const end_time = new Date(start_time);
+      end_time.setMinutes(end_time.getMinutes() + screening_duration_minutes);
+
+      if (isBeforeHour(start_time, 9)) {
+        return c.json({error: 'The screening cannot start before 9 am'});
+      }
+
+      if (isAfterHour(end_time, 19)) {
+        return c.json({error: 'The screening cannot end after 8 pm'});
+      }
+
       const roomExist = await prisma.rooms.count({
         where: {
           id: room_id,
@@ -54,11 +67,6 @@ screenings.openapi(
       if (!roomExist) {
         return c.json({error: `room with id ${room_id} not found`}, 400);
       }
-
-      const screening_duration_minutes = movie.duration + 30;
-
-      const end_time = new Date(start_time);
-      end_time.setMinutes(end_time.getMinutes() + screening_duration_minutes);
 
       const screeningAtSameTime = await prisma.screenings.findFirst({
         where: {
