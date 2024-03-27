@@ -1,6 +1,5 @@
 import {createRoute, z} from '@hono/zod-openapi';
 import {insertScreeningValidator, listScreeningValidator} from '../validators/screenings';
-import {insertRoomValidator} from '../validators/rooms';
 
 export const getScreenings = createRoute({
   method: 'get',

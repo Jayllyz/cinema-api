@@ -18,8 +18,6 @@ screenings.openapi(getScreenings, async (c) => {
       },
     });
 
-    log(screenings);
-
     return c.json(screenings, 200);
   } catch (error) {
     console.error(error);
@@ -54,7 +52,7 @@ screenings.openapi(
         return c.json({error: 'The screening cannot start before 9 am'});
       }
 
-      if (isAfterHour(end_time, 19)) {
+      if (isAfterHour(end_time, 20)) {
         return c.json({error: 'The screening cannot end after 8 pm'});
       }
 

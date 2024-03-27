@@ -3,9 +3,6 @@ const CLOSED_DAYS = {
   Sunday: 0,
 };
 
-const OPEN_HOUR = 9;
-const CLOSE_HOUR = 20;
-
 export function validateDay(date: Date) {
   const day = date.getDay();
 
@@ -22,6 +19,13 @@ export function isBeforeHour(date: Date, hour: number) {
 }
 
 export function isAfterHour(date: Date, hour: number) {
-  if (date.getUTCHours() > hour) return true;
+  if (date.getUTCHours() > hour) {
+    return true;
+  }
+
+  if (date.getUTCHours() === hour && date.getUTCMinutes() >= 1) {
+    return true;
+  }
+
   return false;
 }

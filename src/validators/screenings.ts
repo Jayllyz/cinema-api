@@ -1,4 +1,4 @@
-import {coerce, z} from 'zod';
+import {z} from 'zod';
 import {MovieValidator} from './movies';
 import {RoomValidator} from './rooms';
 import {validateDay} from '../lib/date';
