@@ -25,18 +25,18 @@ export const updateScreeningValidator = z.object({
 });
 
 export const screeningValidator = z.object({
-  id: z.number(),
-  start_time: z.string().datetime(),
-  end_time: z.string().datetime(),
+  id: z.number().positive(),
+  start_time: z.coerce.date().transform((date) => date.toISOString()),
+  end_time: z.coerce.date().transform((date) => date.toISOString()),
   screening_duration_minutes: z.number().int().min(1),
   movie: MovieValidator,
   room: RoomValidator,
 });
 
 export const responseScreeningValidator = z.object({
-  id: z.number(),
-  start_time: z.string().datetime(),
-  end_time: z.string().datetime(),
+  id: z.number().positive(),
+  start_time: z.coerce.date().transform((date) => date.toISOString()),
+  end_time: z.coerce.date().transform((date) => date.toISOString()),
   screening_duration_minutes: z.number().int().min(1),
   movie_id: z.number(),
   room_id: z.number(),
