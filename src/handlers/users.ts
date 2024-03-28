@@ -8,7 +8,7 @@ import {
   deleteUser,
   updateUserMoney,
 } from '../routes/users';
-import {ErrorHandler} from './error';
+import {ErrorHandler} from '../lib/error';
 import bcrypt from 'bcryptjs';
 import {payloadValidator} from '../validators/auth';
 import {checkToken} from '../lib/token';

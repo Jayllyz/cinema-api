@@ -3,7 +3,7 @@ import {prisma} from '../lib/database';
 import {sign} from 'hono/jwt';
 import bcrypt from 'bcryptjs';
 import {loginUser, signupUser} from '../routes/auth';
-import {ErrorHandler} from './error';
+import {ErrorHandler} from '../lib/error';
 
 export const auth = new OpenAPIHono();
 
