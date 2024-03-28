@@ -6,8 +6,15 @@ import {
   insertCategory,
   deleteCategory,
 } from '../routes/categories.js';
+import {fromZodError} from 'zod-validation-error';
 
-export const categories = new OpenAPIHono();
+export const categories = new OpenAPIHono({
+  defaultHook: (result, c) => {
+    if (result.success) return;
+    console.error(result);
+    return c.json({error: fromZodError(result.error).message}, 400);
+  },
+});
 
 categories.openapi(getCategories, async (c) => {
   try {
@@ -19,68 +26,44 @@ categories.openapi(getCategories, async (c) => {
   }
 });
 
-categories.openapi(
-  getCategoryById,
-  async (c) => {
-    const {id} = c.req.valid('param');
-    try {
-      const category = await prisma.categories.findUnique({where: {id}});
-      if (!category) return c.json({error: `Category with id ${id} not found`}, 404);
+categories.openapi(getCategoryById, async (c) => {
+  const {id} = c.req.valid('param');
+  try {
+    const category = await prisma.categories.findUnique({where: {id}});
+    if (!category) return c.json({error: `Category with id ${id} not found`}, 404);
 
-      return c.json(category, 200);
-    } catch (error) {
-      console.error(error);
-      return c.json({error: error}, 500);
-    }
-  },
-  (result, c) => {
-    if (!result.success) {
-      return c.json({error: 'Invalid parameter'}, 400);
-    }
+    return c.json(category, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
   }
-);
+});
 
-categories.openapi(
-  insertCategory,
-  async (c) => {
-    const {name} = c.req.valid('json');
-    try {
-      const exist = await prisma.categories.findUnique({where: {name}});
-      if (exist) return c.json({error: 'Category name already exists'}, 400);
+categories.openapi(insertCategory, async (c) => {
+  const {name} = c.req.valid('json');
+  try {
+    const exist = await prisma.categories.findUnique({where: {name}});
+    if (exist) return c.json({error: 'Category name already exists'}, 400);
 
-      const category = await prisma.categories.create({data: {name}});
-      if (!category) return c.json({error: 'Category name already exists'}, 400);
-      return c.json(category, 201);
-    } catch (error) {
-      console.error(error);
-      return c.json({error: error}, 500);
-    }
-  },
-  (result, c) => {
-    if (!result.success) {
-      return c.json({error: 'Invalid parameter'}, 400);
-    }
+    const category = await prisma.categories.create({data: {name}});
+    if (!category) return c.json({error: 'Category name already exists'}, 400);
+    return c.json(category, 201);
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
   }
-);
+});
 
-categories.openapi(
-  deleteCategory,
-  async (c) => {
-    const {id} = c.req.valid('param');
-    try {
-      const category = await prisma.categories.findUnique({where: {id}});
-      if (!category) return c.json({error: `Category with id ${id} not found`}, 404);
+categories.openapi(deleteCategory, async (c) => {
+  const {id} = c.req.valid('param');
+  try {
+    const category = await prisma.categories.findUnique({where: {id}});
+    if (!category) return c.json({error: `Category with id ${id} not found`}, 404);
 
-      await prisma.categories.delete({where: {id}});
-      return c.json({message: 'Category deleted successfully'}, 200);
-    } catch (error) {
-      console.error(error);
-      return c.json({error: error}, 500);
-    }
-  },
-  (result, c) => {
-    if (!result.success) {
-      return c.json({error: 'Invalid parameter'}, 400);
-    }
+    await prisma.categories.delete({where: {id}});
+    return c.json({message: 'Category deleted successfully'}, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
   }
-);
+});

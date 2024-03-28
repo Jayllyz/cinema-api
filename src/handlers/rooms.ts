@@ -1,8 +1,15 @@
 import {OpenAPIHono} from '@hono/zod-openapi';
 import {prisma} from '../lib/database.js';
 import {getRooms, getRoomById, insertRoom, deleteRoom, updateRoom} from '../routes/rooms.js';
+import {fromZodError} from 'zod-validation-error';
 
-export const rooms = new OpenAPIHono();
+export const rooms = new OpenAPIHono({
+  defaultHook: (result, c) => {
+    if (result.success) return;
+    console.error(result);
+    return c.json({error: fromZodError(result.error).message}, 400);
+  },
+});
 
 rooms.openapi(getRooms, async (c) => {
   try {
@@ -14,97 +21,65 @@ rooms.openapi(getRooms, async (c) => {
   }
 });
 
-rooms.openapi(
-  getRoomById,
-  async (c) => {
-    const {id} = c.req.valid('param');
-    try {
-      const room = await prisma.rooms.findUnique({where: {id}});
-      if (!room) return c.json({error: `Room with id ${id} not found`}, 404);
+rooms.openapi(getRoomById, async (c) => {
+  const {id} = c.req.valid('param');
+  try {
+    const room = await prisma.rooms.findUnique({where: {id}});
+    if (!room) return c.json({error: `Room with id ${id} not found`}, 404);
 
-      return c.json(room, 200);
-    } catch (error) {
-      console.error(error);
-      return c.json({error: error}, 500);
-    }
-  },
-  (result, c) => {
-    if (!result.success) {
-      return c.json({error: 'Invalid parameter'}, 400);
-    }
+    return c.json(room, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
   }
-);
+});
 
-rooms.openapi(
-  insertRoom,
-  async (c) => {
-    const {number, capacity, type, status} = c.req.valid('json');
-    try {
-      const exist = await prisma.rooms.findUnique({where: {number}});
-      if (exist) return c.json({error: 'Room number already exists'}, 400);
+rooms.openapi(insertRoom, async (c) => {
+  const {number, capacity, type, status} = c.req.valid('json');
+  try {
+    const exist = await prisma.rooms.findUnique({where: {number}});
+    if (exist) return c.json({error: 'Room number already exists'}, 400);
 
-      const room = await prisma.rooms.create({
-        data: {number, capacity, type, status},
-      });
-      return c.json(room, 201);
-    } catch (error) {
-      console.error(error);
-      return c.json({error: error}, 500);
-    }
-  },
-  (result, c) => {
-    if (!result.success) {
-      return c.json({error: 'Invalid body'}, 400);
-    }
+    const room = await prisma.rooms.create({
+      data: {number, capacity, type, status},
+    });
+    return c.json(room, 201);
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
   }
-);
+});
 
-rooms.openapi(
-  deleteRoom,
-  async (c) => {
-    const {id} = c.req.valid('param');
-    try {
-      const room = await prisma.rooms.findUnique({where: {id}});
-      if (!room) return c.json({error: `Room with id ${id} not found`}, 404);
+rooms.openapi(deleteRoom, async (c) => {
+  const {id} = c.req.valid('param');
+  try {
+    const room = await prisma.rooms.findUnique({where: {id}});
+    if (!room) return c.json({error: `Room with id ${id} not found`}, 404);
 
-      await prisma.rooms.delete({where: {id: Number(id)}});
+    await prisma.rooms.delete({where: {id: Number(id)}});
 
-      return c.json({message: `Room with id ${id} deleted`}, 200);
-    } catch (error) {
-      console.error(error);
-      return c.json({error: error}, 500);
-    }
-  },
-  (result, c) => {
-    if (!result.success) {
-      return c.json({error: 'Invalid parameter'}, 400);
-    }
+    return c.json({message: `Room with id ${id} deleted`}, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
   }
-);
+});
 
-rooms.openapi(
-  updateRoom,
-  async (c) => {
-    const {id} = c.req.valid('param');
-    const {number, capacity, type, status} = c.req.valid('json');
-    try {
-      const room = await prisma.rooms.findUnique({where: {id}});
-      if (!room) return c.json({error: `Room with id ${id} not found`}, 404);
+rooms.openapi(updateRoom, async (c) => {
+  const {id} = c.req.valid('param');
+  const {number, capacity, type, status} = c.req.valid('json');
+  try {
+    const room = await prisma.rooms.findUnique({where: {id}});
+    if (!room) return c.json({error: `Room with id ${id} not found`}, 404);
 
-      const res = await prisma.rooms.update({
-        where: {id: Number(id)},
-        data: {number, capacity, type, status},
-      });
+    const res = await prisma.rooms.update({
+      where: {id: Number(id)},
+      data: {number, capacity, type, status},
+    });
 
-      return c.json(res, 200);
-    } catch (error) {
-      console.error(error);
-      return c.json({error: error}, 500);
-    }
-  },
-  (result, c) => {
-    if (!result.success) {
-      return c.json({error: 'Bad request'}, 400);
-    }
+    return c.json(res, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
   }
-);
+});
