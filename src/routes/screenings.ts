@@ -78,7 +78,7 @@ export const insertScreening = createRoute({
 
 export const updateScreening = createRoute({
   method: 'patch',
-  path: '/screenings/:id',
+  path: '/screenings/{id}',
   summary: 'Update a screening',
   description: 'Update a screening',
   request: {
@@ -122,7 +122,7 @@ export const updateScreening = createRoute({
 
 export const getScreeningById = createRoute({
   method: 'get',
-  path: '/screenings/:id',
+  path: '/screenings/{id}',
   summary: 'Get a screening by id',
   description: 'Get a screening by id',
   request: {
@@ -139,6 +139,43 @@ export const getScreeningById = createRoute({
     },
     404: {
       description: 'Room not found',
+      content: {
+        'application/json': {
+          schema: z.object({error: z.string()}),
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: z.object({error: z.string()}),
+        },
+      },
+    },
+  },
+  tags: ['screenings'],
+});
+
+export const deleteScreening = createRoute({
+  method: 'delete',
+  path: '/screenings/{id}',
+  summary: 'Delete a screening',
+  description: 'Delete a screening',
+  request: {
+    params: z.object({id: z.coerce.number().min(1)}),
+  },
+  responses: {
+    200: {
+      description: 'Screening deleted',
+      content: {
+        'application/json': {
+          schema: z.object({message: z.string()}),
+        },
+      },
+    },
+    404: {
+      description: 'Screening not found',
       content: {
         'application/json': {
           schema: z.object({error: z.string()}),

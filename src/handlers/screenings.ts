@@ -1,13 +1,13 @@
 import {OpenAPIHono} from '@hono/zod-openapi';
 import {prisma} from '../lib/database.js';
 import {
+  deleteScreening,
   getScreeningById,
   getScreenings,
   insertScreening,
   updateScreening,
 } from '../routes/screenings.js';
 import {isAfterHour, isBeforeHour} from '../lib/date.js';
-import {} from '../validators/screenings.js';
 import {ErrorHandler} from './error.js';
 
 export const screenings = new OpenAPIHono();
@@ -219,6 +219,29 @@ screenings.openapi(
 );
 
 screenings.openapi(
+  deleteScreening,
+  async (c) => {
+    const {id} = c.req.valid('param');
+    try {
+      const screening = await prisma.screenings.findUnique({where: {id}});
+      if (!screening) return c.json({error: `screening with id ${id} not found`}, 404);
+
+      await prisma.screenings.delete({where: {id: Number(id)}});
+
+      return c.json({message: `screening with id ${id} deleted`}, 200);
+    } catch (error) {
+      console.error(error);
+      return c.json({error: error}, 500);
+    }
+  },
+  (result, c) => {
+    if (!result.success) {
+      return c.json({error: 'Invalid parameter'}, 400);
+    }
+  }
+);
+
+screenings.openapi(
   getScreeningById,
   async (c) => {
     const {id} = c.req.valid('param');
@@ -244,7 +267,7 @@ screenings.openapi(
   },
   (result, c) => {
     if (!result.success) {
-      return c.json({error: 'Invalid parameter'}, 400);
+      return c.json(ErrorHandler(result.error), 400);
     }
   }
 );
