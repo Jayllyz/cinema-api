@@ -45,7 +45,7 @@ export const getMovies = createRoute({
 
 export const getMovieById = createRoute({
   method: 'get',
-  path: '/movies/:id',
+  path: '/movies/{id}',
   summary: 'Get a movie by id',
   description: 'Get a movie by id',
   request: {
@@ -109,7 +109,7 @@ export const insertMovie = createRoute({
 
 export const updateMovie = createRoute({
   method: 'patch',
-  path: '/movies/:id',
+  path: '/movies/{id}',
   summary: 'Update a movie',
   description: 'Update a movie',
   request: {
@@ -153,7 +153,7 @@ export const updateMovie = createRoute({
 
 export const deleteMovie = createRoute({
   method: 'delete',
-  path: '/movies/:id',
+  path: '/movies/{id}',
   summary: 'Delete a movie',
   description: 'Delete a movie',
   request: {

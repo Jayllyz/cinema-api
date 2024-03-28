@@ -40,7 +40,7 @@ describe('Users', () => {
     expect(users).toBeInstanceOf(Array);
   });
 
-  test('GET /users/:id', async () => {
+  test('GET /users/{id}', async () => {
     const res = await app.request(`/users/${toDelete}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
@@ -51,7 +51,7 @@ describe('Users', () => {
     expect(user).toMatchObject({id: toDelete});
   });
 
-  test('PATCH /users/:id', async () => {
+  test('PATCH /users/{id}', async () => {
     const res = await app.request(`/users/${toDelete}`, {
       method: 'PATCH',
       headers: {
@@ -97,7 +97,7 @@ describe('Users', () => {
     trackedMoney -= 50;
   });
 
-  test('DELETE /users/:id', async () => {
+  test('DELETE /users/{id}', async () => {
     const res = await app.request(`/users/${toDelete}`, {
       method: 'DELETE',
       headers: {
