@@ -26,14 +26,14 @@ describe('Categories', () => {
     expect(categories).toBeInstanceOf(Array);
   });
 
-  test('GET /categories/:id', async () => {
+  test('GET /categories/{id}', async () => {
     const res = await app.request(`/categories/${createdCategoryId}`);
     expect(res.status).toBe(200);
     const category = await res.json();
     expect(category).toMatchObject({name: randomCategory});
   });
 
-  test('DELETE /categories/:id', async () => {
+  test('DELETE /categories/{id}', async () => {
     const res = await app.request(`/categories/${createdCategoryId}`, {
       method: 'DELETE',
     });

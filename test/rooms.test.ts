@@ -29,14 +29,14 @@ describe('Rooms', () => {
     expect(rooms).toBeInstanceOf(Array);
   });
 
-  test('GET /rooms/:id', async () => {
+  test('GET /rooms/{id}', async () => {
     const res = await app.request(`/rooms/${createdRoomId}`);
     expect(res.status).toBe(200);
     const room = await res.json();
     expect(room).toMatchObject({number: randomRoom});
   });
 
-  test('PATCH /rooms/:id', async () => {
+  test('PATCH /rooms/{id}', async () => {
     const res = await app.request(`/rooms/${createdRoomId}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
@@ -57,7 +57,7 @@ describe('Rooms', () => {
     });
   });
 
-  test('DELETE /rooms/:id', async () => {
+  test('DELETE /rooms/{id}', async () => {
     const res = await app.request(`/rooms/${createdRoomId}`, {
       method: 'DELETE',
     });

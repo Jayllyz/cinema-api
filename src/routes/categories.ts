@@ -30,7 +30,7 @@ export const getCategories = createRoute({
 
 export const getCategoryById = createRoute({
   method: 'get',
-  path: '/categories/:id',
+  path: '/categories/{id}',
   summary: 'Get a category by id',
   description: 'Get a category by id',
   request: {
@@ -102,7 +102,7 @@ export const insertCategory = createRoute({
 
 export const deleteCategory = createRoute({
   method: 'delete',
-  path: '/categories/:id',
+  path: '/categories/{id}',
   summary: 'Delete a category',
   description: 'Delete a category',
   request: {
