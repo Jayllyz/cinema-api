@@ -1,5 +1,5 @@
 import {OpenAPIHono} from '@hono/zod-openapi';
-import {prisma} from '../lib/database.js';
+import {getOverlapingScreenings, prisma} from '../lib/database.js';
 import {
   deleteScreening,
   getScreeningById,
@@ -73,22 +73,11 @@ screenings.openapi(
         return c.json({error: `room with id ${room_id} not found`}, 400);
       }
 
-      const screeningAtSameTime = await prisma.screenings.findFirst({
-        where: {
-          room_id: room_id,
-          OR: [
-            {
-              AND: [{start_time: {gte: start_time}}, {end_time: {lte: end_time}}],
-            },
-            {
-              AND: [{start_time: {lte: start_time}}, {end_time: {gt: start_time}}],
-            },
-            {
-              AND: [{start_time: {lt: end_time}}, {end_time: {gte: end_time}}],
-            },
-          ],
-        },
-      });
+      const screeningAtSameTime = await getOverlapingScreenings(
+        room_id,
+        new Date(start_time),
+        end_time
+      );
 
       if (screeningAtSameTime) {
         return c.json(

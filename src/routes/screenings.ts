@@ -7,6 +7,15 @@ import {
   updateScreeningValidator,
 } from '../validators/screenings';
 
+const serverErrorSchema = {
+  description: 'Internal server error',
+  content: {
+    'application/json': {
+      schema: z.object({error: z.string()}),
+    },
+  },
+};
+
 export const getScreenings = createRoute({
   method: 'get',
   path: '/screenings',
@@ -21,14 +30,7 @@ export const getScreenings = createRoute({
         },
       },
     },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({error: z.string()}),
-        },
-      },
-    },
+    500: serverErrorSchema,
   },
   tags: ['screenings'],
 });
@@ -64,14 +66,7 @@ export const insertScreening = createRoute({
         },
       },
     },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({error: z.string()}),
-        },
-      },
-    },
+    500: serverErrorSchema,
   },
   tags: ['screenings'],
 });
@@ -108,14 +103,7 @@ export const updateScreening = createRoute({
         },
       },
     },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({error: z.string()}),
-        },
-      },
-    },
+    500: serverErrorSchema,
   },
   tags: ['screenings'],
 });
@@ -145,14 +133,7 @@ export const getScreeningById = createRoute({
         },
       },
     },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({error: z.string()}),
-        },
-      },
-    },
+    500: serverErrorSchema,
   },
   tags: ['screenings'],
 });
@@ -182,14 +163,7 @@ export const deleteScreening = createRoute({
         },
       },
     },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({error: z.string()}),
-        },
-      },
-    },
+    500: serverErrorSchema,
   },
   tags: ['screenings'],
 });
