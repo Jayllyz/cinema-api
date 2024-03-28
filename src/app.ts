@@ -8,15 +8,8 @@ import {auth} from './handlers/auth';
 import {categories} from './handlers/categories.js';
 import {movies} from './handlers/movies.js';
 import {jwt} from 'hono/jwt';
-import {fromZodError} from 'zod-validation-error';
 
-const app = new OpenAPIHono({
-  defaultHook: (result, c) => {
-    if (result.success) return;
-    console.error(result);
-    return c.json({error: fromZodError(result.error).message}, 400);
-  },
-});
+const app = new OpenAPIHono();
 
 app.use(prettyJSON());
 app.use('/users/*', (c, next) => {
