@@ -34,7 +34,7 @@ export const getRooms = createRoute({
 
 export const getRoomById = createRoute({
   method: 'get',
-  path: '/rooms/:id',
+  path: '/rooms/{id}',
   summary: 'Get a room by id',
   description: 'Get a room by id',
   request: {
@@ -120,7 +120,7 @@ export const insertRoom = createRoute({
 
 export const deleteRoom = createRoute({
   method: 'delete',
-  path: '/rooms/:id',
+  path: '/rooms/{id}',
   summary: 'Delete a room',
   description: 'Delete a room',
   request: {
@@ -157,7 +157,7 @@ export const deleteRoom = createRoute({
 
 export const updateRoom = createRoute({
   method: 'patch',
-  path: '/rooms/:id',
+  path: '/rooms/{id}',
   summary: 'Update a room',
   description: 'Update a room',
   request: {

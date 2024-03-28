@@ -46,14 +46,14 @@ describe('Movies', () => {
     expect(movies).toBeInstanceOf(Array);
   });
 
-  test('GET /movies/:id', async () => {
+  test('GET /movies/{id}', async () => {
     const res = await app.request(`/movies/${createdMovieId}`);
     expect(res.status).toBe(200);
     const movie = await res.json();
     expect(movie).toMatchObject({title: randomMovie});
   });
 
-  test('PATCH /movies/:id', async () => {
+  test('PATCH /movies/{id}', async () => {
     const updatedMovie = randomString(5);
     const res = await app.request(`/movies/${createdMovieId}`, {
       method: 'PATCH',
@@ -70,7 +70,7 @@ describe('Movies', () => {
     expect(movie).toMatchObject({title: updatedMovie, status: 'unavailable'});
   });
 
-  test('DELETE /movies/:id', async () => {
+  test('DELETE /movies/{id}', async () => {
     const res = await app.request(`/movies/${createdMovieId}`, {
       method: 'DELETE',
     });
