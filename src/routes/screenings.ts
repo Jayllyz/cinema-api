@@ -3,6 +3,7 @@ import {
   insertScreeningValidator,
   listScreeningValidator,
   responseScreeningValidator,
+  screeningValidator,
   updateScreeningValidator,
 } from '../validators/screenings';
 
@@ -101,6 +102,43 @@ export const updateScreening = createRoute({
     },
     400: {
       description: 'Invalid body',
+      content: {
+        'application/json': {
+          schema: z.object({error: z.string()}),
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: z.object({error: z.string()}),
+        },
+      },
+    },
+  },
+  tags: ['screenings'],
+});
+
+export const getScreeningById = createRoute({
+  method: 'get',
+  path: '/screenings/:id',
+  summary: 'Get a screening by id',
+  description: 'Get a screening by id',
+  request: {
+    params: z.object({id: z.coerce.number().min(1)}),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: screeningValidator,
+        },
+      },
+    },
+    404: {
+      description: 'Room not found',
       content: {
         'application/json': {
           schema: z.object({error: z.string()}),
