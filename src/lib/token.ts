@@ -1,5 +1,10 @@
 import {StatusCode} from 'hono/utils/http-status';
-import {payloadValidator} from '../validators/auth';
+
+export interface payloadValidator {
+  id: number;
+  role: string;
+  expiration: number;
+}
 
 export function checkToken(
   payload: payloadValidator,

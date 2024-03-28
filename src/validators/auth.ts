@@ -1,11 +1,5 @@
 import {z} from 'zod';
 
-export interface payloadValidator {
-  id: number;
-  role: string;
-  expiration: number;
-}
-
 export const loginValidator = z.object({
   email: z.string().email(),
   password: z.string(),

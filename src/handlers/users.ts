@@ -10,8 +10,7 @@ import {
 } from '../routes/users';
 import {ErrorHandler} from '../lib/error';
 import bcrypt from 'bcryptjs';
-import {payloadValidator} from '../validators/auth';
-import {checkToken} from '../lib/token';
+import {checkToken, payloadValidator} from '../lib/token';
 
 export const users = new OpenAPIHono();
 
