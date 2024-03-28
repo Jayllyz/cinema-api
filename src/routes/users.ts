@@ -38,7 +38,7 @@ export const getUsers = createRoute({
 
 export const getUserById = createRoute({
   method: 'get',
-  path: '/users/:id',
+  path: '/users/{id}',
   summary: 'Get a user by id',
   description: 'Get a user by id',
   security: [{Bearer: []}],
@@ -116,7 +116,7 @@ export const insertUser = createRoute({
 // PATCH ROUTES
 export const updateUser = createRoute({
   method: 'patch',
-  path: '/users/:id',
+  path: '/users/{id}',
   summary: 'Update a user',
   description: 'Update a user',
   security: [{Bearer: []}],
@@ -204,7 +204,7 @@ export const updateUserMoney = createRoute({
 // DELETE ROUTES
 export const deleteUser = createRoute({
   method: 'delete',
-  path: '/users/:id',
+  path: '/users/{id}',
   summary: 'Delete a user',
   description: 'Delete a user',
   security: [{Bearer: []}],
