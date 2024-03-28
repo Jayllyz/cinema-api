@@ -10,14 +10,10 @@ import {
 } from '../routes/users';
 import bcrypt from 'bcryptjs';
 import {payloadValidator} from '../validators/auth';
-import {fromZodError} from 'zod-validation-error';
+import {zodErrorHook} from '../lib/zodError.js';
 
 export const users = new OpenAPIHono({
-  defaultHook: (result, c) => {
-    if (result.success) return;
-    console.error(result);
-    return c.json({error: fromZodError(result.error).message}, 400);
-  },
+  defaultHook: zodErrorHook,
 });
 
 // GET ROUTES

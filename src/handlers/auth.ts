@@ -3,14 +3,10 @@ import {prisma} from '../lib/database';
 import {sign} from 'hono/jwt';
 import bcrypt from 'bcryptjs';
 import {loginUser, signupUser} from '../routes/auth';
-import {fromZodError} from 'zod-validation-error';
+import {zodErrorHook} from '../lib/zodError.js';
 
 export const auth = new OpenAPIHono({
-  defaultHook: (result, c) => {
-    if (result.success) return;
-    console.error(result);
-    return c.json({error: fromZodError(result.error).message}, 400);
-  },
+  defaultHook: zodErrorHook,
 });
 
 auth.openapi(loginUser, async (c) => {

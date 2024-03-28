@@ -1,14 +1,10 @@
 import {OpenAPIHono} from '@hono/zod-openapi';
 import {prisma} from '../lib/database.js';
 import {getMovies, getMovieById, insertMovie, deleteMovie, updateMovie} from '../routes/movies.js';
-import {fromZodError} from 'zod-validation-error';
+import {zodErrorHook} from '../lib/zodError.js';
 
 export const movies = new OpenAPIHono({
-  defaultHook: (result, c) => {
-    if (result.success) return;
-    console.error(result);
-    return c.json({error: fromZodError(result.error).message}, 400);
-  },
+  defaultHook: zodErrorHook,
 });
 
 movies.openapi(getMovies, async (c) => {
