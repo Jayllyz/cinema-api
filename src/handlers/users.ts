@@ -40,41 +40,9 @@ users.openapi(getUsers, async (c) => {
   }
 });
 
-users.openapi(
-  getUserById,
-  async (c) => {
-    const {id} = c.req.valid('param');
-    try {
-      const payload: payloadValidator = c.get('jwtPayload');
-      const tokenValidity = await checkToken(payload, ['admin']);
-      if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
-
-      const user = await prisma.users.findUnique({
-        where: {id},
-        select: {
-          id: true,
-          first_name: true,
-          last_name: true,
-          email: true,
-          money: true,
-          role: true,
-        },
-      });
-
-      if (!user) return c.json({error: `User with id ${id} not found`}, 404);
-
-      return c.json(user, 200);
-    } catch (error) {
-      console.error(error);
-      return c.json({error: error}, 500);
-    }
-  }
-);
-
-// POST ROUTES
-users.openapi(
-  insertUser,
-  async (c) => {
+users.openapi(getUserById, async (c) => {
+  const {id} = c.req.valid('param');
+  try {
     const payload: payloadValidator = c.get('jwtPayload');
     const tokenValidity = await checkToken(payload, ['admin']);
     if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
@@ -94,13 +62,18 @@ users.openapi(
     if (!user) return c.json({error: `User with id ${id} not found`}, 404);
 
     return c.json(user, 200);
-  });
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
+  }
+});
 
+// POST ROUTES
 // POST ROUTES
 users.openapi(insertUser, async (c) => {
   const payload: payloadValidator = c.get('jwtPayload');
-  if (!payload) return c.json({error: 'Unauthorized'}, 401);
-  if (payload.role !== 'admin') return c.json({error: 'Permission denied'}, 403);
+  const tokenValidity = await checkToken(payload, ['admin']);
+  if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
   const {first_name, last_name, email, password} = c.req.valid('json');
 
@@ -127,7 +100,8 @@ users.openapi(updateUserMoney, async (c) => {
   const {deposit, withdraw} = c.req.valid('query');
   try {
     const payload: payloadValidator = c.get('jwtPayload');
-    if (!payload) return c.json({error: 'Unauthorized'}, 401);
+    const tokenValidity = await checkToken(payload, ['admin']);
+    if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
     if (!deposit && !withdraw) {
       return c.json({error: 'One of deposit or withdraw is required'}, 400);
@@ -173,30 +147,7 @@ users.openapi(updateUserMoney, async (c) => {
         return c.json({error: 'Not enough money to withdraw'}, 400);
       }
 
-      return c.json(user, 200);
-    }
-  }
-  catch (error) {
-    console.error(error);
-    return c.json({error: 'An error occurred while updating the user money value'}, 500);
-  }
-});
-
-users.openapi(
-  updateUser,
-  async (c) => {
-    const {id} = c.req.valid('param');
-    const {first_name, last_name, email, money} = c.req.valid('json');
-
-    try {
-      const payload: payloadValidator = c.get('jwtPayload');
-      const tokenValidity = await checkToken(payload, ['admin']);
-      if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
-
-      const userExists = await prisma.users.findUnique({where: {id}});
-      if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
-
-      const user = await prisma.users.update({
+      user = await prisma.users.update({
         where: {id},
         select: {
           id: true,
@@ -224,9 +175,31 @@ users.openapi(updateUser, async (c) => {
 
   try {
     const payload: payloadValidator = c.get('jwtPayload');
-    if (!payload) return c.json({error: 'Unauthorized'}, 401);
-    if (id !== payload.id && payload.role !== 'admin')
-      return c.json({error: 'Permission denied'}, 403);
+    const tokenValidity = await checkToken(payload, ['admin']);
+    if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
+
+    const userExists = await prisma.users.findUnique({where: {id}});
+    if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
+
+    const user = await prisma.users.update({
+      where: {id},
+      data: {first_name, last_name, email, money},
+    });
+    return c.json(user, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
+  }
+});
+
+users.openapi(updateUser, async (c) => {
+  const {id} = c.req.valid('param');
+  const {first_name, last_name, email, money} = c.req.valid('json');
+
+  try {
+    const payload: payloadValidator = c.get('jwtPayload');
+    const tokenValidity = await checkToken(payload, ['admin']);
+    if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
     const userExists = await prisma.users.findUnique({where: {id}});
     if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
@@ -243,14 +216,12 @@ users.openapi(updateUser, async (c) => {
 });
 
 // DELETE ROUTES
-users.openapi(
-  deleteUser,
-  async (c) => {
-    const {id} = c.req.valid('param');
-    try {
-      const payload: payloadValidator = c.get('jwtPayload');
-      const tokenValidity = await checkToken(payload, ['admin']);
-      if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
+users.openapi(deleteUser, async (c) => {
+  const {id} = c.req.valid('param');
+  try {
+    const payload: payloadValidator = c.get('jwtPayload');
+    const tokenValidity = await checkToken(payload, ['admin']);
+    if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
     const user = await prisma.users.findUnique({where: {id}});
     if (!user) return c.json({error: `User with id ${id} not found`}, 404);
