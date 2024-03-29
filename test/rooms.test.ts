@@ -42,6 +42,7 @@ describe('GET /rooms', () => {
     const res = await app.request('/rooms');
     expect(res.status).toBe(200);
     const rooms = await res.json();
+    console.log(rooms);
     expect(rooms).toBeInstanceOf(Array);
     expect(rooms.length).toBeGreaterThanOrEqual(numRooms);
   });
@@ -49,7 +50,7 @@ describe('GET /rooms', () => {
 
 describe('GET /rooms/{id}', () => {
   test('returns a room', async () => {
-    const res = await app.request(`/rooms/${testRoomNumber}`);
+    const res = await app.request(`/rooms/1`);
     expect(res.status).toBe(200);
     const room = await res.json();
     expect(room).toMatchObject({number: testRoomNumber});
@@ -58,7 +59,7 @@ describe('GET /rooms/{id}', () => {
 
 describe('PATCH /rooms/{id}', () => {
   test('updates a room', async () => {
-    const res = await app.request(`/rooms/${testRoomNumber}`, {
+    const res = await app.request(`/rooms/1`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -78,13 +79,13 @@ describe('PATCH /rooms/{id}', () => {
     });
   });
 
-  test('fails with non-existing room number', async () => {
-    const res = await app.request(`/rooms/${testRoomNumber + 1000}`, {
+  test('fails with non-existing room id', async () => {
+    const res = await app.request(`/rooms/${testRoomNumber}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        number: testRoomNumber + 1000,
-        capacity: 500,
+        number: testRoomNumber,
+        capacity: 5000,
         type: 'patched',
         status: 'unavailable',
       }),
@@ -96,14 +97,14 @@ describe('PATCH /rooms/{id}', () => {
 describe('DELETE /rooms/{id}', () => {
   for (let i = 0; i < numRooms; i++) {
     test('deletes a room', async () => {
-      const res = await app.request(`/rooms/${testRoomNumber + i}`, {
+      const res = await app.request(`/rooms/${i}`, {
         method: 'DELETE',
       });
       expect(res.status).toBe(200);
     });
 
     test('fails with non-existing room number', async () => {
-      const res = await app.request(`/rooms/${testRoomNumber + i}`, {
+      const res = await app.request(`/rooms/${i}`, {
         method: 'DELETE',
       });
       expect(res.status).toBe(404);
