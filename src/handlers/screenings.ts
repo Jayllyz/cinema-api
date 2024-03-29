@@ -99,7 +99,7 @@ screenings.openapi(
         },
       });
 
-      return c.json(screening, 200);
+      return c.json(screening, 201);
     } catch (error) {
       console.error(error);
       return c.json({error: error}, 500);
