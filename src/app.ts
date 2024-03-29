@@ -48,7 +48,12 @@ app.onError((err, c) => {
   if (err instanceof HTTPException) {
     return err.getResponse();
   }
-  return c.json({error: err.message}, err.stack ? 400 : 500);
+
+  if (err.message.includes('body')) {
+    return c.json({error: err.message}, 400);
+  }
+
+  return c.json({error: 'Internal server error'}, 500);
 });
 
 app.route('/', rooms);
