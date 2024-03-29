@@ -3,7 +3,7 @@ import {
   insertMovieValidator,
   updateMovieValidator,
   listMoviesValidator,
-  movieValidator,
+  MovieValidator,
 } from '../validators/movies.js';
 import {idValidator} from '../validators/rooms.js';
 
@@ -56,7 +56,7 @@ export const getMovieById = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: movieValidator,
+          schema: MovieValidator,
         },
       },
     },
@@ -91,7 +91,7 @@ export const insertMovie = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: movieValidator,
+          schema: MovieValidator,
         },
       },
     },
@@ -127,7 +127,7 @@ export const updateMovie = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: movieValidator,
+          schema: MovieValidator,
         },
       },
     },

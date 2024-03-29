@@ -1,7 +1,7 @@
 import {z} from 'zod';
 
-export const movieValidator = z.object({
-  id: z.number(),
+export const MovieValidator = z.object({
+  id: z.number().positive(),
   title: z.string(),
   description: z.string(),
   author: z.string(),
@@ -31,15 +31,4 @@ export const updateMovieValidator = z.object({
   category_id: z.number().positive().optional(),
 });
 
-export const listMoviesValidator = z.array(
-  z.object({
-    id: z.number(),
-    title: z.string(),
-    description: z.string(),
-    author: z.string(),
-    release_date: z.string().datetime(),
-    duration: z.number().positive(),
-    status: z.string(),
-    category_id: z.number().positive(),
-  })
-);
+export const listMoviesValidator = z.array(MovieValidator);
