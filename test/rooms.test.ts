@@ -3,6 +3,7 @@ import app from '../src/app.js';
 
 const testRoomNumber = 1000;
 const numRooms = 10;
+let firstRoomId: number = 1;
 
 describe('POST /rooms', () => {
   for (let i = 0; i < numRooms; i++) {
@@ -20,6 +21,7 @@ describe('POST /rooms', () => {
       expect(res.status).toBe(201);
       const room: Rooms = await res.json();
       expect(room).toMatchObject({number: testRoomNumber + i});
+      if (i === 0 && room.id) firstRoomId = room.id;
     });
 
     test('fails with existing room number', async () => {
@@ -50,7 +52,7 @@ describe('GET /rooms', () => {
 
 describe('GET /rooms/{id}', () => {
   test('returns a room', async () => {
-    const res = await app.request(`/rooms/1`);
+    const res = await app.request(`/rooms/${firstRoomId}`);
     expect(res.status).toBe(200);
     const room: Rooms = await res.json();
     expect(room).toMatchObject({number: testRoomNumber});
@@ -59,7 +61,7 @@ describe('GET /rooms/{id}', () => {
 
 describe('PATCH /rooms/{id}', () => {
   test('updates a room', async () => {
-    const res = await app.request(`/rooms/1`, {
+    const res = await app.request(`/rooms/${firstRoomId}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -80,7 +82,7 @@ describe('PATCH /rooms/{id}', () => {
   });
 
   test('fails with non-existing room id', async () => {
-    const res = await app.request(`/rooms/${testRoomNumber}`, {
+    const res = await app.request(`/rooms/${firstRoomId}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -95,7 +97,7 @@ describe('PATCH /rooms/{id}', () => {
 });
 
 describe('DELETE /rooms/{id}', () => {
-  for (let i = 1; i < numRooms; i++) {
+  for (let i = firstRoomId; i < numRooms; i++) {
     test('deletes a room', async () => {
       const res = await app.request(`/rooms/${i}`, {
         method: 'DELETE',
