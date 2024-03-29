@@ -1,16 +1,12 @@
 import {z} from 'zod';
 
 export const idValidator = z.object({
-  id: z
-    .string()
-    .openapi({
-      param: {
-        name: 'id',
-        in: 'path',
-      },
-    })
-    .transform((v) => parseInt(v))
-    .refine((v) => !isNaN(v), {message: 'not a number'}),
+  id: z.coerce.number().openapi({
+    param: {
+      name: 'id',
+      in: 'path',
+    },
+  }),
 });
 
 export const insertRoomValidator = z.object({
@@ -26,13 +22,12 @@ export const updateRoomValidator = z.object({
   type: z.string().optional(),
   status: z.string().optional(),
 });
+export const RoomValidator = z.object({
+  id: z.number().positive(),
+  number: z.number(),
+  capacity: z.number(),
+  type: z.string(),
+  status: z.string(),
+});
 
-export const listRoomsValidator = z.array(
-  z.object({
-    id: z.number(),
-    number: z.number(),
-    capacity: z.number(),
-    type: z.string(),
-    status: z.string(),
-  })
-);
+export const listRoomsValidator = z.array(RoomValidator);

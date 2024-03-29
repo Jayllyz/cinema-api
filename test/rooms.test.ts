@@ -6,7 +6,7 @@ const randomRoom = randomInt(500, 9999);
 
 describe('Rooms', () => {
   test('POST /rooms', async () => {
-    const res = await app.request('http://localhost/rooms', {
+    const res = await app.request('/rooms', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
