@@ -22,6 +22,15 @@ app.use('/users/*', (c, next) => {
   return jwtMiddleware(c, next);
 });
 
+app.use(async (c, next) => {
+  const contentType = c.req.header('content-type');
+  console.log(contentType);
+  if (!contentType || !contentType.includes('application/json')) {
+    return c.json({error: 'A json body is required'}, 400);
+  }
+  return next();
+});
+
 const healthCheck = createRoute({
   method: 'get',
   path: '/health',
