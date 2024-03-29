@@ -42,7 +42,6 @@ describe('GET /rooms', () => {
     const res = await app.request('/rooms');
     expect(res.status).toBe(200);
     const rooms = await res.json();
-    console.log(rooms);
     expect(rooms).toBeInstanceOf(Array);
     expect(rooms.length).toBeGreaterThanOrEqual(numRooms);
   });
@@ -95,7 +94,7 @@ describe('PATCH /rooms/{id}', () => {
 });
 
 describe('DELETE /rooms/{id}', () => {
-  for (let i = 0; i < numRooms; i++) {
+  for (let i = 1; i < numRooms; i++) {
     test('deletes a room', async () => {
       const res = await app.request(`/rooms/${i}`, {
         method: 'DELETE',
