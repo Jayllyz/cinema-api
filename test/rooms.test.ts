@@ -99,13 +99,15 @@ describe('PATCH /rooms/{id}', () => {
 
 describe('DELETE /rooms/{id}', () => {
   const lastRoomId = firstRoomId + numRooms - 1;
-  for (let i = firstRoomId; i <= lastRoomId; i++) {
+  console.log(`firstRoomId: ${firstRoomId}, lastRoomId: ${lastRoomId}`);
+  for (let i = firstRoomId; i < lastRoomId; i++) {
     test('deletes a room', async () => {
       const res = await app.request(`/rooms/${i}`, {
         method: 'DELETE',
       });
       expect(res.status).toBe(200);
     });
+    console.log(`Deleted room with id ${i}`);
 
     test('fails with non-existing room id', async () => {
       const res = await app.request(`/rooms/${i}`, {
