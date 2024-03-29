@@ -69,7 +69,6 @@ users.openapi(getUserById, async (c) => {
 });
 
 // POST ROUTES
-// POST ROUTES
 users.openapi(insertUser, async (c) => {
   const payload: payloadValidator = c.get('jwtPayload');
   const tokenValidity = await checkToken(payload, ['admin']);
