@@ -69,7 +69,7 @@ describe('Rooms tests', () => {
     const room: Rooms = await res.json();
     expect(room).toMatchObject({
       number: testRoomNumber,
-      capacity: 500,
+      capacity: 25,
       type: 'patched',
       status: 'unavailable',
     });
