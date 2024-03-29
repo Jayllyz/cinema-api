@@ -1,3 +1,4 @@
+import type {Rooms} from '@prisma/client';
 import app from '../src/app.js';
 
 const testRoomNumber = 1000;
@@ -17,7 +18,7 @@ describe('POST /rooms', () => {
         }),
       });
       expect(res.status).toBe(201);
-      const room = await res.json();
+      const room: Rooms = await res.json();
       expect(room).toMatchObject({number: testRoomNumber + i});
     });
 
@@ -28,7 +29,7 @@ describe('POST /rooms', () => {
         body: JSON.stringify({
           number: testRoomNumber,
           capacity: 10,
-          type: 'classroom',
+          type: 'room',
           status: 'available',
         }),
       });
@@ -41,7 +42,7 @@ describe('GET /rooms', () => {
   test('returns a list of rooms', async () => {
     const res = await app.request('/rooms');
     expect(res.status).toBe(200);
-    const rooms = await res.json();
+    const rooms: Rooms[] = await res.json();
     expect(rooms).toBeInstanceOf(Array);
     expect(rooms.length).toBeGreaterThanOrEqual(numRooms);
   });
@@ -51,7 +52,7 @@ describe('GET /rooms/{id}', () => {
   test('returns a room', async () => {
     const res = await app.request(`/rooms/1`);
     expect(res.status).toBe(200);
-    const room = await res.json();
+    const room: Rooms = await res.json();
     expect(room).toMatchObject({number: testRoomNumber});
   });
 });
@@ -69,7 +70,7 @@ describe('PATCH /rooms/{id}', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const room = await res.json();
+    const room: Rooms = await res.json();
     expect(room).toMatchObject({
       number: testRoomNumber,
       capacity: 500,
@@ -102,7 +103,7 @@ describe('DELETE /rooms/{id}', () => {
       expect(res.status).toBe(200);
     });
 
-    test('fails with non-existing room number', async () => {
+    test('fails with non-existing room id', async () => {
       const res = await app.request(`/rooms/${i}`, {
         method: 'DELETE',
       });
