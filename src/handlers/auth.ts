@@ -20,7 +20,7 @@ auth.openapi(
 
     const payload = {
       id: user.id,
-      role: user.role,
+      table: 'users',
       expiration: Math.floor(Date.now() / 1000) + 60 * 60, // 1 hour
     };
     const secret = process.env.SECRET_KEY || 'secret';

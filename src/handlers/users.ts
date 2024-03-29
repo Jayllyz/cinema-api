@@ -18,7 +18,7 @@ export const users = new OpenAPIHono();
 users.openapi(getUsers, async (c) => {
   try {
     const payload: payloadValidator = c.get('jwtPayload');
-    const tokenValidity = checkToken(payload, ['admin']);
+    const tokenValidity = await checkToken(payload, ['admin']);
     if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
     const users = await prisma.users.findMany({
@@ -44,7 +44,7 @@ users.openapi(
     const {id} = c.req.valid('param');
     try {
       const payload: payloadValidator = c.get('jwtPayload');
-      const tokenValidity = checkToken(payload, ['admin']);
+      const tokenValidity = await checkToken(payload, ['admin']);
       if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
       const user = await prisma.users.findUnique({
@@ -79,7 +79,7 @@ users.openapi(
   insertUser,
   async (c) => {
     const payload: payloadValidator = c.get('jwtPayload');
-    const tokenValidity = checkToken(payload, ['admin']);
+    const tokenValidity = await checkToken(payload, ['admin']);
     if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
     const {first_name, last_name, email, password} = c.req.valid('json');
@@ -197,7 +197,7 @@ users.openapi(
 
     try {
       const payload: payloadValidator = c.get('jwtPayload');
-      const tokenValidity = checkToken(payload, ['admin']);
+      const tokenValidity = await checkToken(payload, ['admin']);
       if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
       const userExists = await prisma.users.findUnique({where: {id}});
@@ -227,7 +227,7 @@ users.openapi(
     const {id} = c.req.valid('param');
     try {
       const payload: payloadValidator = c.get('jwtPayload');
-      const tokenValidity = checkToken(payload, ['admin']);
+      const tokenValidity = await checkToken(payload, ['admin']);
       if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
       const user = await prisma.users.findUnique({where: {id}});
