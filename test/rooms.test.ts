@@ -3,9 +3,9 @@ import app from '../src/app.js';
 
 const testRoomNumber = 1000;
 const numRooms = 10;
-let firstRoomId: number = 1;
+let firstRoomId: number;
 
-describe('POST /rooms', () => {
+describe('Rooms tests', () => {
   for (let i = 0; i < numRooms; i++) {
     test('creates a new room', async () => {
       const res = await app.request('/rooms', {
@@ -21,7 +21,7 @@ describe('POST /rooms', () => {
       expect(res.status).toBe(201);
       const room: Rooms = await res.json();
       expect(room).toMatchObject({number: testRoomNumber + i});
-      if (i === 0 && room.id) firstRoomId = room.id;
+      if (i === 0) firstRoomId = room.id;
     });
 
     test('fails with existing room number', async () => {
@@ -30,7 +30,7 @@ describe('POST /rooms', () => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           number: testRoomNumber,
-          capacity: 10,
+          capacity: 20,
           type: 'room',
           status: 'available',
         }),
@@ -38,9 +38,7 @@ describe('POST /rooms', () => {
       expect(res.status).toBe(400);
     });
   }
-});
 
-describe('GET /rooms', () => {
   test('returns a list of rooms', async () => {
     const res = await app.request('/rooms');
     expect(res.status).toBe(200);
@@ -48,25 +46,21 @@ describe('GET /rooms', () => {
     expect(rooms).toBeInstanceOf(Array);
     expect(rooms.length).toBeGreaterThanOrEqual(numRooms);
   });
-});
 
-describe('GET /rooms/{id}', () => {
   test('returns a room', async () => {
     const res = await app.request(`/rooms/${firstRoomId}`);
     expect(res.status).toBe(200);
     const room: Rooms = await res.json();
     expect(room).toMatchObject({number: testRoomNumber});
   });
-});
 
-describe('PATCH /rooms/{id}', () => {
   test('updates a room', async () => {
     const res = await app.request(`/rooms/${firstRoomId}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         number: testRoomNumber,
-        capacity: 500,
+        capacity: 25,
         type: 'patched',
         status: 'unavailable',
       }),
@@ -88,18 +82,15 @@ describe('PATCH /rooms/{id}', () => {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         number: testRoomNumber,
-        capacity: 5000,
+        capacity: 26,
         type: 'patched',
         status: 'unavailable',
       }),
     });
     expect(res.status).toBe(404);
   });
-});
 
-describe('DELETE /rooms/{id}', () => {
   const lastRoomId = firstRoomId + numRooms - 1;
-  console.log(`firstRoomId: ${firstRoomId}, lastRoomId: ${lastRoomId}`);
   for (let i = firstRoomId; i < lastRoomId; i++) {
     test('deletes a room', async () => {
       const res = await app.request(`/rooms/${i}`, {
@@ -107,7 +98,6 @@ describe('DELETE /rooms/{id}', () => {
       });
       expect(res.status).toBe(200);
     });
-    console.log(`Deleted room with id ${i}`);
 
     test('fails with non-existing room id', async () => {
       const res = await app.request(`/rooms/${i}`, {
