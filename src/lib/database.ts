@@ -8,8 +8,8 @@ export async function getOverlapingScreenings(
   room_id: number,
   start_time: Date,
   end_time: Date
-): Promise<any | undefined> {
-  await prisma.screenings.findFirst({
+): Promise<Screenings | null> {
+  return await prisma.screenings.findFirst({
     where: {
       room_id: room_id,
       OR: [

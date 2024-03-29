@@ -1,7 +1,6 @@
 import app from '../src/app.js';
 import {randomInt} from 'crypto';
 import {randomString} from './utils.js';
-import {startTime} from 'hono/timing';
 
 let createScreeningId = 1;
 let createdRoomId = 1;
