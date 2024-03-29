@@ -82,7 +82,7 @@ describe('PATCH /rooms/{id}', () => {
   });
 
   test('fails with non-existing room id', async () => {
-    const res = await app.request(`/rooms/${firstRoomId}`, {
+    const res = await app.request(`/rooms/${firstRoomId + 100}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -97,7 +97,8 @@ describe('PATCH /rooms/{id}', () => {
 });
 
 describe('DELETE /rooms/{id}', () => {
-  for (let i = firstRoomId; i < numRooms; i++) {
+  const lastRoomId = firstRoomId + numRooms - 1;
+  for (let i = firstRoomId; i < lastRoomId; i++) {
     test('deletes a room', async () => {
       const res = await app.request(`/rooms/${i}`, {
         method: 'DELETE',
