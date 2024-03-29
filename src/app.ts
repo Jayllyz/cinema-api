@@ -23,10 +23,11 @@ app.use('/users/*', (c, next) => {
 });
 
 app.use(async (c, next) => {
-  const contentType = c.req.header('content-type');
-  console.log(contentType);
-  if (!contentType || !contentType.includes('application/json')) {
-    return c.json({error: 'A json body is required'}, 400);
+  if (c.req.method === 'POST' || c.req.method === 'PUT' || c.req.method === 'PATCH') {
+    const contentType = c.req.header('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      return c.json({error: 'A json body is required'}, 400);
+    }
   }
   return next();
 });
