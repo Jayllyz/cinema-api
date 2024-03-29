@@ -98,8 +98,8 @@ describe('PATCH /rooms/{id}', () => {
 });
 
 describe('DELETE /rooms/{id}', () => {
-  const lastRoomId = firstRoomId + numRooms;
-  for (let i = firstRoomId; i < lastRoomId; i++) {
+  const lastRoomId = firstRoomId + numRooms - 1;
+  for (let i = firstRoomId; i <= lastRoomId; i++) {
     test('deletes a room', async () => {
       const res = await app.request(`/rooms/${i}`, {
         method: 'DELETE',
