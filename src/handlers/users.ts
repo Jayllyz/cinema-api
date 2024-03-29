@@ -9,7 +9,7 @@ import {
   updateUserMoney,
 } from '../routes/users';
 import bcrypt from 'bcryptjs';
-import {checkToken, payloadValidator} from '../lib/token';
+import {checkToken, PayloadValidator} from '../lib/token';
 import {zodErrorHook} from '../lib/zodError.js';
 
 export const users = new OpenAPIHono({
@@ -19,7 +19,7 @@ export const users = new OpenAPIHono({
 // GET ROUTES
 users.openapi(getUsers, async (c) => {
   try {
-    const payload: payloadValidator = c.get('jwtPayload');
+    const payload: PayloadValidator = c.get('jwtPayload');
     const tokenValidity = await checkToken(payload, ['admin']);
     if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
@@ -43,7 +43,7 @@ users.openapi(getUsers, async (c) => {
 users.openapi(getUserById, async (c) => {
   const {id} = c.req.valid('param');
   try {
-    const payload: payloadValidator = c.get('jwtPayload');
+    const payload: PayloadValidator = c.get('jwtPayload');
     const tokenValidity = await checkToken(payload, ['admin']);
     if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
@@ -70,7 +70,7 @@ users.openapi(getUserById, async (c) => {
 
 // POST ROUTES
 users.openapi(insertUser, async (c) => {
-  const payload: payloadValidator = c.get('jwtPayload');
+  const payload: PayloadValidator = c.get('jwtPayload');
   const tokenValidity = await checkToken(payload, ['admin']);
   if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
@@ -98,7 +98,7 @@ users.openapi(insertUser, async (c) => {
 users.openapi(updateUserMoney, async (c) => {
   const {deposit, withdraw} = c.req.valid('query');
   try {
-    const payload: payloadValidator = c.get('jwtPayload');
+    const payload: PayloadValidator = c.get('jwtPayload');
     const tokenValidity = await checkToken(payload, ['admin']);
     if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
@@ -173,7 +173,7 @@ users.openapi(updateUser, async (c) => {
   const {first_name, last_name, email, money} = c.req.valid('json');
 
   try {
-    const payload: payloadValidator = c.get('jwtPayload');
+    const payload: PayloadValidator = c.get('jwtPayload');
     const tokenValidity = await checkToken(payload, ['admin']);
     if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
@@ -196,7 +196,7 @@ users.openapi(updateUser, async (c) => {
   const {first_name, last_name, email, money} = c.req.valid('json');
 
   try {
-    const payload: payloadValidator = c.get('jwtPayload');
+    const payload: PayloadValidator = c.get('jwtPayload');
     const tokenValidity = await checkToken(payload, ['admin']);
     if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
@@ -218,7 +218,7 @@ users.openapi(updateUser, async (c) => {
 users.openapi(deleteUser, async (c) => {
   const {id} = c.req.valid('param');
   try {
-    const payload: payloadValidator = c.get('jwtPayload');
+    const payload: PayloadValidator = c.get('jwtPayload');
     const tokenValidity = await checkToken(payload, ['admin']);
     if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
 
