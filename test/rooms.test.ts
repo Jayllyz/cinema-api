@@ -1,47 +1,68 @@
 import app from '../src/app.js';
-import {randomInt} from 'crypto';
 
-let createdRoomId = 1;
-const randomRoom = randomInt(500, 9999);
+const testRoomNumber = 1000;
+const numRooms = 10;
 
-describe('Rooms', () => {
-  test('POST /rooms', async () => {
-    const res = await app.request('http://localhost/rooms', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        number: randomRoom,
-        capacity: 10,
-        type: 'classroom',
-        status: 'available',
-      }),
+describe('POST /rooms', () => {
+  for (let i = 0; i < numRooms; i++) {
+    test('creates a new room', async () => {
+      const res = await app.request('/rooms', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          number: testRoomNumber + i,
+          capacity: 10,
+          type: 'room',
+          status: 'available',
+        }),
+      });
+      expect(res.status).toBe(201);
+      const room = await res.json();
+      expect(room).toMatchObject({number: testRoomNumber + i});
     });
-    expect(res.status).toBe(201);
-    const room = await res.json();
-    expect(room).toMatchObject({number: randomRoom});
-    createdRoomId = room.id;
-  });
 
-  test('GET /rooms', async () => {
+    test('fails with existing room number', async () => {
+      const res = await app.request('/rooms', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          number: testRoomNumber,
+          capacity: 10,
+          type: 'classroom',
+          status: 'available',
+        }),
+      });
+      expect(res.status).toBe(400);
+    });
+  }
+});
+
+describe('GET /rooms', () => {
+  test('returns a list of rooms', async () => {
     const res = await app.request('/rooms');
     expect(res.status).toBe(200);
     const rooms = await res.json();
     expect(rooms).toBeInstanceOf(Array);
+    expect(rooms.length).toBeGreaterThanOrEqual(numRooms);
   });
+});
 
-  test('GET /rooms/{id}', async () => {
-    const res = await app.request(`/rooms/${createdRoomId}`);
+describe('GET /rooms/{id}', () => {
+  test('returns a room', async () => {
+    const res = await app.request(`/rooms/${testRoomNumber}`);
     expect(res.status).toBe(200);
     const room = await res.json();
-    expect(room).toMatchObject({number: randomRoom});
+    expect(room).toMatchObject({number: testRoomNumber});
   });
+});
 
-  test('PATCH /rooms/{id}', async () => {
-    const res = await app.request(`/rooms/${createdRoomId}`, {
+describe('PATCH /rooms/{id}', () => {
+  test('updates a room', async () => {
+    const res = await app.request(`/rooms/${testRoomNumber}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        number: randomRoom,
+        number: testRoomNumber,
         capacity: 500,
         type: 'patched',
         status: 'unavailable',
@@ -50,17 +71,42 @@ describe('Rooms', () => {
     expect(res.status).toBe(200);
     const room = await res.json();
     expect(room).toMatchObject({
-      number: randomRoom,
+      number: testRoomNumber,
       capacity: 500,
       type: 'patched',
       status: 'unavailable',
     });
   });
 
-  test('DELETE /rooms/{id}', async () => {
-    const res = await app.request(`/rooms/${createdRoomId}`, {
-      method: 'DELETE',
+  test('fails with non-existing room number', async () => {
+    const res = await app.request(`/rooms/${testRoomNumber + 1000}`, {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        number: testRoomNumber + 1000,
+        capacity: 500,
+        type: 'patched',
+        status: 'unavailable',
+      }),
     });
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(404);
   });
+});
+
+describe('DELETE /rooms/{id}', () => {
+  for (let i = 0; i < numRooms; i++) {
+    test('deletes a room', async () => {
+      const res = await app.request(`/rooms/${testRoomNumber + i}`, {
+        method: 'DELETE',
+      });
+      expect(res.status).toBe(200);
+    });
+
+    test('fails with non-existing room number', async () => {
+      const res = await app.request(`/rooms/${testRoomNumber + i}`, {
+        method: 'DELETE',
+      });
+      expect(res.status).toBe(404);
+    });
+  }
 });
