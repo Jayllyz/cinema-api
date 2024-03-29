@@ -1,7 +1,7 @@
 import app from '../src/app.js';
 import {randomInt} from 'crypto';
 import {randomString} from './utils.js';
-import {responseScreeningValidator} from '../src/validators/screenings.js';
+import {startTime} from 'hono/timing';
 
 let createScreeningId = 1;
 let createdRoomId = 1;
@@ -93,10 +93,54 @@ describe('Screenings', () => {
     createScreeningId = screening.id;
   });
 
-  test('GET /rooms', async () => {
+  test('GET /screenings', async () => {
     const res = await app.request('/rooms');
     expect(res.status).toBe(200);
-    const rooms = await res.json();
-    expect(rooms).toBeInstanceOf(Array);
+    const screenings = await res.json();
+    expect(screenings).toBeInstanceOf(Array);
+  });
+
+  test('GET /screenings/{id}', async () => {
+    const res = await app.request(`/screenings/${createScreeningId}`);
+    expect(res.status).toBe(200);
+    const screening = await res.json();
+    expect(screening).toMatchObject({id: createScreeningId});
+  });
+
+  const patchedDate: Date = tomorrow;
+  patchedDate.setMinutes(15);
+
+  test('PATCH /screenings/{id}', async () => {
+    const res = await app.request(`/screenings/${createScreeningId}`, {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        start_time: patchedDate,
+      }),
+    });
+    expect(res.status).toBe(200);
+    const screening = await res.json();
+    expect(screening).toHaveProperty('start_time', patchedDate.toISOString());
+  });
+
+  test('DELETE /screenings/{id}', async () => {
+    const res = await app.request(`/screenings/${createScreeningId}`, {
+      method: 'DELETE',
+    });
+    expect(res.status).toBe(200);
+  });
+
+  test('DELETE /movies/{id}', async () => {
+    const res = await app.request(`/movies/${createdMovieId}`, {
+      method: 'DELETE',
+    });
+    expect(res.status).toBe(200);
+  });
+
+  test('DELETE /rooms/{id}', async () => {
+    const res = await app.request(`/rooms/${createdRoomId}`, {
+      method: 'DELETE',
+    });
+    expect(res.status).toBe(200);
   });
 });
