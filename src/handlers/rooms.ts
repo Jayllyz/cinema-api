@@ -31,13 +31,14 @@ rooms.openapi(getRoomById, async (c) => {
 });
 
 rooms.openapi(insertRoom, async (c) => {
-  const {number, capacity, type, status} = c.req.valid('json');
+  const {name, description, capacity, type, open, handicap_access} = c.req.valid('json');
+  console.log({name, description, capacity, type, open, handicap_access});
   try {
-    const exist = await prisma.rooms.findUnique({where: {number}});
-    if (exist) return c.json({error: 'Room number already exists'}, 400);
+    const exist = await prisma.rooms.findUnique({where: {name}});
+    if (exist) return c.json({error: 'Room name already exists'}, 400);
 
     const room = await prisma.rooms.create({
-      data: {number, capacity, type, status},
+      data: {name, description, capacity, type, open, handicap_access},
     });
     return c.json(room, 201);
   } catch (error) {
@@ -52,7 +53,7 @@ rooms.openapi(deleteRoom, async (c) => {
     const room = await prisma.rooms.findUnique({where: {id}});
     if (!room) return c.json({error: `Room with id ${id} not found`}, 404);
 
-    await prisma.rooms.delete({where: {id: Number(id)}});
+    await prisma.rooms.delete({where: {id}});
 
     return c.json({message: `Room with id ${id} deleted`}, 200);
   } catch (error) {
@@ -63,14 +64,14 @@ rooms.openapi(deleteRoom, async (c) => {
 
 rooms.openapi(updateRoom, async (c) => {
   const {id} = c.req.valid('param');
-  const {number, capacity, type, status} = c.req.valid('json');
+  const {name, description, capacity, type, open, handicap_access} = c.req.valid('json');
   try {
     const room = await prisma.rooms.findUnique({where: {id}});
     if (!room) return c.json({error: `Room with id ${id} not found`}, 404);
 
     const res = await prisma.rooms.update({
-      where: {id: Number(id)},
-      data: {number, capacity, type, status},
+      where: {id},
+      data: {name, description, capacity, type, open, handicap_access},
     });
 
     return c.json(res, 200);

@@ -8,25 +8,27 @@ datasource db {
 }
 
 model Rooms {
-  id       Int    @id @default(autoincrement())
-  capacity Int
-  number   Int    @unique
-  type     String
-  status   String
-  screenings Screenings[]
+  id              Int          @id @default(autoincrement())
+  name            String       @unique
+  description     String
+  capacity        Int
+  type            String
+  open            Boolean
+  handicap_access Boolean
+  screenings      Screenings[]
 
   @@map(name: "ROOMS")
 }
 
 model Users {
-  id         Int    @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   first_name String
   last_name  String
-  email      String @unique
+  email      String    @unique
   password   String
-  money      Int    @default(0)
-  role       String @default("user")
-  token      String @default("")
+  money      Int       @default(0)
+  role       String    @default("user")
+  token      String    @default("")
   tickets    Tickets[]
 
   @@map(name: "USERS")
@@ -41,42 +43,42 @@ model Categories {
 }
 
 model Movies {
-  id          Int        @id @default(autoincrement())
-  title       String     @unique
+  id           Int          @id @default(autoincrement())
+  title        String       @unique
   author       String
-  release_date DateTime   @db.Date
-  description String
-  status      String
-  duration    Int
-  category_id Int
-  category    Categories @relation(fields: [category_id], references: [id])
-  screenings Screenings[]
+  release_date DateTime     @db.Date
+  description  String
+  status       String
+  duration     Int
+  category_id  Int
+  category     Categories   @relation(fields: [category_id], references: [id])
+  screenings   Screenings[]
 
   @@map(name: "MOVIES")
 }
 
-model Screenings { 
-  id Int @id @default(autoincrement())
-  start_time DateTime
-  end_time DateTime
+model Screenings {
+  id                         Int       @id @default(autoincrement())
+  start_time                 DateTime
+  end_time                   DateTime
   screening_duration_minutes Int
-  movie_id Int
-  movie Movies @relation(fields: [movie_id], references: [id])
-  room_id Int
-  room  Rooms @relation(fields: [room_id], references: [id])
-  tickets Tickets[]
+  movie_id                   Int
+  movie                      Movies    @relation(fields: [movie_id], references: [id])
+  room_id                    Int
+  room                       Rooms     @relation(fields: [room_id], references: [id])
+  tickets                    Tickets[]
 
   @@map(name: "SCREENINGS")
 }
 
 model Tickets {
-  id Int @id @default(autoincrement())
-  used Boolean @default(false)
-  price Int
-  user_id Int
-  user Users @relation(fields: [user_id], references: [id])
+  id           Int        @id @default(autoincrement())
+  used         Boolean    @default(false)
+  price        Int
+  user_id      Int
+  user         Users      @relation(fields: [user_id], references: [id])
   screening_id Int
-  screening Screenings @relation(fields: [screening_id], references: [id])
+  screening    Screenings @relation(fields: [screening_id], references: [id])
 
   @@map(name: "TICKETS")
 }
