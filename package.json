@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.12.2",
     "@types/swagger-ui-dist": "^3.30.4",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
