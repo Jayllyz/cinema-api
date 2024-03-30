@@ -18,6 +18,16 @@ movies.openapi(getMovies, async (c) => {
         status: {equals: status},
         category_id: category_id,
       },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        author: true,
+        release_date: true,
+        duration: true,
+        status: true,
+        category: true,
+      },
     });
     return c.json(movies, 200);
   } catch (error) {
@@ -29,7 +39,19 @@ movies.openapi(getMovies, async (c) => {
 movies.openapi(getMovieById, async (c) => {
   const {id} = c.req.valid('param');
   try {
-    const movie = await prisma.movies.findUnique({where: {id}});
+    const movie = await prisma.movies.findUnique({
+      where: {id},
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        author: true,
+        release_date: true,
+        duration: true,
+        status: true,
+        category: true,
+      },
+    });
     if (!movie) return c.json({error: `Movie with id ${id} not found`}, 404);
 
     return c.json(movie, 200);
@@ -51,6 +73,16 @@ movies.openapi(insertMovie, async (c) => {
 
     const movie = await prisma.movies.create({
       data: {title, description, author, release_date, duration, status, category_id},
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        author: true,
+        release_date: true,
+        duration: true,
+        status: true,
+        category: true,
+      },
     });
     return c.json(movie, 201);
   } catch (error) {
@@ -86,6 +118,16 @@ movies.openapi(updateMovie, async (c) => {
     const movie = await prisma.movies.update({
       where: {id},
       data: {title, description, duration, status, category_id, author, release_date},
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        author: true,
+        release_date: true,
+        duration: true,
+        status: true,
+        category: true,
+      },
     });
     return c.json(movie, 200);
   } catch (error) {
