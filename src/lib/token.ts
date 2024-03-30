@@ -17,7 +17,7 @@ export async function checkToken(
   if (payload.table === 'users') {
     const user = await prisma.users.findUnique({
       where: {id: payload.id, token},
-      select: {role: true, token: true},
+      select: {role: true},
     });
 
     if (!user) throw new HTTPException(401, {message: 'Unauthorized', cause: 'Invalid token'});
