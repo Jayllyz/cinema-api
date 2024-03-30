@@ -10,7 +10,7 @@ export enum Role {
 
 export interface PayloadValidator {
   id: number;
-  role: Role;
+  role: number;
   exp: number;
 }
 
