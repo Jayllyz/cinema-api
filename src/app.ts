@@ -76,7 +76,7 @@ app.get('/ui', swaggerUI({url: '/doc'}));
 
 app.onError((err, c) => {
   if (err instanceof HTTPException) {
-    return c.json({error: err.message}, err.status);
+    return err.getResponse();
   }
   console.error(err);
   return c.json({error: 'Internal server error'}, 500);
