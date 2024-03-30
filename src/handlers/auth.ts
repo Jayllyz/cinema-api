@@ -1,9 +1,10 @@
 import {OpenAPIHono} from '@hono/zod-openapi';
-import {prisma} from '../lib/database';
-import {sign} from 'hono/jwt';
 import bcrypt from 'bcryptjs';
-import {loginUser, signupUser} from '../routes/auth';
+import {sign} from 'hono/jwt';
+import {prisma} from '../lib/database';
+import {Role} from '../lib/token';
 import {zodErrorHook} from '../lib/zodError.js';
+import {loginUser, signupUser} from '../routes/auth';
 
 export const auth = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -21,7 +22,7 @@ auth.openapi(loginUser, async (c) => {
   const one_day = 60 * 60 * 24;
   const payload = {
     id: user.id,
-    table: 'users',
+    role: Role.USER,
     exp: new Date().getTime() + one_day,
   };
   const secret = process.env.SECRET_KEY || 'secret';

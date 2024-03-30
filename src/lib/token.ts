@@ -1,9 +1,16 @@
-import {prisma} from './database';
 import {HTTPException} from 'hono/http-exception';
+import {prisma} from './database';
+
+export enum Role {
+  USER = 1,
+  STAFF = 2,
+  ADMIN = 3,
+  SUPERADMIN = 4,
+}
 
 export interface PayloadValidator {
   id: number;
-  table: string;
+  role: Role;
   exp: number;
 }
 
@@ -14,7 +21,7 @@ export async function checkToken(
 ): Promise<void> {
   if (!token) throw new HTTPException(401, {message: 'Unauthorized', cause: 'Token not provided'});
 
-  if (payload.table === 'users') {
+  if (payload.role === Role.USER) {
     const user = await prisma.users.findUnique({
       where: {id: payload.id, token},
       select: {role: true},
