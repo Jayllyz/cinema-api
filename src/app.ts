@@ -42,7 +42,7 @@ app.route('/auth/', auth);
 
 app.use('/users/*', async (c, next) => {
   const jwtMiddleware = jwt({
-    secret: process.env.SECRET_KEY!,
+    secret: process.env.SECRET_KEY || 'secret',
   });
   return jwtMiddleware(c, next);
 });

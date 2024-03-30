@@ -4,7 +4,7 @@ import {sign} from 'hono/jwt';
 import {Role} from '../src/lib/token';
 
 const randomUser = randomString(10);
-const secret = process.env.SECRET_KEY!;
+const secret = process.env.SECRET_KEY || 'secret';
 const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
 let toDelete: number;
 let trackedMoney: number;
