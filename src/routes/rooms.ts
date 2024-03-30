@@ -4,6 +4,7 @@ import {
   updateRoomValidator,
   idValidator,
   listRoomsValidator,
+  RoomValidator,
 } from '../validators/rooms.js';
 
 export const getRooms = createRoute({
@@ -45,13 +46,7 @@ export const getRoomById = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: z.object({
-            id: z.number(),
-            number: z.number(),
-            capacity: z.number(),
-            type: z.string(),
-            status: z.string(),
-          }),
+          schema: RoomValidator,
         },
       },
     },
