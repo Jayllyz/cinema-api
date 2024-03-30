@@ -40,15 +40,7 @@ tickets.openapi(getTickets, async (c) => {
                 category: true,
               },
             },
-            room: {
-              select: {
-                id: true,
-                number: true,
-                capacity: true,
-                type: true,
-                status: true,
-              },
-            },
+            room: true,
           },
         },
       },
