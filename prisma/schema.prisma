@@ -68,3 +68,12 @@ model Screenings {
 
 }
 
+model Employees {
+  id Int @id @default(autoincrement())
+  first_name String
+  last_name String
+  phone_number String
+
+  @@map(name: "EMPLOYEES")
+}
+
