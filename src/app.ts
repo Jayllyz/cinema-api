@@ -15,22 +15,11 @@ import {tickets} from './handlers/tickets.js';
 const app = new OpenAPIHono();
 
 app.use(prettyJSON());
-app.use('/users/*', (c, next) => {
+app.use('/users/*', async (c, next) => {
   const jwtMiddleware = jwt({
     secret: process.env.SECRET_KEY || 'secret',
   });
-
   return jwtMiddleware(c, next);
-});
-
-app.use(async (c, next) => {
-  if (c.req.method === 'POST' || c.req.method === 'PUT' || c.req.method === 'PATCH') {
-    const contentType = c.req.header('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      return c.json({error: 'A json body is required'}, 400);
-    }
-  }
-  return next();
 });
 
 const healthCheck = createRoute({
@@ -54,18 +43,6 @@ const healthCheck = createRoute({
 app.get('/', (c) => c.text('Welcome to the API!'));
 app.openapi(healthCheck, (c) => c.json('OK', 200));
 app.notFound((c) => c.json({error: 'Path not found'}, 404));
-app.onError((err, c) => {
-  console.error(err);
-  if (err instanceof HTTPException) {
-    return err.getResponse();
-  }
-
-  if (err.message.includes('body')) {
-    return c.json({error: err.message}, 400);
-  }
-
-  return c.json({error: 'Internal server error'}, 500);
-});
 
 app.route('/', rooms);
 app.route('/', users);
@@ -96,6 +73,14 @@ app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
 });
 
 app.get('/ui', swaggerUI({url: '/doc'}));
+
+app.onError((err, c) => {
+  if (err instanceof HTTPException) {
+    return c.json({error: err.message}, err.status);
+  }
+  console.error(err);
+  return c.json({error: 'Internal server error'}, 500);
+});
 
 const port = Number(process.env.PORT || 3000);
 console.log(`Server is running on port ${port}`);

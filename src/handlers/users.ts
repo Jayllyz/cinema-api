@@ -18,11 +18,11 @@ export const users = new OpenAPIHono({
 
 // GET ROUTES
 users.openapi(getUsers, async (c) => {
-  try {
-    const payload: PayloadValidator = c.get('jwtPayload');
-    const tokenValidity = await checkToken(payload, ['admin']);
-    if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
+  const token = c.req.header('authorization')?.split(' ')[1];
+  const payload: PayloadValidator = c.get('jwtPayload');
+  await checkToken(payload, ['admin'], token);
 
+  try {
     const users = await prisma.users.findMany({
       select: {
         id: true,
@@ -42,11 +42,11 @@ users.openapi(getUsers, async (c) => {
 
 users.openapi(getUserById, async (c) => {
   const {id} = c.req.valid('param');
-  try {
-    const payload: PayloadValidator = c.get('jwtPayload');
-    const tokenValidity = await checkToken(payload, ['admin']);
-    if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, ['admin'], token);
 
+  try {
     const user = await prisma.users.findUnique({
       where: {id},
       select: {
@@ -70,18 +70,12 @@ users.openapi(getUserById, async (c) => {
 
 // POST ROUTES
 users.openapi(insertUser, async (c) => {
-  const payload: PayloadValidator = c.get('jwtPayload');
-  const tokenValidity = await checkToken(payload, ['admin']);
-  if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
-
   const {first_name, last_name, email, password} = c.req.valid('json');
 
-  const emailUsed = await prisma.users.findUnique({where: {email}});
-  if (emailUsed) {
-    return c.json({error: 'email already used'}, 400);
-  }
-
   try {
+    const emailUsed = await prisma.users.findUnique({where: {email}});
+    if (emailUsed) return c.json({error: 'email already used'}, 400);
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.users.create({
@@ -97,21 +91,20 @@ users.openapi(insertUser, async (c) => {
 // PATCH ROUTES
 users.openapi(updateUserMoney, async (c) => {
   const {deposit, withdraw} = c.req.valid('query');
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, ['admin'], token);
+
+  if (!deposit && !withdraw) {
+    return c.json({error: 'One of deposit or withdraw is required'}, 400);
+  }
+
+  if (deposit && withdraw) {
+    return c.json({error: 'You can only deposit or withdraw at a time'}, 400);
+  }
+
+  const id = payload.id;
   try {
-    const payload: PayloadValidator = c.get('jwtPayload');
-    const tokenValidity = await checkToken(payload, ['admin']);
-    if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
-
-    if (!deposit && !withdraw) {
-      return c.json({error: 'One of deposit or withdraw is required'}, 400);
-    }
-
-    if (deposit && withdraw) {
-      return c.json({error: 'You can only deposit or withdraw at a time'}, 400);
-    }
-
-    const id = payload.id;
-
     const userExists = await prisma.users.findUnique({
       where: {id},
       select: {
@@ -171,12 +164,11 @@ users.openapi(updateUserMoney, async (c) => {
 users.openapi(updateUser, async (c) => {
   const {id} = c.req.valid('param');
   const {first_name, last_name, email, money} = c.req.valid('json');
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, ['admin'], token);
 
   try {
-    const payload: PayloadValidator = c.get('jwtPayload');
-    const tokenValidity = await checkToken(payload, ['admin']);
-    if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
-
     const userExists = await prisma.users.findUnique({where: {id}});
     if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
 
@@ -195,11 +187,11 @@ users.openapi(updateUser, async (c) => {
   const {id} = c.req.valid('param');
   const {first_name, last_name, email, money} = c.req.valid('json');
 
-  try {
-    const payload: PayloadValidator = c.get('jwtPayload');
-    const tokenValidity = await checkToken(payload, ['admin']);
-    if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, ['admin'], token);
 
+  try {
     const userExists = await prisma.users.findUnique({where: {id}});
     if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
 
@@ -217,11 +209,11 @@ users.openapi(updateUser, async (c) => {
 // DELETE ROUTES
 users.openapi(deleteUser, async (c) => {
   const {id} = c.req.valid('param');
-  try {
-    const payload: PayloadValidator = c.get('jwtPayload');
-    const tokenValidity = await checkToken(payload, ['admin']);
-    if (tokenValidity) return c.json(tokenValidity.error, tokenValidity.status);
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, ['admin'], token);
 
+  try {
     const user = await prisma.users.findUnique({where: {id}});
     if (!user) return c.json({error: `User with id ${id} not found`}, 404);
 
