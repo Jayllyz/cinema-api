@@ -32,9 +32,10 @@ rooms.openapi(getRoomById, async (c) => {
 
 rooms.openapi(insertRoom, async (c) => {
   const {name, description, capacity, type, open, handicap_access} = c.req.valid('json');
+  console.log({name, description, capacity, type, open, handicap_access});
   try {
     const exist = await prisma.rooms.findUnique({where: {name}});
-    if (exist) return c.json({error: 'Room number already exists'}, 400);
+    if (exist) return c.json({error: 'Room name already exists'}, 400);
 
     const room = await prisma.rooms.create({
       data: {name, description, capacity, type, open, handicap_access},
@@ -52,7 +53,7 @@ rooms.openapi(deleteRoom, async (c) => {
     const room = await prisma.rooms.findUnique({where: {id}});
     if (!room) return c.json({error: `Room with id ${id} not found`}, 404);
 
-    await prisma.rooms.delete({where: {id: Number(id)}});
+    await prisma.rooms.delete({where: {id}});
 
     return c.json({message: `Room with id ${id} deleted`}, 200);
   } catch (error) {
@@ -69,7 +70,7 @@ rooms.openapi(updateRoom, async (c) => {
     if (!room) return c.json({error: `Room with id ${id} not found`}, 404);
 
     const res = await prisma.rooms.update({
-      where: {id: Number(id)},
+      where: {id},
       data: {name, description, capacity, type, open, handicap_access},
     });
 
