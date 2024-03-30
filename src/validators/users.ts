@@ -9,6 +9,13 @@ export const userValidator = z.object({
   role: z.string(),
 });
 
+export const limitedUserValidator = z.object({
+  id: z.number().positive(),
+  first_name: z.string(),
+  last_name: z.string(),
+  email: z.string(),
+});
+
 export const listUsersValidator = z.array(userValidator);
 
 export const insertUserValidator = z.object({

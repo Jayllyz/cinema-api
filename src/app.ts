@@ -10,6 +10,7 @@ import {movies} from './handlers/movies.js';
 import {screenings} from './handlers/screenings.js';
 import {jwt} from 'hono/jwt';
 import {HTTPException} from 'hono/http-exception';
+import {tickets} from './handlers/tickets.js';
 
 const app = new OpenAPIHono();
 
@@ -72,6 +73,7 @@ app.route('/auth/', auth);
 app.route('/', movies);
 app.route('/', categories);
 app.route('/', screenings);
+app.route('/', tickets);
 
 app.doc('/doc', (c) => ({
   openapi: '3.0.0',

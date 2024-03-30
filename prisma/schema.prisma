@@ -27,6 +27,7 @@ model Users {
   money      Int    @default(0)
   role       String @default("user")
   token      String @default("")
+  tickets    Tickets[]
 
   @@map(name: "USERS")
 }
@@ -63,8 +64,19 @@ model Screenings {
   movie Movies @relation(fields: [movie_id], references: [id])
   room_id Int
   room  Rooms @relation(fields: [room_id], references: [id])
+  tickets Tickets[]
 
   @@map(name: "SCREENINGS")
-
 }
 
+model Tickets {
+  id Int @id @default(autoincrement())
+  used Boolean @default(false)
+  price Int
+  user_id Int
+  user Users @relation(fields: [user_id], references: [id])
+  screening_id Int
+  screening Screenings @relation(fields: [screening_id], references: [id])
+
+  @@map(name: "TICKETS")
+}
