@@ -109,7 +109,7 @@ export const getWorkingShiftById = createRoute({
       },
     },
   },
-  tags: ['working_shift'],
+  tags: ['working_shifts'],
 });
 
 export const deleteWorkingShift = createRoute({
