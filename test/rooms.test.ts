@@ -1,7 +1,6 @@
 import type {Rooms} from '@prisma/client';
 import app from '../src/app.js';
 
-const testRoomNumber = 1000;
 const numRooms = 10;
 let firstRoomId: number;
 
@@ -12,15 +11,24 @@ describe('Rooms tests', () => {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-          number: testRoomNumber + i,
-          capacity: 10,
+          name: `Room ${i}`,
+          description: 'Test room',
+          capacity: 25,
           type: 'room',
-          status: 'available',
+          open: true,
+          handicap_access: false,
         }),
       });
       expect(res.status).toBe(201);
       const room: Rooms = await res.json();
-      expect(room).toMatchObject({number: testRoomNumber + i});
+      expect(room).toMatchObject({
+        name: `Room ${i}`,
+        description: 'Test room',
+        capacity: 25,
+        type: 'room',
+        open: true,
+        handicap_access: false,
+      });
       if (i === 0) firstRoomId = room.id;
     });
 
@@ -29,10 +37,12 @@ describe('Rooms tests', () => {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-          number: testRoomNumber,
+          name: `Room ${i}`,
+          description: 'Test room',
           capacity: 20,
           type: 'room',
-          status: 'available',
+          open: true,
+          handicap_access: false,
         }),
       });
       expect(res.status).toBe(400);
@@ -51,7 +61,7 @@ describe('Rooms tests', () => {
     const res = await app.request(`/rooms/${firstRoomId}`);
     expect(res.status).toBe(200);
     const room: Rooms = await res.json();
-    expect(room).toMatchObject({number: testRoomNumber});
+    expect(room).toMatchObject({name: `Room 0`});
   });
 
   test('updates a room', async () => {
@@ -59,19 +69,23 @@ describe('Rooms tests', () => {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        number: testRoomNumber,
+        name: `Room 0`,
+        description: 'Test room',
         capacity: 25,
         type: 'patched',
-        status: 'unavailable',
+        open: true,
+        handicap_access: false,
       }),
     });
     expect(res.status).toBe(200);
     const room: Rooms = await res.json();
     expect(room).toMatchObject({
-      number: testRoomNumber,
+      name: `Room 0`,
+      description: 'Test room',
       capacity: 25,
       type: 'patched',
-      status: 'unavailable',
+      open: true,
+      handicap_access: false,
     });
   });
 
@@ -81,10 +95,12 @@ describe('Rooms tests', () => {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        number: testRoomNumber,
-        capacity: 26,
-        type: 'patched',
-        status: 'unavailable',
+        name: `Room ${wrongRoomId}`,
+        description: 'Test room 2',
+        capacity: 20,
+        type: 'room',
+        open: true,
+        handicap_access: false,
       }),
     });
     expect(res.status).toBe(404);

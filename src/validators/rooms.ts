@@ -10,24 +10,30 @@ export const idValidator = z.object({
 });
 
 export const insertRoomValidator = z.object({
-  number: z.number().min(1),
-  capacity: z.number().min(10),
+  name: z.string(),
+  description: z.string(),
+  capacity: z.number().min(15).max(30),
   type: z.string(),
-  status: z.string(),
+  open: z.boolean(),
+  handicap_access: z.boolean(),
 });
 
 export const updateRoomValidator = z.object({
-  number: z.number().min(1).optional(),
-  capacity: z.number().min(10).optional(),
+  name: z.string(),
+  description: z.string(),
+  capacity: z.number().min(15).max(30).optional(),
   type: z.string().optional(),
-  status: z.string().optional(),
+  open: z.boolean().optional(),
+  handicap_access: z.boolean().optional(),
 });
 export const RoomValidator = z.object({
   id: z.number().positive(),
-  number: z.number(),
-  capacity: z.number(),
+  name: z.string(),
+  description: z.string(),
+  capacity: z.number().min(15).max(30),
   type: z.string(),
-  status: z.string(),
+  open: z.boolean(),
+  handicap_access: z.boolean(),
 });
 
 export const listRoomsValidator = z.array(RoomValidator);
