@@ -46,7 +46,7 @@ screenings.openapi(getScreenings, async (c) => {
 });
 
 screenings.openapi(insertScreening, async (c) => {
-  const {start_time, movie_id, room_id} = c.req.valid('json');
+  const {start_time, movie_id, room_id, ticket_price} = c.req.valid('json');
 
   try {
     const movie = await prisma.movies.findUnique({
@@ -109,6 +109,15 @@ screenings.openapi(insertScreening, async (c) => {
         room_id,
       },
     });
+
+    for (let i = 0; i < roomExist.capacity; i++) {
+      await prisma.tickets.create({
+        data: {
+          price: ticket_price,
+          screening_id: screening.id,
+        },
+      });
+    }
 
     return c.json(screening, 201);
   } catch (error) {

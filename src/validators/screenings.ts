@@ -11,6 +11,7 @@ export const insertScreeningValidator = z.object({
     .transform((date) => date.toISOString()),
   movie_id: z.number().min(1),
   room_id: z.number().min(1),
+  ticket_price: z.number().min(0),
 });
 
 export const updateScreeningValidator = z.object({
