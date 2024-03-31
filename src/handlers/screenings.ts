@@ -219,6 +219,7 @@ screenings.openapi(deleteScreening, async (c) => {
     const screening = await prisma.screenings.findUnique({where: {id}});
     if (!screening) return c.json({error: `screening with id ${id} not found`}, 404);
 
+    await prisma.tickets.deleteMany({where: {screening_id: Number(id)}});
     await prisma.screenings.delete({where: {id: Number(id)}});
 
     return c.json({message: `screening with id ${id} deleted`}, 200);
