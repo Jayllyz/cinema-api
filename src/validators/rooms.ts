@@ -26,6 +26,7 @@ export const updateRoomValidator = z.object({
   open: z.boolean().optional(),
   handicap_access: z.boolean().optional(),
 });
+
 export const RoomValidator = z.object({
   id: z.number().positive(),
   name: z.string(),

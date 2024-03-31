@@ -29,7 +29,7 @@ export const getTickets = createRoute({
       user_id: z.coerce.number().min(1).optional(),
       screening_id: z.coerce.number().min(1).optional(),
       category: z.string().optional(),
-      room: z.coerce.number().min(1).optional(),
+      room: z.string().optional(),
     }),
   },
   responses: {

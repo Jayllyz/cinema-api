@@ -80,7 +80,7 @@ tickets.openapi(getTickets, async (c) => {
             },
           },
           room: {
-            number: room,
+            name: room,
           },
         },
       },
