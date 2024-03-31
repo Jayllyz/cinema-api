@@ -111,16 +111,18 @@ workingShift.openapi(updateWorkingShift, async (c) => {
       );
     }
 
-    if (start_time && end_time) {
+    if ((start_time && end_time) || position) {
       try {
-        validateShiftDates(start_time, end_time);
+        if (start_time) workingShift.start_time = start_time;
+        if (end_time) workingShift.end_time = end_time;
+        validateShiftDates(workingShift.start_time, workingShift.end_time);
 
         if (position) {
           workingShift.position = position;
         }
         const overlapingShift = await getOverlapingShift(
-          start_time,
-          end_time,
+          workingShift.start_time,
+          workingShift.end_time,
           workingShift.position
         );
 
