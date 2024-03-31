@@ -1,32 +1,31 @@
 import {createRoute, z} from '@hono/zod-openapi';
 import {
-  employeeResponseSchema,
-  employeeValidator,
-  insertEmployeeValidator,
-  listEmployeesValidator,
-  updateEmployeeValidator,
-} from '../validators/employees';
+  insertWorkingShiftsValidator,
+  listworkingShiftsValidator,
+  updateWorkingShiftsValidator,
+  workingShiftsResponseSchema,
+} from '../validators/working_shifts';
 
-export const insertEmployee = createRoute({
+export const insertWorkingShift = createRoute({
   method: 'post',
-  path: '/employees',
-  summary: 'Insert an employee',
-  description: 'Insert an employee',
+  path: '/working_shifts',
+  summary: 'Insert an working shift',
+  description: 'Insert an working shift',
   request: {
     body: {
       content: {
         'application/json': {
-          schema: insertEmployeeValidator,
+          schema: insertWorkingShiftsValidator,
         },
       },
     },
   },
   responses: {
     201: {
-      description: 'Employee created',
+      description: 'Working shift created',
       content: {
         'application/json': {
-          schema: employeeResponseSchema,
+          schema: workingShiftsResponseSchema,
         },
       },
     },
@@ -47,20 +46,20 @@ export const insertEmployee = createRoute({
       },
     },
   },
-  tags: ['employees'],
+  tags: ['working_shifts'],
 });
 
-export const getEmployees = createRoute({
+export const getWorkingShifts = createRoute({
   method: 'get',
-  path: '/employees',
-  summary: 'Get all employee',
-  description: 'Get all employee',
+  path: '/working_shifts',
+  summary: 'Get all working shift',
+  description: 'Get all working shift',
   responses: {
     200: {
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: listEmployeesValidator,
+          schema: listworkingShiftsValidator,
         },
       },
     },
@@ -73,14 +72,14 @@ export const getEmployees = createRoute({
       },
     },
   },
-  tags: ['employees'],
+  tags: ['working_shifts'],
 });
 
-export const getEmployeeById = createRoute({
+export const getWorkingShiftById = createRoute({
   method: 'get',
-  path: '/employees/{id}',
-  summary: 'Get an employee by id',
-  description: 'Get an employee by id',
+  path: '/working_shifts/{id}',
+  summary: 'Get a working shift by id',
+  description: 'Get a working shift by id',
   request: {
     params: z.object({id: z.coerce.number().min(1)}),
   },
@@ -89,12 +88,12 @@ export const getEmployeeById = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: employeeValidator,
+          schema: workingShiftsResponseSchema,
         },
       },
     },
     404: {
-      description: 'Employee not found',
+      description: 'Working shift not found',
       content: {
         'application/json': {
           schema: z.object({error: z.string()}),
@@ -110,20 +109,20 @@ export const getEmployeeById = createRoute({
       },
     },
   },
-  tags: ['employees'],
+  tags: ['working_shift'],
 });
 
-export const deleteEmployee = createRoute({
+export const deleteWorkingShift = createRoute({
   method: 'delete',
-  path: '/employees/{id}',
-  summary: 'Delete an employee',
-  description: 'Delete an employee',
+  path: '/working_shifts/{id}',
+  summary: 'Delete a working shift',
+  description: 'Delete a working shift',
   request: {
     params: z.object({id: z.coerce.number().min(1)}),
   },
   responses: {
     200: {
-      description: 'employee deleted',
+      description: 'working shift deleted',
       content: {
         'application/json': {
           schema: z.object({message: z.string()}),
@@ -131,7 +130,7 @@ export const deleteEmployee = createRoute({
       },
     },
     404: {
-      description: 'Employee not found',
+      description: 'Working shift not found',
       content: {
         'application/json': {
           schema: z.object({error: z.string()}),
@@ -147,30 +146,30 @@ export const deleteEmployee = createRoute({
       },
     },
   },
-  tags: ['employees'],
+  tags: ['working_shifts'],
 });
 
-export const updateEmployee = createRoute({
+export const updateWorkingShift = createRoute({
   method: 'patch',
-  path: '/employees/{id}',
-  summary: 'Update a employee',
-  description: 'Update a employee',
+  path: '/working_shifts/{id}',
+  summary: 'Update a working shift',
+  description: 'Update a working shift',
   request: {
     params: z.object({id: z.coerce.number().min(1)}),
     body: {
       content: {
         'application/json': {
-          schema: updateEmployeeValidator,
+          schema: updateWorkingShiftsValidator,
         },
       },
     },
   },
   responses: {
     200: {
-      description: 'Employee updated',
+      description: 'Working shift updated',
       content: {
         'application/json': {
-          schema: employeeValidator,
+          schema: workingShiftsResponseSchema,
         },
       },
     },
@@ -191,5 +190,5 @@ export const updateEmployee = createRoute({
       },
     },
   },
-  tags: ['employees'],
+  tags: ['working_shifts'],
 });
