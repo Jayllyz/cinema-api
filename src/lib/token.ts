@@ -5,7 +5,7 @@ import {prisma} from './database';
 export interface PayloadValidator {
   id: number;
   table: string;
-  expiration: number;
+  exp: number;
 }
 
 const secret = process.env.SECRET_KEY || 'secret';
@@ -21,10 +21,6 @@ export async function checkToken(
 } | null> {
   if (!payload) {
     return {error: {error: 'Unauthorized'}, status: 401};
-  }
-
-  if (payload.expiration < Math.floor(Date.now() / 1000)) {
-    return {error: {error: 'Token expired'}, status: 401};
   }
 
   try {

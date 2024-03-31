@@ -72,11 +72,11 @@ model Screenings {
 }
 
 model Tickets {
-  id           Int        @id @default(autoincrement())
-  used         Boolean    @default(false)
-  price        Int
-  user_id      Int
-  user         Users      @relation(fields: [user_id], references: [id])
+  id Int                  @id @default(autoincrement())
+  used Boolean            @default(false)
+  price Int
+  user_id Int?
+  user Users?             @relation(fields: [user_id], references: [id])
   screening_id Int
   screening    Screenings @relation(fields: [screening_id], references: [id])
 
