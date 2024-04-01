@@ -73,7 +73,7 @@ users.openapi(insertUser, async (c) => {
   const {first_name, last_name, email, password} = c.req.valid('json');
   const payload: PayloadValidator = c.get('jwtPayload');
   const token = c.req.header('authorization')?.split(' ')[1];
-  await checkToken(payload, Role.STAFF, token);
+  await checkToken(payload, Role.ADMIN, token);
 
   try {
     const emailUsed = await prisma.users.findUnique({where: {email}});
