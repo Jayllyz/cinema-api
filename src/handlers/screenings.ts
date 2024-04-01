@@ -22,7 +22,18 @@ screenings.openapi(getScreenings, async (c) => {
         start_time: true,
         end_time: true,
         screening_duration_minutes: true,
-        movie: true,
+        movie: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            author: true,
+            release_date: true,
+            duration: true,
+            status: true,
+            category: true,
+          },
+        },
         room: true,
       },
     });
@@ -35,7 +46,7 @@ screenings.openapi(getScreenings, async (c) => {
 });
 
 screenings.openapi(insertScreening, async (c) => {
-  const {start_time, movie_id, room_id} = c.req.valid('json');
+  const {start_time, movie_id, room_id, ticket_price} = c.req.valid('json');
 
   try {
     const movie = await prisma.movies.findUnique({
@@ -98,6 +109,15 @@ screenings.openapi(insertScreening, async (c) => {
         room_id,
       },
     });
+
+    for (let i = 0; i < roomExist.capacity; i++) {
+      await prisma.tickets.create({
+        data: {
+          price: ticket_price,
+          screening_id: screening.id,
+        },
+      });
+    }
 
     return c.json(screening, 201);
   } catch (error) {
@@ -199,6 +219,7 @@ screenings.openapi(deleteScreening, async (c) => {
     const screening = await prisma.screenings.findUnique({where: {id}});
     if (!screening) return c.json({error: `screening with id ${id} not found`}, 404);
 
+    await prisma.tickets.deleteMany({where: {screening_id: Number(id)}});
     await prisma.screenings.delete({where: {id: Number(id)}});
 
     return c.json({message: `screening with id ${id} deleted`}, 200);
@@ -218,7 +239,18 @@ screenings.openapi(getScreeningById, async (c) => {
         start_time: true,
         end_time: true,
         screening_duration_minutes: true,
-        movie: true,
+        movie: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            author: true,
+            release_date: true,
+            duration: true,
+            status: true,
+            category: true,
+          },
+        },
         room: true,
       },
     });

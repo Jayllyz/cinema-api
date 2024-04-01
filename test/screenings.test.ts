@@ -1,5 +1,4 @@
 import app from '../src/app.js';
-import {randomInt} from 'crypto';
 import {randomString} from './utils.js';
 
 let createScreeningId = 1;
@@ -7,7 +6,6 @@ let createdRoomId = 1;
 let createdMovieId = 1;
 let createdCategoryId = 1;
 const randomMovie = randomString(5);
-const randomRoom = randomInt(500, 9999);
 
 const today = new Date();
 const tomorrow = new Date(today);
@@ -56,27 +54,21 @@ describe('Screenings', () => {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        number: randomRoom,
-        capacity: 10,
-        type: 'classroom',
-        status: 'available',
+        name: 'Room Screenings',
+        description: 'Test room',
+        capacity: 20,
+        type: 'room',
+        open: true,
+        handicap_access: true,
       }),
     });
     expect(res.status).toBe(201);
     const room = await res.json();
-    expect(room).toMatchObject({number: randomRoom});
+    expect(room).toMatchObject({name: 'Room Screenings'});
     createdRoomId = room.id;
   });
 
   test('POST /screenings', async () => {
-    console.log(
-      JSON.stringify({
-        start_time: tomorrow.toISOString(),
-        movie_id: createdMovieId,
-        room_id: createdRoomId,
-      })
-    );
-
     const res = await app.request('/screenings', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -84,6 +76,7 @@ describe('Screenings', () => {
         start_time: tomorrow.toISOString(),
         movie_id: createdMovieId,
         room_id: createdRoomId,
+        ticket_price: 10,
       }),
     });
     expect(res.status).toBe(201);

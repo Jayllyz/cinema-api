@@ -18,7 +18,11 @@ auth.openapi(loginUser, async (c) => {
   const passwordMatch = await bcrypt.compare(password, user.password);
   if (!passwordMatch) return c.json({error: 'password does not match'}, 400);
 
-  const payload = {id: user.id, role: user.role};
+  const payload = {
+    id: user.id,
+    table: 'users',
+    exp: Math.floor(Date.now() / 1000) + 60 * 60, // 1 hour
+  };
   const secret = process.env.SECRET_KEY || 'secret';
 
   const token = await sign(payload, secret);

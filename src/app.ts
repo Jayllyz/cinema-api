@@ -12,16 +12,43 @@ import {jwt} from 'hono/jwt';
 import {HTTPException} from 'hono/http-exception';
 import {employees} from './handlers/employees.js';
 import {workingShift} from './handlers/working_shift.js';
+import {tickets} from './handlers/tickets.js';
 
 const app = new OpenAPIHono();
 
 app.use(prettyJSON());
-app.use('/users/*', (c, next) => {
-  const jwtMiddleware = jwt({
-    secret: process.env.SECRET_KEY || 'secret',
-  });
 
-  return jwtMiddleware(c, next);
+const jwtMiddleware = jwt({
+  secret: process.env.SECRET_KEY || 'secret',
+});
+
+app.use((c, next) => {
+  const usedRoute = c.req.url.split('/')[3];
+  const baseUrl = usedRoute.split('?')[0];
+
+  // Peut surement faire plus propre mais osef ca partira ca
+  // ca restera le temps qu'on setup la verif token sur le reste des routes
+  // mais apres on verifira juste si c'est pas la route /auth
+
+  if (baseUrl === 'users' || baseUrl === 'tickets') {
+    return jwtMiddleware(c, next);
+  }
+  return next();
+});
+
+app.use(async (c, next) => {
+  if (c.req.method === 'POST' || c.req.method === 'PUT' || c.req.method === 'PATCH') {
+    const contentType = c.req.header('content-type');
+    const url = c.req.url;
+    if (
+      !url.startsWith('/tickets/buy/') &&
+      !url.startsWith('/tickets/use/') &&
+      (!contentType || !contentType.includes('application/json'))
+    ) {
+      return c.json({error: 'A json body is required'}, 400);
+    }
+  }
+  return next();
 });
 
 const healthCheck = createRoute({
@@ -66,6 +93,7 @@ app.route('/', categories);
 app.route('/', screenings);
 app.route('/', employees);
 app.route('/', workingShift);
+app.route('/', tickets);
 
 app.doc('/doc', (c) => ({
   openapi: '3.0.0',

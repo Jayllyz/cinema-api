@@ -1,4 +1,5 @@
 import {z} from 'zod';
+import {categoryValidator} from './categories';
 
 export const MovieValidator = z.object({
   id: z.number().positive(),
@@ -8,7 +9,7 @@ export const MovieValidator = z.object({
   release_date: z.string().datetime(),
   duration: z.number().positive(),
   status: z.string(),
-  category_id: z.number().positive(),
+  category: categoryValidator,
 });
 
 export const insertMovieValidator = z.object({
