@@ -6,7 +6,7 @@ export const userValidator = z.object({
   last_name: z.string(),
   email: z.string(),
   money: z.number(),
-  role: z.string(),
+  role: z.number().min(1).max(4),
 });
 
 export const limitedUserValidator = z.object({

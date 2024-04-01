@@ -10,13 +10,13 @@ export enum Role {
 
 export interface PayloadValidator {
   id: number;
-  role: number;
+  role: Role;
   exp: number;
 }
 
 export async function checkToken(
   payload: PayloadValidator,
-  authorization: string[],
+  authorization: Role,
   token: string | undefined
 ): Promise<void> {
   if (!token) throw new HTTPException(401, {message: 'Unauthorized', cause: 'Token not provided'});
@@ -28,9 +28,13 @@ export async function checkToken(
     });
 
     if (!user) throw new HTTPException(401, {message: 'Unauthorized', cause: 'Invalid token'});
+    console.log(user);
+    console.log(authorization);
 
-    if (authorization.includes(user.role)) return;
+    if (user.role >= authorization) return;
 
     throw new HTTPException(403, {message: 'Permission denied', cause: 'Invalid permissions'});
   }
+
+  // else TODO: for staff, admin, superadmin roles
 }
