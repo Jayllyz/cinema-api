@@ -69,14 +69,6 @@ describe('Screenings', () => {
   });
 
   test('POST /screenings', async () => {
-    console.log(
-      JSON.stringify({
-        start_time: tomorrow.toISOString(),
-        movie_id: createdMovieId,
-        room_id: createdRoomId,
-      })
-    );
-
     const res = await app.request('/screenings', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -84,6 +76,7 @@ describe('Screenings', () => {
         start_time: tomorrow.toISOString(),
         movie_id: createdMovieId,
         room_id: createdRoomId,
+        ticket_price: 10,
       }),
     });
     expect(res.status).toBe(201);

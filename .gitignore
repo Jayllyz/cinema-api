@@ -2,3 +2,4 @@ node_modules/
 dist/
 megalinter-reports/
 **/*.env
+export.sql

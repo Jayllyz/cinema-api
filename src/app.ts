@@ -19,6 +19,35 @@ app.use(prettyJSON());
 app.use(secureHeaders());
 app.get('/', (c) => c.text('Welcome to the API!'));
 
+const jwtMiddleware = jwt({
+  secret: process.env.SECRET_KEY || 'secret',
+});
+
+app.use((c, next) => {
+  const usedRoute = c.req.url.split('/')[3];
+  const baseUrl = usedRoute.split('?')[0];
+
+  if (baseUrl === 'users' || baseUrl === 'tickets') {
+    return jwtMiddleware(c, next);
+  }
+  return next();
+});
+
+app.use(async (c, next) => {
+  if (c.req.method === 'POST' || c.req.method === 'PUT' || c.req.method === 'PATCH') {
+    const contentType = c.req.header('content-type');
+    const url = c.req.url;
+    if (
+      !url.startsWith('/tickets/buy/') &&
+      !url.startsWith('/tickets/use/') &&
+      (!contentType || !contentType.includes('application/json'))
+    ) {
+      return c.json({error: 'A json body is required'}, 400);
+    }
+  }
+  return next();
+});
+
 const healthCheck = createRoute({
   method: 'get',
   path: '/health',
