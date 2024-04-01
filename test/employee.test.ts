@@ -1,4 +1,3 @@
-import {totalmem} from 'os';
 import app from '../src/app.js';
 
 let createdEmployeeId: number;
