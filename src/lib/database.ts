@@ -1,4 +1,4 @@
-import {PrismaClient, Screenings} from '@prisma/client';
+import {PrismaClient, Screenings, Working_shifts} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -12,6 +12,29 @@ export async function getOverlapingScreenings(
   return await prisma.screenings.findFirst({
     where: {
       room_id: room_id,
+      OR: [
+        {
+          AND: [{start_time: {gte: start_time}}, {end_time: {lte: end_time}}],
+        },
+        {
+          AND: [{start_time: {lte: start_time}}, {end_time: {gt: start_time}}],
+        },
+        {
+          AND: [{start_time: {lt: end_time}}, {end_time: {gte: end_time}}],
+        },
+      ],
+    },
+  });
+}
+
+export async function getOverlapingShift(
+  start_time: Date,
+  end_time: Date,
+  position: string
+): Promise<Working_shifts | null> {
+  return prisma.working_shifts.findFirst({
+    where: {
+      position: position,
       OR: [
         {
           AND: [{start_time: {gte: start_time}}, {end_time: {lte: end_time}}],

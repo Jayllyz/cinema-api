@@ -10,6 +10,8 @@ import {movies} from './handlers/movies.js';
 import {screenings} from './handlers/screenings.js';
 import {jwt} from 'hono/jwt';
 import {HTTPException} from 'hono/http-exception';
+import {employees} from './handlers/employees.js';
+import {workingShift} from './handlers/working_shift.js';
 import {tickets} from './handlers/tickets.js';
 
 const app = new OpenAPIHono();
@@ -89,6 +91,8 @@ app.route('/auth/', auth);
 app.route('/', movies);
 app.route('/', categories);
 app.route('/', screenings);
+app.route('/', employees);
+app.route('/', workingShift);
 app.route('/', tickets);
 
 app.doc('/doc', (c) => ({
