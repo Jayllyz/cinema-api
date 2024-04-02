@@ -1,5 +1,6 @@
 import {createRoute, z} from '@hono/zod-openapi';
 import {loginValidator, signupValidator} from '../validators/auth';
+import {userValidator} from '../validators/users';
 
 export const loginUser = createRoute({
   method: 'post',
@@ -67,14 +68,7 @@ export const signupUser = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: z.object({
-            id: z.number(),
-            first_name: z.string(),
-            last_name: z.string(),
-            email: z.string(),
-            money: z.number(),
-            role: z.string(),
-          }),
+          schema: userValidator,
         },
       },
     },

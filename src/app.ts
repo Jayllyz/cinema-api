@@ -1,22 +1,25 @@
 import {serve} from '@hono/node-server';
-import {prettyJSON} from 'hono/pretty-json';
-import {OpenAPIHono, createRoute} from '@hono/zod-openapi';
 import {swaggerUI} from '@hono/swagger-ui';
-import {rooms} from './handlers/rooms.js';
-import {users} from './handlers/users';
+import {OpenAPIHono, createRoute} from '@hono/zod-openapi';
+import {HTTPException} from 'hono/http-exception';
+import {jwt} from 'hono/jwt';
+import {prettyJSON} from 'hono/pretty-json';
+import {secureHeaders} from 'hono/secure-headers';
 import {auth} from './handlers/auth';
 import {categories} from './handlers/categories.js';
 import {movies} from './handlers/movies.js';
+import {rooms} from './handlers/rooms.js';
 import {screenings} from './handlers/screenings.js';
-import {jwt} from 'hono/jwt';
-import {HTTPException} from 'hono/http-exception';
 import {employees} from './handlers/employees.js';
 import {workingShift} from './handlers/working_shift.js';
 import {tickets} from './handlers/tickets.js';
+import {users} from './handlers/users';
 
 const app = new OpenAPIHono();
 
 app.use(prettyJSON());
+app.use(secureHeaders());
+app.get('/', (c) => c.text('Welcome to the API!'));
 
 const jwtMiddleware = jwt({
   secret: process.env.SECRET_KEY || 'secret',
@@ -25,10 +28,6 @@ const jwtMiddleware = jwt({
 app.use((c, next) => {
   const usedRoute = c.req.url.split('/')[3];
   const baseUrl = usedRoute.split('?')[0];
-
-  // Peut surement faire plus propre mais osef ca partira ca
-  // ca restera le temps qu'on setup la verif token sur le reste des routes
-  // mais apres on verifira juste si c'est pas la route /auth
 
   if (baseUrl === 'users' || baseUrl === 'tickets') {
     return jwtMiddleware(c, next);
@@ -68,26 +67,19 @@ const healthCheck = createRoute({
   },
   tags: ['health'],
 });
-
-app.get('/', (c) => c.text('Welcome to the API!'));
 app.openapi(healthCheck, (c) => c.json('OK', 200));
 app.notFound((c) => c.json({error: 'Path not found'}, 404));
-app.onError((err, c) => {
-  console.error(err);
-  if (err instanceof HTTPException) {
-    return err.getResponse();
-  }
+app.route('/auth/', auth);
 
-  if (err.message.includes('body')) {
-    return c.json({error: err.message}, 400);
-  }
-
-  return c.json({error: 'Internal server error'}, 500);
+app.use('/users/*', async (c, next) => {
+  const jwtMiddleware = jwt({
+    secret: process.env.SECRET_KEY || 'secret',
+  });
+  return jwtMiddleware(c, next);
 });
 
 app.route('/', rooms);
 app.route('/', users);
-app.route('/auth/', auth);
 app.route('/', movies);
 app.route('/', categories);
 app.route('/', screenings);
@@ -116,6 +108,14 @@ app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
 });
 
 app.get('/ui', swaggerUI({url: '/doc'}));
+
+app.onError((err, c) => {
+  if (err instanceof HTTPException) {
+    return err.getResponse();
+  }
+  console.error(err);
+  return c.json({error: 'Internal server error'}, 500);
+});
 
 const port = Number(process.env.PORT || 3000);
 console.log(`Server is running on port ${port}`);
