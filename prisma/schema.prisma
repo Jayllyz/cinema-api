@@ -71,6 +71,27 @@ model Screenings {
   @@map(name: "SCREENINGS")
 }
 
+model Employees {
+  id Int @id @default(autoincrement())
+  first_name String
+  last_name String
+  phone_number String
+  working_shifts Working_shifts[]
+
+  @@map(name: "EMPLOYEES")
+}
+
+model Working_shifts {
+  id Int @id @default(autoincrement())
+  start_time DateTime
+  end_time DateTime
+  position String
+  employee_id Int
+  employee Employees @relation(fields: [employee_id], references: [id])
+
+  @@map(name: "WORKING_SHIFTS") 
+}
+
 model Tickets {
   id Int                  @id @default(autoincrement())
   used Boolean            @default(false)
