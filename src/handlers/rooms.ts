@@ -2,12 +2,17 @@ import {OpenAPIHono} from '@hono/zod-openapi';
 import {prisma} from '../lib/database.js';
 import {getRooms, getRoomById, insertRoom, deleteRoom, updateRoom} from '../routes/rooms.js';
 import {zodErrorHook} from '../lib/zodError.js';
+import {checkToken, PayloadValidator, Role} from '../lib/token.js';
 
 export const rooms = new OpenAPIHono({
   defaultHook: zodErrorHook,
 });
 
 rooms.openapi(getRooms, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.STAFF, token);
+
   try {
     const rooms = await prisma.rooms.findMany();
     return c.json(rooms, 200);
@@ -18,6 +23,10 @@ rooms.openapi(getRooms, async (c) => {
 });
 
 rooms.openapi(getRoomById, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.STAFF, token);
+
   const {id} = c.req.valid('param');
   try {
     const room = await prisma.rooms.findUnique({where: {id}});
@@ -31,6 +40,10 @@ rooms.openapi(getRoomById, async (c) => {
 });
 
 rooms.openapi(insertRoom, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {name, description, capacity, type, open, handicap_access} = c.req.valid('json');
   console.log({name, description, capacity, type, open, handicap_access});
   try {
@@ -48,6 +61,10 @@ rooms.openapi(insertRoom, async (c) => {
 });
 
 rooms.openapi(deleteRoom, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {id} = c.req.valid('param');
   try {
     const room = await prisma.rooms.findUnique({where: {id}});
@@ -63,6 +80,10 @@ rooms.openapi(deleteRoom, async (c) => {
 });
 
 rooms.openapi(updateRoom, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {id} = c.req.valid('param');
   const {name, description, capacity, type, open, handicap_access} = c.req.valid('json');
   try {

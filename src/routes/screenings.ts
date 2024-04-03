@@ -21,6 +21,7 @@ export const getScreenings = createRoute({
   path: '/screenings',
   summary: 'Get all screenings',
   description: 'Get all screenings',
+  security: [{Bearer: []}],
   responses: {
     200: {
       description: 'Successful response',
@@ -40,6 +41,7 @@ export const insertScreening = createRoute({
   path: '/screenings',
   summary: 'Insert a screening',
   description: 'Insert a screening',
+  security: [{Bearer: []}],
   request: {
     body: {
       content: {
@@ -76,6 +78,7 @@ export const updateScreening = createRoute({
   path: '/screenings/{id}',
   summary: 'Update a screening',
   description: 'Update a screening',
+  security: [{Bearer: []}],
   request: {
     params: z.object({id: z.coerce.number().min(1)}),
     body: {
@@ -113,6 +116,7 @@ export const getScreeningById = createRoute({
   path: '/screenings/{id}',
   summary: 'Get a screening by id',
   description: 'Get a screening by id',
+  security: [{Bearer: []}],
   request: {
     params: z.object({id: z.coerce.number().min(1)}),
   },
@@ -143,6 +147,7 @@ export const deleteScreening = createRoute({
   path: '/screenings/{id}',
   summary: 'Delete a screening',
   description: 'Delete a screening',
+  security: [{Bearer: []}],
   request: {
     params: z.object({id: z.coerce.number().min(1)}),
   },

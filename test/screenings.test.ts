@@ -1,11 +1,16 @@
 import app from '../src/app.js';
 import {randomString} from './utils.js';
+import {sign} from 'hono/jwt';
+import {Role} from '../src/lib/token';
 
 let createScreeningId = 1;
 let createdRoomId = 1;
 let createdMovieId = 1;
 let createdCategoryId = 1;
 const randomMovie = randomString(5);
+
+const secret = process.env.SECRET_KEY || 'secret';
+const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
 
 const today = new Date();
 const tomorrow = new Date(today);
@@ -19,7 +24,10 @@ describe('Screenings', () => {
   test('POST /categories', async () => {
     const res = await app.request('/categories', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         name: randomString(5),
       }),
@@ -32,7 +40,10 @@ describe('Screenings', () => {
   test('POST /movies', async () => {
     const res = await app.request('/movies', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         title: randomMovie,
         author: 'John Doe',
@@ -52,7 +63,10 @@ describe('Screenings', () => {
   test('POST /rooms', async () => {
     const res = await app.request('/rooms', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         name: 'Room Screenings',
         description: 'Test room',
@@ -71,7 +85,10 @@ describe('Screenings', () => {
   test('POST /screenings', async () => {
     const res = await app.request('/screenings', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         start_time: tomorrow.toISOString(),
         movie_id: createdMovieId,
@@ -86,14 +103,22 @@ describe('Screenings', () => {
   });
 
   test('GET /screenings', async () => {
-    const res = await app.request('/rooms');
+    const res = await app.request('/rooms', {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
     expect(res.status).toBe(200);
     const screenings = await res.json();
     expect(screenings).toBeInstanceOf(Array);
   });
 
   test('GET /screenings/{id}', async () => {
-    const res = await app.request(`/screenings/${createScreeningId}`);
+    const res = await app.request(`/screenings/${createScreeningId}`, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
     expect(res.status).toBe(200);
     const screening = await res.json();
     expect(screening).toMatchObject({id: createScreeningId});
@@ -105,7 +130,10 @@ describe('Screenings', () => {
   test('PATCH /screenings/{id}', async () => {
     const res = await app.request(`/screenings/${createScreeningId}`, {
       method: 'PATCH',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         start_time: patchedDate,
       }),
@@ -118,6 +146,9 @@ describe('Screenings', () => {
   test('DELETE /screenings/{id}', async () => {
     const res = await app.request(`/screenings/${createScreeningId}`, {
       method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
     });
     expect(res.status).toBe(200);
   });
@@ -125,6 +156,9 @@ describe('Screenings', () => {
   test('DELETE /movies/{id}', async () => {
     const res = await app.request(`/movies/${createdMovieId}`, {
       method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
     });
     expect(res.status).toBe(200);
   });
@@ -132,6 +166,9 @@ describe('Screenings', () => {
   test('DELETE /rooms/{id}', async () => {
     const res = await app.request(`/rooms/${createdRoomId}`, {
       method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
     });
     expect(res.status).toBe(200);
   });

@@ -9,6 +9,7 @@ import {
   updateWorkingShift,
 } from '../routes/working_shifts.js';
 import {isAfterHour, isBeforeHour, isSameDay} from '../lib/date.js';
+import {checkToken, PayloadValidator, Role} from '../lib/token.js';
 
 export const workingShift = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -23,6 +24,10 @@ const selectShiftWithEmployee = {
 };
 
 workingShift.openapi(getWorkingShifts, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.STAFF, token);
+
   try {
     const working_shift = await prisma.working_shifts.findMany({
       select: selectShiftWithEmployee,
@@ -35,6 +40,10 @@ workingShift.openapi(getWorkingShifts, async (c) => {
 });
 
 workingShift.openapi(getWorkingShiftById, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.STAFF, token);
+
   const {id} = c.req.valid('param');
   try {
     const workingShift = await prisma.working_shifts.findUnique({
@@ -51,6 +60,10 @@ workingShift.openapi(getWorkingShiftById, async (c) => {
 });
 
 workingShift.openapi(insertWorkingShift, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {start_time, end_time, position, employee_id} = c.req.valid('json');
   try {
     try {
@@ -83,6 +96,10 @@ workingShift.openapi(insertWorkingShift, async (c) => {
 });
 
 workingShift.openapi(deleteWorkingShift, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {id} = c.req.valid('param');
   try {
     const workingShift = await prisma.working_shifts.findUnique({where: {id}});
@@ -98,6 +115,10 @@ workingShift.openapi(deleteWorkingShift, async (c) => {
 });
 
 workingShift.openapi(updateWorkingShift, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {id} = c.req.valid('param');
   const {start_time, end_time, position, employee_id} = c.req.valid('json');
   try {

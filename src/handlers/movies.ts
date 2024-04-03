@@ -2,12 +2,17 @@ import {OpenAPIHono} from '@hono/zod-openapi';
 import {prisma} from '../lib/database.js';
 import {getMovies, getMovieById, insertMovie, deleteMovie, updateMovie} from '../routes/movies.js';
 import {zodErrorHook} from '../lib/zodError.js';
+import {checkToken, PayloadValidator, Role} from '../lib/token.js';
 
 export const movies = new OpenAPIHono({
   defaultHook: zodErrorHook,
 });
 
 movies.openapi(getMovies, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.USER, token);
+
   const {title, author, lt, gt, status, category_id} = c.req.valid('query');
   try {
     const movies = await prisma.movies.findMany({
@@ -37,6 +42,10 @@ movies.openapi(getMovies, async (c) => {
 });
 
 movies.openapi(getMovieById, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.USER, token);
+
   const {id} = c.req.valid('param');
   try {
     const movie = await prisma.movies.findUnique({
@@ -62,6 +71,10 @@ movies.openapi(getMovieById, async (c) => {
 });
 
 movies.openapi(insertMovie, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {title, author, description, release_date, duration, status, category_id} =
     c.req.valid('json');
   try {
@@ -92,6 +105,10 @@ movies.openapi(insertMovie, async (c) => {
 });
 
 movies.openapi(deleteMovie, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {id} = c.req.valid('param');
   try {
     const movie = await prisma.movies.findUnique({where: {id}});
@@ -106,6 +123,10 @@ movies.openapi(deleteMovie, async (c) => {
 });
 
 movies.openapi(updateMovie, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {id} = c.req.valid('param');
   const {title, description, duration, status, category_id, author, release_date} =
     c.req.valid('json');

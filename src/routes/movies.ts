@@ -12,6 +12,7 @@ export const getMovies = createRoute({
   path: '/movies',
   summary: 'Get all movies',
   description: 'Get all movies',
+  security: [{Bearer: []}],
   request: {
     query: z.object({
       title: z.string().optional(),
@@ -48,6 +49,7 @@ export const getMovieById = createRoute({
   path: '/movies/{id}',
   summary: 'Get a movie by id',
   description: 'Get a movie by id',
+  security: [{Bearer: []}],
   request: {
     params: idValidator,
   },
@@ -77,6 +79,7 @@ export const insertMovie = createRoute({
   path: '/movies',
   summary: 'Insert a movie',
   description: 'Insert a movie',
+  security: [{Bearer: []}],
   request: {
     body: {
       content: {
@@ -112,6 +115,7 @@ export const updateMovie = createRoute({
   path: '/movies/{id}',
   summary: 'Update a movie',
   description: 'Update a movie',
+  security: [{Bearer: []}],
   request: {
     params: idValidator,
     body: {
@@ -156,6 +160,7 @@ export const deleteMovie = createRoute({
   path: '/movies/{id}',
   summary: 'Delete a movie',
   description: 'Delete a movie',
+  security: [{Bearer: []}],
   request: {
     params: idValidator,
   },

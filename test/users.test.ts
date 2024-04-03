@@ -5,7 +5,7 @@ import {Role} from '../src/lib/token';
 
 const randomUser = randomString(10);
 const secret = process.env.SECRET_KEY || 'secret';
-const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
+let adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
 let toDelete: number;
 let trackedMoney: number;
 
@@ -27,6 +27,7 @@ describe('Users', () => {
     expect(res.status).toBe(201);
     const user = await res.json();
     toDelete = user.id;
+    adminToken = await sign({id: user.id, role: Role.ADMIN}, secret);
     expect(user).toMatchObject({first_name: randomUser});
   });
 

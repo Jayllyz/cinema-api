@@ -11,6 +11,7 @@ export const insertWorkingShift = createRoute({
   path: '/working_shifts',
   summary: 'Insert an working shift',
   description: 'Insert an working shift',
+  security: [{Bearer: []}],
   request: {
     body: {
       content: {
@@ -54,6 +55,7 @@ export const getWorkingShifts = createRoute({
   path: '/working_shifts',
   summary: 'Get all working shift',
   description: 'Get all working shift',
+  security: [{Bearer: []}],
   responses: {
     200: {
       description: 'Successful response',
@@ -80,6 +82,7 @@ export const getWorkingShiftById = createRoute({
   path: '/working_shifts/{id}',
   summary: 'Get a working shift by id',
   description: 'Get a working shift by id',
+  security: [{Bearer: []}],
   request: {
     params: z.object({id: z.coerce.number().min(1)}),
   },
@@ -117,6 +120,7 @@ export const deleteWorkingShift = createRoute({
   path: '/working_shifts/{id}',
   summary: 'Delete a working shift',
   description: 'Delete a working shift',
+  security: [{Bearer: []}],
   request: {
     params: z.object({id: z.coerce.number().min(1)}),
   },
@@ -154,6 +158,7 @@ export const updateWorkingShift = createRoute({
   path: '/working_shifts/{id}',
   summary: 'Update a working shift',
   description: 'Update a working shift',
+  security: [{Bearer: []}],
   request: {
     params: z.object({id: z.coerce.number().min(1)}),
     body: {

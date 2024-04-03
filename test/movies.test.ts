@@ -1,15 +1,23 @@
 import app from '../src/app.js';
 import {randomString} from './utils.js';
+import {sign} from 'hono/jwt';
+import {Role} from '../src/lib/token';
 
 let createdMovieId = 1;
 let createdCategoryId = 1;
 const randomMovie = randomString(5);
 
+const secret = process.env.SECRET_KEY || 'secret';
+const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
+
 describe('Movies', () => {
   test('POST /categories', async () => {
     const res = await app.request('/categories', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         name: randomString(5),
       }),
@@ -22,7 +30,10 @@ describe('Movies', () => {
   test('POST /movies', async () => {
     const res = await app.request('/movies', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         title: randomMovie,
         author: 'John Doe',
@@ -40,14 +51,22 @@ describe('Movies', () => {
   });
 
   test('GET /movies', async () => {
-    const res = await app.request('/movies');
+    const res = await app.request('/movies', {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
     expect(res.status).toBe(200);
     const movies = await res.json();
     expect(movies).toBeInstanceOf(Array);
   });
 
   test('GET /movies/{id}', async () => {
-    const res = await app.request(`/movies/${createdMovieId}`);
+    const res = await app.request(`/movies/${createdMovieId}`, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
     expect(res.status).toBe(200);
     const movie = await res.json();
     expect(movie).toMatchObject({title: randomMovie});
@@ -57,7 +76,10 @@ describe('Movies', () => {
     const updatedMovie = randomString(5);
     const res = await app.request(`/movies/${createdMovieId}`, {
       method: 'PATCH',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         title: updatedMovie,
         duration: 130,
@@ -73,6 +95,9 @@ describe('Movies', () => {
   test('DELETE /movies/{id}', async () => {
     const res = await app.request(`/movies/${createdMovieId}`, {
       method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
     });
     expect(res.status).toBe(200);
   });

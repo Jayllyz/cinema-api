@@ -1,7 +1,11 @@
 import app from '../src/app.js';
+import {sign} from 'hono/jwt';
+import {Role} from '../src/lib/token';
 
 let createdEmployeeId: number;
 let createdWorkingShiftId: number;
+const secret = process.env.SECRET_KEY || 'secret';
+const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
 
 const today = new Date();
 const tomorrow = new Date(today);
@@ -15,7 +19,10 @@ describe('Employees', () => {
   test('POST /employees', async () => {
     const res = await app.request('/employees', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         first_name: 'John',
         last_name: 'Doe',
@@ -28,14 +35,22 @@ describe('Employees', () => {
   });
 
   test('GET /employees', async () => {
-    const res = await app.request('/movies');
+    const res = await app.request('/movies', {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
     expect(res.status).toBe(200);
     const employees = await res.json();
     expect(employees).toBeInstanceOf(Array);
   });
 
   test('GET /employees/{id}', async () => {
-    const res = await app.request(`/employees/${createdEmployeeId}`);
+    const res = await app.request(`/employees/${createdEmployeeId}`, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
     expect(res.status).toBe(200);
     const employee = await res.json();
     expect(employee).toMatchObject({last_name: 'Doe', first_name: 'John'});
@@ -45,7 +60,10 @@ describe('Employees', () => {
     const updateEmployee = 'johnny';
     const res = await app.request(`/employees/${createdEmployeeId}`, {
       method: 'PATCH',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         first_name: updateEmployee,
       }),
@@ -64,7 +82,10 @@ describe('Employees', () => {
 
     const res = await app.request('/working_shifts', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         start_time: tomorrow.toISOString(),
         end_time: end_time.toISOString(),
@@ -78,14 +99,22 @@ describe('Employees', () => {
   });
 
   test('GET /working_shifts', async () => {
-    const res = await app.request('/working_shifts');
+    const res = await app.request('/working_shifts', {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
     expect(res.status).toBe(200);
     const workingShifts = await res.json();
     expect(workingShifts).toBeInstanceOf(Array);
   });
 
   test('GET /working_shifts/{id}', async () => {
-    const res = await app.request(`/working_shifts/${createdWorkingShiftId}`);
+    const res = await app.request(`/working_shifts/${createdWorkingShiftId}`, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
     expect(res.status).toBe(200);
     const workingShift = await res.json();
     expect(workingShift).toMatchObject({id: createdWorkingShiftId});
@@ -95,7 +124,10 @@ describe('Employees', () => {
     const updateWorkingShift = 'reception';
     const res = await app.request(`/working_shifts/${createdWorkingShiftId}`, {
       method: 'PATCH',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         position: updateWorkingShift,
       }),
@@ -108,6 +140,9 @@ describe('Employees', () => {
   test('DELETE /working_shifts/{id}', async () => {
     const res = await app.request(`/working_shifts/${createdWorkingShiftId}`, {
       method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
     });
     expect(res.status).toBe(200);
   });
@@ -115,6 +150,9 @@ describe('Employees', () => {
   test('DELETE /employees/{id}', async () => {
     const res = await app.request(`/employees/${createdEmployeeId}`, {
       method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
     });
     expect(res.status).toBe(200);
   });

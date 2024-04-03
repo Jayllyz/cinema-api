@@ -7,6 +7,7 @@ export const getCategories = createRoute({
   path: '/categories',
   summary: 'Get all categories',
   description: 'Get all categories',
+  security: [{Bearer: []}],
   responses: {
     200: {
       description: 'Successful response',
@@ -33,6 +34,7 @@ export const getCategoryById = createRoute({
   path: '/categories/{id}',
   summary: 'Get a category by id',
   description: 'Get a category by id',
+  security: [{Bearer: []}],
   request: {
     params: idValidator,
   },
@@ -62,6 +64,7 @@ export const insertCategory = createRoute({
   path: '/categories',
   summary: 'Insert a category',
   description: 'Insert a category',
+  security: [{Bearer: []}],
   request: {
     body: {
       content: {
@@ -105,6 +108,7 @@ export const deleteCategory = createRoute({
   path: '/categories/{id}',
   summary: 'Delete a category',
   description: 'Delete a category',
+  security: [{Bearer: []}],
   request: {
     params: idValidator,
   },

@@ -8,12 +8,17 @@ import {
   insertEmployee,
   updateEmployee,
 } from '../routes/employees.js';
+import {checkToken, PayloadValidator, Role} from '../lib/token.js';
 
 export const employees = new OpenAPIHono({
   defaultHook: zodErrorHook,
 });
 
 employees.openapi(getEmployees, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.STAFF, token);
+
   try {
     const employees = await prisma.employees.findMany();
     return c.json(employees, 200);
@@ -24,6 +29,10 @@ employees.openapi(getEmployees, async (c) => {
 });
 
 employees.openapi(getEmployeeById, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.STAFF, token);
+
   const {id} = c.req.valid('param');
   try {
     const employee = await prisma.employees.findUnique({where: {id}});
@@ -37,6 +46,10 @@ employees.openapi(getEmployeeById, async (c) => {
 });
 
 employees.openapi(insertEmployee, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {first_name, last_name, phone_number} = c.req.valid('json');
   try {
     const employee = await prisma.employees.create({
@@ -50,6 +63,10 @@ employees.openapi(insertEmployee, async (c) => {
 });
 
 employees.openapi(deleteEmployee, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {id} = c.req.valid('param');
   try {
     const employees = await prisma.employees.findUnique({where: {id}});
@@ -65,6 +82,10 @@ employees.openapi(deleteEmployee, async (c) => {
 });
 
 employees.openapi(updateEmployee, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {id} = c.req.valid('param');
   const {first_name, last_name, phone_number} = c.req.valid('json');
   try {
