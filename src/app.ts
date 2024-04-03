@@ -35,7 +35,7 @@ app.use((c, next) => {
   return next();
 });
 
-app.use(async (c, next) => {
+app.use((c, next) => {
   if (c.req.method === 'POST' || c.req.method === 'PUT' || c.req.method === 'PATCH') {
     const contentType = c.req.header('content-type');
     const url = c.req.url;
