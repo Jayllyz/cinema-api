@@ -61,7 +61,7 @@ const jwtMiddleware = jwt({
   secret: process.env.SECRET_KEY || 'secret',
 });
 
-app.use((c, next) => {
+app.use('*', (c, next) => {
   const usedRoute = c.req.url.split('/')[3];
   const baseUrl = usedRoute.split('?')[0];
 
