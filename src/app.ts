@@ -21,7 +21,21 @@ app.use(prettyJSON());
 app.use(secureHeaders());
 app.get('/', (c) => c.text('Welcome to the API!'));
 
-app.use('*', (c, next) => {
+const jwtMiddleware = jwt({
+  secret: process.env.SECRET_KEY || 'secret',
+});
+
+app.use((c, next) => {
+  const usedRoute = c.req.url.split('/')[3];
+  const baseUrl = usedRoute.split('?')[0];
+
+  if (baseUrl !== 'auth') {
+    return jwtMiddleware(c, next);
+  }
+  return next();
+});
+
+app.use(async (c, next) => {
   if (c.req.method === 'POST' || c.req.method === 'PUT' || c.req.method === 'PATCH') {
     const contentType = c.req.header('content-type');
     const url = c.req.url;
@@ -56,20 +70,6 @@ const healthCheck = createRoute({
 app.openapi(healthCheck, (c) => c.json('OK', 200));
 app.notFound((c) => c.json({error: 'Path not found'}, 404));
 app.route('/auth/', auth);
-
-const jwtMiddleware = jwt({
-  secret: process.env.SECRET_KEY || 'secret',
-});
-
-app.use('*', (c, next) => {
-  const usedRoute = c.req.url.split('/')[3];
-  const baseUrl = usedRoute.split('?')[0];
-
-  if (baseUrl !== 'auth') {
-    return jwtMiddleware(c, next);
-  }
-  return next();
-});
 
 app.route('/', rooms);
 app.route('/', users);
