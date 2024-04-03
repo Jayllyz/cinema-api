@@ -1,15 +1,23 @@
 import type {Rooms} from '@prisma/client';
 import app from '../src/app.js';
+import {sign} from 'hono/jwt';
+import {Role} from '../src/lib/token';
 
 const numRooms = 10;
 let firstRoomId: number;
+
+const secret = process.env.SECRET_KEY || 'secret';
+const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
 
 describe('Rooms tests', () => {
   for (let i = 0; i < numRooms; i++) {
     test('creates a new room', async () => {
       const res = await app.request('/rooms', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${adminToken}`,
+        },
         body: JSON.stringify({
           name: `Room ${i}`,
           description: 'Test room',
@@ -35,7 +43,10 @@ describe('Rooms tests', () => {
     test('fails with existing room number', async () => {
       const res = await app.request('/rooms', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${adminToken}`,
+        },
         body: JSON.stringify({
           name: `Room ${i}`,
           description: 'Test room',
@@ -50,7 +61,11 @@ describe('Rooms tests', () => {
   }
 
   test('returns a list of rooms', async () => {
-    const res = await app.request('/rooms');
+    const res = await app.request('/rooms', {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
     expect(res.status).toBe(200);
     const rooms: Rooms[] = await res.json();
     expect(rooms).toBeInstanceOf(Array);
@@ -58,7 +73,11 @@ describe('Rooms tests', () => {
   });
 
   test('returns a room', async () => {
-    const res = await app.request(`/rooms/${firstRoomId}`);
+    const res = await app.request(`/rooms/${firstRoomId}`, {
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
     expect(res.status).toBe(200);
     const room: Rooms = await res.json();
     expect(room).toMatchObject({name: `Room 0`});
@@ -67,7 +86,10 @@ describe('Rooms tests', () => {
   test('updates a room', async () => {
     const res = await app.request(`/rooms/${firstRoomId}`, {
       method: 'PATCH',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         name: `Room 0`,
         description: 'Test room',
@@ -93,7 +115,10 @@ describe('Rooms tests', () => {
     const wrongRoomId = firstRoomId + numRooms + 10;
     const res = await app.request(`/rooms/${wrongRoomId}`, {
       method: 'PATCH',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
       body: JSON.stringify({
         name: `Room ${wrongRoomId}`,
         description: 'Test room 2',
@@ -111,6 +136,9 @@ describe('Rooms tests', () => {
     test('deletes a room', async () => {
       const res = await app.request(`/rooms/${i}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${adminToken}`,
+        },
       });
       expect(res.status).toBe(200);
     });
@@ -118,6 +146,9 @@ describe('Rooms tests', () => {
     test('fails with non-existing room id', async () => {
       const res = await app.request(`/rooms/${i}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${adminToken}`,
+        },
       });
       expect(res.status).toBe(404);
     });
