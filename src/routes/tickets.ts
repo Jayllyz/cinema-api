@@ -145,6 +145,32 @@ export const buyTicket = createRoute({
   tags: ['tickets'],
 });
 
+export const refundTicket = createRoute({
+  method: 'post',
+  path: '/tickets/refund/{id}',
+  summary: 'Refund a ticket',
+  description: 'Refund a ticket',
+  security: [{Bearer: []}],
+  request: {
+    params: z.object({id: z.coerce.number().min(1)}),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+    },
+    400: {
+      description: 'Bad request',
+      content: {
+        'application/json': {
+          schema: z.object({error: z.string()}),
+        },
+      },
+    },
+    500: serverErrorSchema,
+  },
+  tags: ['tickets'],
+});
+
 export const updateTicket = createRoute({
   method: 'patch',
   path: '/tickets/{id}',
