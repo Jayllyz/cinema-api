@@ -32,7 +32,7 @@ export async function getOverlapingShift(
   end_time: Date,
   position: string
 ): Promise<Working_shifts | null> {
-  return prisma.working_shifts.findFirst({
+  return await prisma.working_shifts.findFirst({
     where: {
       position: position,
       OR: [
