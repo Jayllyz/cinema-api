@@ -29,7 +29,7 @@ app.use((c, next) => {
   const usedRoute = c.req.url.split('/')[3];
   const baseUrl = usedRoute.split('?')[0];
 
-  if (baseUrl === 'users' || baseUrl === 'tickets') {
+  if (baseUrl !== 'auth') {
     return jwtMiddleware(c, next);
   }
   return next();

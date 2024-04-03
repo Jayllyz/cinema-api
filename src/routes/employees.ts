@@ -12,6 +12,7 @@ export const insertEmployee = createRoute({
   path: '/employees',
   summary: 'Insert an employee',
   description: 'Insert an employee',
+  security: [{Bearer: []}],
   request: {
     body: {
       content: {
@@ -55,6 +56,7 @@ export const getEmployees = createRoute({
   path: '/employees',
   summary: 'Get all employee',
   description: 'Get all employee',
+  security: [{Bearer: []}],
   responses: {
     200: {
       description: 'Successful response',
@@ -81,6 +83,7 @@ export const getEmployeeById = createRoute({
   path: '/employees/{id}',
   summary: 'Get an employee by id',
   description: 'Get an employee by id',
+  security: [{Bearer: []}],
   request: {
     params: z.object({id: z.coerce.number().min(1)}),
   },
@@ -118,6 +121,7 @@ export const deleteEmployee = createRoute({
   path: '/employees/{id}',
   summary: 'Delete an employee',
   description: 'Delete an employee',
+  security: [{Bearer: []}],
   request: {
     params: z.object({id: z.coerce.number().min(1)}),
   },
@@ -155,6 +159,7 @@ export const updateEmployee = createRoute({
   path: '/employees/{id}',
   summary: 'Update a employee',
   description: 'Update a employee',
+  security: [{Bearer: []}],
   request: {
     params: z.object({id: z.coerce.number().min(1)}),
     body: {

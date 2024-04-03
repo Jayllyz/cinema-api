@@ -12,6 +12,7 @@ export const getRooms = createRoute({
   path: '/rooms',
   summary: 'Get all rooms',
   description: 'Get all rooms',
+  security: [{Bearer: []}],
   responses: {
     200: {
       description: 'Successful response',
@@ -38,6 +39,7 @@ export const getRoomById = createRoute({
   path: '/rooms/{id}',
   summary: 'Get a room by id',
   description: 'Get a room by id',
+  security: [{Bearer: []}],
   request: {
     params: idValidator,
   },
@@ -75,6 +77,7 @@ export const insertRoom = createRoute({
   path: '/rooms',
   summary: 'Insert a room',
   description: 'Insert a room',
+  security: [{Bearer: []}],
   request: {
     body: {
       content: {
@@ -118,6 +121,7 @@ export const deleteRoom = createRoute({
   path: '/rooms/{id}',
   summary: 'Delete a room',
   description: 'Delete a room',
+  security: [{Bearer: []}],
   request: {
     params: idValidator,
   },
@@ -155,6 +159,7 @@ export const updateRoom = createRoute({
   path: '/rooms/{id}',
   summary: 'Update a room',
   description: 'Update a room',
+  security: [{Bearer: []}],
   request: {
     params: idValidator,
     body: {

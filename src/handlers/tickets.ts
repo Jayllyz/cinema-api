@@ -9,9 +9,8 @@ import {
   useTicket,
   deleteTicket,
 } from '../routes/tickets';
-import {checkToken, PayloadValidator} from '../lib/token';
+import {checkToken, PayloadValidator, Role} from '../lib/token';
 import {zodErrorHook} from '../lib/zodError';
-import {Role} from '../lib/token';
 
 export const tickets = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -63,7 +62,7 @@ tickets.openapi(getTickets, async (c) => {
   try {
     const token = c.req.header('authorization')?.split(' ')[1];
     const payload: PayloadValidator = c.get('jwtPayload');
-    await checkToken(payload, Role.ADMIN, token);
+    await checkToken(payload, Role.STAFF, token);
 
     const {used, price_higher, price_lesser, user_id, screening_id, category, room} =
       c.req.valid('query');
@@ -99,7 +98,7 @@ tickets.openapi(getTicketById, async (c) => {
   try {
     const token = c.req.header('authorization')?.split(' ')[1];
     const payload: PayloadValidator = c.get('jwtPayload');
-    await checkToken(payload, Role.ADMIN, token);
+    await checkToken(payload, Role.STAFF, token);
 
     const {id} = c.req.valid('param');
 
@@ -176,7 +175,7 @@ tickets.openapi(buyTicket, async (c) => {
   try {
     const token = c.req.header('authorization')?.split(' ')[1];
     const payload: PayloadValidator = c.get('jwtPayload');
-    await checkToken(payload, Role.ADMIN, token);
+    await checkToken(payload, Role.USER, token);
 
     const {id} = c.req.valid('param');
 
@@ -285,7 +284,7 @@ tickets.openapi(useTicket, async (c) => {
   try {
     const token = c.req.header('authorization')?.split(' ')[1];
     const payload: PayloadValidator = c.get('jwtPayload');
-    await checkToken(payload, Role.ADMIN, token);
+    await checkToken(payload, Role.USER, token);
 
     const {id} = c.req.valid('param');
 

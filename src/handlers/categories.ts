@@ -7,12 +7,17 @@ import {
   deleteCategory,
 } from '../routes/categories.js';
 import {zodErrorHook} from '../lib/zodError.js';
+import {checkToken, PayloadValidator, Role} from '../lib/token.js';
 
 export const categories = new OpenAPIHono({
   defaultHook: zodErrorHook,
 });
 
 categories.openapi(getCategories, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.USER, token);
+
   try {
     const categories = await prisma.categories.findMany();
     return c.json(categories, 200);
@@ -23,6 +28,10 @@ categories.openapi(getCategories, async (c) => {
 });
 
 categories.openapi(getCategoryById, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.USER, token);
+
   const {id} = c.req.valid('param');
   try {
     const category = await prisma.categories.findUnique({where: {id}});
@@ -36,6 +45,10 @@ categories.openapi(getCategoryById, async (c) => {
 });
 
 categories.openapi(insertCategory, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {name} = c.req.valid('json');
   try {
     const exist = await prisma.categories.findUnique({where: {name}});
@@ -51,6 +64,10 @@ categories.openapi(insertCategory, async (c) => {
 });
 
 categories.openapi(deleteCategory, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
   const {id} = c.req.valid('param');
   try {
     const category = await prisma.categories.findUnique({where: {id}});

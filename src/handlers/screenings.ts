@@ -9,12 +9,17 @@ import {
 } from '../routes/screenings.js';
 import {isAfterHour, isBeforeHour} from '../lib/date.js';
 import {zodErrorHook} from '../lib/zodError.js';
+import {checkToken, PayloadValidator, Role} from '../lib/token.js';
 
 export const screenings = new OpenAPIHono({
   defaultHook: zodErrorHook,
 });
 
 screenings.openapi(getScreenings, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.USER, token);
+
   try {
     const screenings = await prisma.screenings.findMany({
       select: {
@@ -46,6 +51,10 @@ screenings.openapi(getScreenings, async (c) => {
 });
 
 screenings.openapi(insertScreening, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.STAFF, token);
+
   const {start_time, movie_id, room_id, ticket_price} = c.req.valid('json');
 
   try {
@@ -127,6 +136,10 @@ screenings.openapi(insertScreening, async (c) => {
 });
 
 screenings.openapi(updateScreening, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.STAFF, token);
+
   const {id} = c.req.valid('param');
   const {movie_id, start_time, room_id} = c.req.valid('json');
 
@@ -214,6 +227,10 @@ screenings.openapi(updateScreening, async (c) => {
 });
 
 screenings.openapi(deleteScreening, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.STAFF, token);
+
   const {id} = c.req.valid('param');
   try {
     const screening = await prisma.screenings.findUnique({where: {id}});
@@ -230,6 +247,10 @@ screenings.openapi(deleteScreening, async (c) => {
 });
 
 screenings.openapi(getScreeningById, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.USER, token);
+
   const {id} = c.req.valid('param');
   try {
     const screening = await prisma.screenings.findUnique({
