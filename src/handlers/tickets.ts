@@ -229,6 +229,7 @@ tickets.openapi(buyTicket, async (c) => {
       },
       data: {
         user_id: payload.id,
+        acquired_at: new Date(),
       },
       ...ticketSelectOptions,
     });
@@ -273,6 +274,7 @@ tickets.openapi(refundTicket, async (c) => {
       },
       data: {
         user_id: null,
+        acquired_at: null,
       },
     });
 
