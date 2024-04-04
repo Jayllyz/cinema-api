@@ -28,8 +28,6 @@ export async function checkToken(
     });
 
     if (!user) throw new HTTPException(401, {message: 'Unauthorized', cause: 'Invalid token'});
-    console.log(user);
-    console.log(authorization);
 
     if (user.role >= authorization) return;
 
