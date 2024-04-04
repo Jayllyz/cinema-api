@@ -5,6 +5,7 @@ import {
   getTicketById,
   insertTicket,
   buyTicket,
+  refundTicket,
   updateTicket,
   useTicket,
   deleteTicket,
@@ -233,6 +234,60 @@ tickets.openapi(buyTicket, async (c) => {
     });
 
     return c.json(updatedTicket, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
+  }
+});
+
+tickets.openapi(refundTicket, async (c) => {
+  try {
+    const token = c.req.header('authorization')?.split(' ')[1];
+    const payload: PayloadValidator = c.get('jwtPayload');
+    await checkToken(payload, Role.USER, token);
+
+    const {id} = c.req.valid('param');
+
+    const ticket = await prisma.tickets.findUnique({
+      where: {
+        id,
+      },
+      ...ticketSelectOptions,
+    });
+
+    if (!ticket) {
+      return c.json({error: 'Ticket not found'}, 404);
+    }
+
+    if (!ticket.user || ticket.user.id !== payload.id) {
+      return c.json({error: 'Ticket does not belong to the user'}, 400);
+    }
+
+    if (ticket.used) {
+      return c.json({error: 'Ticket already used'}, 400);
+    }
+
+    await prisma.tickets.update({
+      where: {
+        id,
+      },
+      data: {
+        user_id: null,
+      },
+    });
+
+    await prisma.users.update({
+      where: {
+        id: payload.id,
+      },
+      data: {
+        money: {
+          increment: ticket.price,
+        },
+      },
+    });
+
+    return c.json({message: 'Refund successful'}, 200);
   } catch (error) {
     console.error(error);
     return c.json({error: error}, 500);

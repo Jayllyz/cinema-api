@@ -83,9 +83,9 @@ app.route('/', users);
 app.route('/', movies);
 app.route('/', categories);
 app.route('/', screenings);
+app.route('/', tickets);
 app.route('/', employees);
 app.route('/', workingShift);
-app.route('/', tickets);
 
 app.doc('/doc', (c) => ({
   openapi: '3.0.0',
