@@ -21,15 +21,16 @@ model Rooms {
 }
 
 model Users {
-  id         Int       @id @default(autoincrement())
-  first_name String
-  last_name  String
-  email      String    @unique
-  password   String
-  money      Int       @default(0)
-  role       Int       @default(1)
-  token      String    @default("")
-  tickets    Tickets[]
+  id            Int       @id @default(autoincrement())
+  first_name    String
+  last_name     String
+  email         String    @unique
+  password      String
+  money         Int       @default(0)
+  role          Int       @default(1)
+  token         String    @default("")
+  tickets       Tickets[]
+  superTickets  SuperTickets[]
 
   @@map(name: "USERS")
 }
@@ -67,6 +68,7 @@ model Screenings {
   room_id                    Int
   room                       Rooms     @relation(fields: [room_id], references: [id])
   tickets                    Tickets[]
+  superTicketsSessions       SuperTicketsSessions[]
 
   @@map(name: "SCREENINGS")
 }
@@ -103,4 +105,25 @@ model Tickets {
   acquired_at   DateTime?
 
   @@map(name: "TICKETS")
+}
+
+model SuperTickets{
+  id          Int                     @id @default(autoincrement())
+  price       Int
+  uses        Int
+  user_id     Int?
+  user        Users?                  @relation(fields: [user_id], references: [id])
+  sessions    SuperTicketsSessions[]
+
+  @@map(name: "SUPER_TICKETS")
+}
+
+model SuperTicketsSessions{
+  super_ticket_id   Int
+  super_ticket      SuperTickets  @relation(fields: [super_ticket_id], references: [id])
+  screening_id      Int
+  screening         Screenings    @relation(fields: [screening_id], references: [id])
+  
+  @@id([super_ticket_id, screening_id])
+  @@map(name: "SUPER_TICKETS_SESSIONS")
 }

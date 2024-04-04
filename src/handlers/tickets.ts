@@ -65,26 +65,32 @@ tickets.openapi(getTickets, async (c) => {
     const payload: PayloadValidator = c.get('jwtPayload');
     await checkToken(payload, Role.STAFF, token);
 
-    const {used, price_higher, price_lesser, user_id, screening_id, category, room} =
+    const {used, price_higher, price_lesser, user_id, screening_id, category, room, available} =
       c.req.valid('query');
 
-    const tickets = await prisma.tickets.findMany({
-      where: {
-        used: used,
-        price: {gte: price_lesser, lte: price_higher},
-        user_id: user_id,
-        screening_id: screening_id,
-        screening: {
-          movie: {
-            category: {
-              name: category,
-            },
-          },
-          room: {
-            name: room,
+    const whereCondition = {
+      used: used,
+      price: {gte: price_lesser, lte: price_higher},
+      user_id: user_id,
+      screening_id: screening_id,
+      screening: {
+        movie: {
+          category: {
+            name: category,
           },
         },
+        room: {
+          name: room,
+        },
       },
+    };
+
+    if (available) {
+      whereCondition.user_id = null;
+    }
+
+    const tickets = await prisma.tickets.findMany({
+      where: whereCondition,
       ...ticketSelectOptions,
     });
 

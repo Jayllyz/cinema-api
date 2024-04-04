@@ -12,7 +12,8 @@ import {rooms} from './handlers/rooms.js';
 import {screenings} from './handlers/screenings.js';
 import {employees} from './handlers/employees.js';
 import {workingShift} from './handlers/working_shift.js';
-import {tickets} from './handlers/tickets.js';
+import {tickets} from './handlers/tickets';
+import {superTickets} from './handlers/super_tickets';
 import {users} from './handlers/users';
 
 const app = new OpenAPIHono();
@@ -87,6 +88,7 @@ app.route('/', movies);
 app.route('/', categories);
 app.route('/', screenings);
 app.route('/', tickets);
+app.route('/', superTickets);
 app.route('/', employees);
 app.route('/', workingShift);
 
