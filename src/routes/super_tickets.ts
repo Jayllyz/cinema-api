@@ -127,13 +127,20 @@ export const buySuperTicket = createRoute({
 });
 
 export const useSuperTicket = createRoute({
-  method: 'post',
+  method: 'patch',
   path: '/super_tickets/use/{id}',
   summary: 'Use super ticket',
   description: 'Use super ticket',
   security: [{Bearer: []}],
   request: {
     params: z.object({id: z.coerce.number().min(1)}),
+    body: {
+      content: {
+        'application/json': {
+          schema: z.object({screening_id: z.coerce.number().min(1)}),
+        },
+      },
+    },
   },
   responses: {
     200: {
