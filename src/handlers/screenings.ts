@@ -10,6 +10,7 @@ import {
 import {isAfterHour, isBeforeHour} from '../lib/date.js';
 import {zodErrorHook} from '../lib/zodError.js';
 import {checkToken, PayloadValidator, Role} from '../lib/token.js';
+import {refundTicketsScreening} from '../lib/refund.js';
 
 export const screenings = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -236,6 +237,7 @@ screenings.openapi(deleteScreening, async (c) => {
     const screening = await prisma.screenings.findUnique({where: {id}});
     if (!screening) return c.json({error: `screening with id ${id} not found`}, 404);
 
+    await refundTicketsScreening(id);
     await prisma.tickets.deleteMany({where: {screening_id: Number(id)}});
     await prisma.screenings.delete({where: {id: Number(id)}});
 

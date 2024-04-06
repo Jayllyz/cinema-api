@@ -3,6 +3,7 @@ import {prisma} from '../lib/database.js';
 import {getMovies, getMovieById, insertMovie, deleteMovie, updateMovie} from '../routes/movies.js';
 import {zodErrorHook} from '../lib/zodError.js';
 import {checkToken, PayloadValidator, Role} from '../lib/token.js';
+import {refundTicketsMovie} from '../lib/refund.js';
 
 export const movies = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -114,6 +115,7 @@ movies.openapi(deleteMovie, async (c) => {
     const movie = await prisma.movies.findUnique({where: {id}});
     if (!movie) return c.json({error: `Movie with id ${id} not found`}, 404);
 
+    await refundTicketsMovie(id);
     await prisma.movies.delete({where: {id}});
     return c.json({message: 'Movie deleted'}, 200);
   } catch (error) {
