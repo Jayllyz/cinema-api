@@ -8,9 +8,12 @@ const randomCategory = randomString(5);
 const secret = process.env.SECRET_KEY || 'secret';
 const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
 
+const port = Number(process.env.PORT || 3000);
+const path = `http://localhost:${port}`;
+
 describe('Categories', () => {
   test('POST /categories', async () => {
-    const res = await app.request('/categories', {
+    const res = await app.request(path + '/categories', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -27,7 +30,7 @@ describe('Categories', () => {
   });
 
   test('GET /categories', async () => {
-    const res = await app.request('/categories', {
+    const res = await app.request(path + '/categories', {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -38,7 +41,7 @@ describe('Categories', () => {
   });
 
   test('GET /categories/{id}', async () => {
-    const res = await app.request(`/categories/${createdCategoryId}`, {
+    const res = await app.request(path + `/categories/${createdCategoryId}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -49,7 +52,7 @@ describe('Categories', () => {
   });
 
   test('DELETE /categories/{id}', async () => {
-    const res = await app.request(`/categories/${createdCategoryId}`, {
+    const res = await app.request(path + `/categories/${createdCategoryId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,

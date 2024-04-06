@@ -12,6 +12,9 @@ const randomMovie = randomString(5);
 const secret = process.env.SECRET_KEY || 'secret';
 const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
 
+const port = Number(process.env.PORT || 3000);
+const path = `http://localhost:${port}`;
+
 const today = new Date();
 const tomorrow = new Date(today);
 tomorrow.setDate(today.getDate() + 1);
@@ -22,7 +25,7 @@ if (tomorrow.getDay() === 0 || tomorrow.getDay() === 6) {
 
 describe('Screenings', () => {
   test('POST /categories', async () => {
-    const res = await app.request('/categories', {
+    const res = await app.request(path + '/categories', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,7 +41,7 @@ describe('Screenings', () => {
   });
 
   test('POST /movies', async () => {
-    const res = await app.request('/movies', {
+    const res = await app.request(path + '/movies', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -61,7 +64,7 @@ describe('Screenings', () => {
   });
 
   test('POST /rooms', async () => {
-    const res = await app.request('/rooms', {
+    const res = await app.request(path + '/rooms', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -83,7 +86,7 @@ describe('Screenings', () => {
   });
 
   test('POST /screenings', async () => {
-    const res = await app.request('/screenings', {
+    const res = await app.request(path + '/screenings', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -103,7 +106,7 @@ describe('Screenings', () => {
   });
 
   test('GET /screenings', async () => {
-    const res = await app.request('/rooms', {
+    const res = await app.request(path + '/rooms', {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -114,7 +117,7 @@ describe('Screenings', () => {
   });
 
   test('GET /screenings/{id}', async () => {
-    const res = await app.request(`/screenings/${createScreeningId}`, {
+    const res = await app.request(path + `/screenings/${createScreeningId}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -128,7 +131,7 @@ describe('Screenings', () => {
   patchedDate.setMinutes(15);
 
   test('PATCH /screenings/{id}', async () => {
-    const res = await app.request(`/screenings/${createScreeningId}`, {
+    const res = await app.request(path + `/screenings/${createScreeningId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -144,7 +147,7 @@ describe('Screenings', () => {
   });
 
   test('DELETE /screenings/{id}', async () => {
-    const res = await app.request(`/screenings/${createScreeningId}`, {
+    const res = await app.request(path + `/screenings/${createScreeningId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
@@ -154,7 +157,7 @@ describe('Screenings', () => {
   });
 
   test('DELETE /movies/{id}', async () => {
-    const res = await app.request(`/movies/${createdMovieId}`, {
+    const res = await app.request(path + `/movies/${createdMovieId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
@@ -164,7 +167,7 @@ describe('Screenings', () => {
   });
 
   test('DELETE /rooms/{id}', async () => {
-    const res = await app.request(`/rooms/${createdRoomId}`, {
+    const res = await app.request(path + `/rooms/${createdRoomId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,

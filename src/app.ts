@@ -31,7 +31,12 @@ const jwtMiddleware = jwt({
 app.use((c, next) => {
   const baseUrl = c.req.url.split(`http://localhost:${port}`)[1];
 
-  if (baseUrl !== '/auth' && baseUrl !== '/health' && baseUrl !== '/doc' && baseUrl !== '/ui') {
+  if (
+    !baseUrl.startsWith('/auth') &&
+    !baseUrl.startsWith('/health') &&
+    !baseUrl.startsWith('/doc') &&
+    !baseUrl.startsWith('/ui')
+  ) {
     return jwtMiddleware(c, next);
   }
   return next();
