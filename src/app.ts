@@ -81,13 +81,6 @@ app.openapi(healthCheck, (c) => c.json('OK', 200));
 app.notFound((c) => c.json({error: 'Path not found'}, 404));
 app.route('/auth/', auth);
 
-app.use('/users/*', async (c, next) => {
-  const jwtMiddleware = jwt({
-    secret: process.env.SECRET_KEY || 'secret',
-  });
-  return jwtMiddleware(c, next);
-});
-
 app.route('/', rooms);
 app.route('/', users);
 app.route('/', movies);

@@ -11,7 +11,7 @@ export async function getOverlapingScreenings(
 ): Promise<Screenings | null> {
   return await prisma.screenings.findFirst({
     where: {
-      room_id: room_id,
+      room_id,
       OR: [
         {
           AND: [{start_time: {gte: start_time}}, {end_time: {lte: end_time}}],
@@ -32,9 +32,9 @@ export async function getOverlapingShift(
   end_time: Date,
   position: string
 ): Promise<Working_shifts | null> {
-  return prisma.working_shifts.findFirst({
+  return await prisma.working_shifts.findFirst({
     where: {
-      position: position,
+      position,
       OR: [
         {
           AND: [{start_time: {gte: start_time}}, {end_time: {lte: end_time}}],
