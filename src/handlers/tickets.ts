@@ -5,6 +5,7 @@ import {
   getTicketById,
   insertTicket,
   buyTicket,
+  refundTicket,
   updateTicket,
   useTicket,
   deleteTicket,
@@ -64,26 +65,32 @@ tickets.openapi(getTickets, async (c) => {
     const payload: PayloadValidator = c.get('jwtPayload');
     await checkToken(payload, Role.STAFF, token);
 
-    const {used, price_higher, price_lesser, user_id, screening_id, category, room} =
+    const {used, price_higher, price_lesser, user_id, screening_id, category, room, available} =
       c.req.valid('query');
 
-    const tickets = await prisma.tickets.findMany({
-      where: {
-        used: used,
-        price: {gte: price_lesser, lte: price_higher},
-        user_id: user_id,
-        screening_id: screening_id,
-        screening: {
-          movie: {
-            category: {
-              name: category,
-            },
-          },
-          room: {
-            name: room,
+    const whereCondition = {
+      used: used,
+      price: {gte: price_lesser, lte: price_higher},
+      user_id: user_id,
+      screening_id: screening_id,
+      screening: {
+        movie: {
+          category: {
+            name: category,
           },
         },
+        room: {
+          name: room,
+        },
       },
+    };
+
+    if (available) {
+      whereCondition.user_id = null;
+    }
+
+    const tickets = await prisma.tickets.findMany({
+      where: whereCondition,
       ...ticketSelectOptions,
     });
 
@@ -228,11 +235,67 @@ tickets.openapi(buyTicket, async (c) => {
       },
       data: {
         user_id: payload.id,
+        acquired_at: new Date(),
       },
       ...ticketSelectOptions,
     });
 
     return c.json(updatedTicket, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
+  }
+});
+
+tickets.openapi(refundTicket, async (c) => {
+  try {
+    const token = c.req.header('authorization')?.split(' ')[1];
+    const payload: PayloadValidator = c.get('jwtPayload');
+    await checkToken(payload, Role.USER, token);
+
+    const {id} = c.req.valid('param');
+
+    const ticket = await prisma.tickets.findUnique({
+      where: {
+        id,
+      },
+      ...ticketSelectOptions,
+    });
+
+    if (!ticket) {
+      return c.json({error: 'Ticket not found'}, 404);
+    }
+
+    if (!ticket.user || ticket.user.id !== payload.id) {
+      return c.json({error: 'Ticket does not belong to the user'}, 400);
+    }
+
+    if (ticket.used) {
+      return c.json({error: 'Ticket already used'}, 400);
+    }
+
+    await prisma.tickets.update({
+      where: {
+        id,
+      },
+      data: {
+        user_id: null,
+        acquired_at: null,
+      },
+    });
+
+    await prisma.users.update({
+      where: {
+        id: payload.id,
+      },
+      data: {
+        money: {
+          increment: ticket.price,
+        },
+      },
+    });
+
+    return c.json({message: 'Refund successful'}, 200);
   } catch (error) {
     console.error(error);
     return c.json({error: error}, 500);

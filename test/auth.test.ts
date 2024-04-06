@@ -6,9 +6,12 @@ const secret = process.env.SECRET_KEY || 'secret';
 const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
 let trackedUser: number;
 
+const port = Number(process.env.PORT || 3000);
+const path = `http://localhost:${port}`;
+
 describe('Auth', () => {
   test('POST /auth/signup', async () => {
-    const res = await app.request('/auth/signup', {
+    const res = await app.request(path + '/auth/signup', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -25,7 +28,7 @@ describe('Auth', () => {
   });
 
   test('POST /auth/login', async () => {
-    const res = await app.request('/auth/login', {
+    const res = await app.request(path + '/auth/login', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -39,7 +42,7 @@ describe('Auth', () => {
   });
 
   test('Clean up', async () => {
-    const res = await app.request(`/users/${trackedUser}`, {
+    const res = await app.request(path + `/users/${trackedUser}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,

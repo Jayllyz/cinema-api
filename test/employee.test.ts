@@ -7,6 +7,9 @@ let createdWorkingShiftId: number;
 const secret = process.env.SECRET_KEY || 'secret';
 const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
 
+const port = Number(process.env.PORT || 3000);
+const path = `http://localhost:${port}`;
+
 const today = new Date();
 const tomorrow = new Date(today);
 tomorrow.setDate(today.getDate() + 1);
@@ -17,7 +20,7 @@ if (tomorrow.getDay() === 0 || tomorrow.getDay() === 6) {
 
 describe('Employees', () => {
   test('POST /employees', async () => {
-    const res = await app.request('/employees', {
+    const res = await app.request(path + '/employees', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -35,7 +38,7 @@ describe('Employees', () => {
   });
 
   test('GET /employees', async () => {
-    const res = await app.request('/movies', {
+    const res = await app.request(path + '/movies', {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -46,7 +49,7 @@ describe('Employees', () => {
   });
 
   test('GET /employees/{id}', async () => {
-    const res = await app.request(`/employees/${createdEmployeeId}`, {
+    const res = await app.request(path + `/employees/${createdEmployeeId}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -58,7 +61,7 @@ describe('Employees', () => {
 
   test('PATCH /employees/{id}', async () => {
     const updateEmployee = 'johnny';
-    const res = await app.request(`/employees/${createdEmployeeId}`, {
+    const res = await app.request(path + `/employees/${createdEmployeeId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -80,7 +83,7 @@ describe('Employees', () => {
 
     console.log(end_time);
 
-    const res = await app.request('/working_shifts', {
+    const res = await app.request(path + '/working_shifts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -99,7 +102,7 @@ describe('Employees', () => {
   });
 
   test('GET /working_shifts', async () => {
-    const res = await app.request('/working_shifts', {
+    const res = await app.request(path + '/working_shifts', {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -110,7 +113,7 @@ describe('Employees', () => {
   });
 
   test('GET /working_shifts/{id}', async () => {
-    const res = await app.request(`/working_shifts/${createdWorkingShiftId}`, {
+    const res = await app.request(path + `/working_shifts/${createdWorkingShiftId}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -122,7 +125,7 @@ describe('Employees', () => {
 
   test('PATCH /working_shifts/{id}', async () => {
     const updateWorkingShift = 'reception';
-    const res = await app.request(`/working_shifts/${createdWorkingShiftId}`, {
+    const res = await app.request(path + `/working_shifts/${createdWorkingShiftId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -138,7 +141,7 @@ describe('Employees', () => {
   });
 
   test('DELETE /working_shifts/{id}', async () => {
-    const res = await app.request(`/working_shifts/${createdWorkingShiftId}`, {
+    const res = await app.request(path + `/working_shifts/${createdWorkingShiftId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
@@ -148,7 +151,7 @@ describe('Employees', () => {
   });
 
   test('DELETE /employees/{id}', async () => {
-    const res = await app.request(`/employees/${createdEmployeeId}`, {
+    const res = await app.request(path + `/employees/${createdEmployeeId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,

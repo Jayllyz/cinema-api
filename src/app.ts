@@ -12,7 +12,8 @@ import {rooms} from './handlers/rooms.js';
 import {screenings} from './handlers/screenings.js';
 import {employees} from './handlers/employees.js';
 import {workingShift} from './handlers/working_shift.js';
-import {tickets} from './handlers/tickets.js';
+import {tickets} from './handlers/tickets';
+import {superTickets} from './handlers/super_tickets';
 import {users} from './handlers/users';
 
 const app = new OpenAPIHono();
@@ -21,15 +22,21 @@ app.use(prettyJSON());
 app.use(secureHeaders());
 app.get('/', (c) => c.text('Welcome to the API!'));
 
+const port = Number(process.env.PORT || 3000);
+
 const jwtMiddleware = jwt({
   secret: process.env.SECRET_KEY || 'secret',
 });
 
 app.use((c, next) => {
-  const usedRoute = c.req.url.split('/')[3];
-  const baseUrl = usedRoute.split('?')[0];
+  const baseUrl = c.req.url.split(`http://localhost:${port}`)[1];
 
-  if (baseUrl !== 'auth' && baseUrl !== 'health' && baseUrl !== 'doc' && baseUrl !== 'ui') {
+  if (
+    !baseUrl.startsWith('/auth') &&
+    !baseUrl.startsWith('/health') &&
+    !baseUrl.startsWith('/doc') &&
+    !baseUrl.startsWith('/ui')
+  ) {
     return jwtMiddleware(c, next);
   }
   return next();
@@ -38,10 +45,13 @@ app.use((c, next) => {
 app.use(async (c, next) => {
   if (c.req.method === 'POST' || c.req.method === 'PUT' || c.req.method === 'PATCH') {
     const contentType = c.req.header('content-type');
-    const url = c.req.url;
+    const baseUrl = c.req.url.split(`http://localhost:${port}`)[1];
+
     if (
-      !url.startsWith('/tickets/buy/') &&
-      !url.startsWith('/tickets/use/') &&
+      !baseUrl.startsWith('/tickets/buy/') &&
+      !baseUrl.startsWith('/tickets/use/') &&
+      !baseUrl.startsWith('/tickets/refund') &&
+      !baseUrl.startsWith('/super_tickets/buy/') &&
       (!contentType || !contentType.includes('application/json'))
     ) {
       return c.json({error: 'A json body is required'}, 400);
@@ -76,9 +86,10 @@ app.route('/', users);
 app.route('/', movies);
 app.route('/', categories);
 app.route('/', screenings);
+app.route('/', tickets);
+app.route('/', superTickets);
 app.route('/', employees);
 app.route('/', workingShift);
-app.route('/', tickets);
 
 app.doc('/doc', (c) => ({
   openapi: '3.0.0',
@@ -110,7 +121,6 @@ app.onError((err, c) => {
   return c.json({error: 'Internal server error'}, 500);
 });
 
-const port = Number(process.env.PORT || 3000);
 console.log(`Server is running on port ${port}`);
 
 serve({

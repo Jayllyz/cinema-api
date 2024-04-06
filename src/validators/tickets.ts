@@ -14,7 +14,7 @@ export const listTicketValidator = z.array(ticketValidator);
 
 export const insertTicketValidator = z.object({
   price: z.number().min(0),
-  user_id: z.number().min(1),
+  user_id: z.number().min(1).nullable(),
   screening_id: z.number().min(1),
 });
 

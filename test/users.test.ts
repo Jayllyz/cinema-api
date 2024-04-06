@@ -6,12 +6,16 @@ import {Role} from '../src/lib/token';
 const randomUser = randomString(10);
 const secret = process.env.SECRET_KEY || 'secret';
 let adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
+
+const port = Number(process.env.PORT || 3000);
+const path = `http://localhost:${port}`;
+
 let toDelete: number;
 let trackedMoney: number;
 
 describe('Users', () => {
   test('POST /users', async () => {
-    const res = await app.request('/users', {
+    const res = await app.request(path + '/users', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +36,7 @@ describe('Users', () => {
   });
 
   test('GET /users', async () => {
-    const res = await app.request('/users', {
+    const res = await app.request(path + '/users', {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -43,7 +47,7 @@ describe('Users', () => {
   });
 
   test('GET /users/{id}', async () => {
-    const res = await app.request(`/users/${toDelete}`, {
+    const res = await app.request(path + `/users/${toDelete}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -54,7 +58,7 @@ describe('Users', () => {
   });
 
   test('PATCH /users/{id}', async () => {
-    const res = await app.request(`/users/${toDelete}`, {
+    const res = await app.request(path + `/users/${toDelete}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -72,7 +76,7 @@ describe('Users', () => {
   });
 
   test('PATCH /users/money', async () => {
-    const res = await app.request('/users/money?deposit=50', {
+    const res = await app.request(path + '/users/money?deposit=50', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -86,7 +90,7 @@ describe('Users', () => {
   });
 
   test('PATCH /users/money', async () => {
-    const res = await app.request('/users/money?withdraw=50', {
+    const res = await app.request(path + '/users/money?withdraw=50', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -100,7 +104,7 @@ describe('Users', () => {
   });
 
   test('DELETE /users/{id}', async () => {
-    const res = await app.request(`/users/${toDelete}`, {
+    const res = await app.request(path + `/users/${toDelete}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,

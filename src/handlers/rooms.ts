@@ -45,7 +45,6 @@ rooms.openapi(insertRoom, async (c) => {
   await checkToken(payload, Role.ADMIN, token);
 
   const {name, description, capacity, type, open, handicap_access} = c.req.valid('json');
-  console.log({name, description, capacity, type, open, handicap_access});
   try {
     const exist = await prisma.rooms.findUnique({where: {name}});
     if (exist) return c.json({error: 'Room name already exists'}, 400);

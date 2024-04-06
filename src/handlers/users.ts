@@ -158,7 +158,6 @@ users.openapi(updateUserMoney, async (c) => {
 
     return c.json(user, 200);
   } catch (error) {
-    console.log('test');
     console.error(error);
     return c.json({error: 'An error occurred while updating the user money value'}, 500);
   }

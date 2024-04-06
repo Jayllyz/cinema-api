@@ -10,9 +10,12 @@ const randomMovie = randomString(5);
 const secret = process.env.SECRET_KEY || 'secret';
 const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
 
+const port = Number(process.env.PORT || 3000);
+const path = `http://localhost:${port}`;
+
 describe('Movies', () => {
   test('POST /categories', async () => {
-    const res = await app.request('/categories', {
+    const res = await app.request(path + '/categories', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -28,7 +31,7 @@ describe('Movies', () => {
   });
 
   test('POST /movies', async () => {
-    const res = await app.request('/movies', {
+    const res = await app.request(path + '/movies', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -51,7 +54,7 @@ describe('Movies', () => {
   });
 
   test('GET /movies', async () => {
-    const res = await app.request('/movies', {
+    const res = await app.request(path + '/movies', {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -62,7 +65,7 @@ describe('Movies', () => {
   });
 
   test('GET /movies/{id}', async () => {
-    const res = await app.request(`/movies/${createdMovieId}`, {
+    const res = await app.request(path + `/movies/${createdMovieId}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -74,7 +77,7 @@ describe('Movies', () => {
 
   test('PATCH /movies/{id}', async () => {
     const updatedMovie = randomString(5);
-    const res = await app.request(`/movies/${createdMovieId}`, {
+    const res = await app.request(path + `/movies/${createdMovieId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -93,7 +96,7 @@ describe('Movies', () => {
   });
 
   test('DELETE /movies/{id}', async () => {
-    const res = await app.request(`/movies/${createdMovieId}`, {
+    const res = await app.request(path + `/movies/${createdMovieId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,

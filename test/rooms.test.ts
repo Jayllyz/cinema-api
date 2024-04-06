@@ -9,10 +9,13 @@ let firstRoomId: number;
 const secret = process.env.SECRET_KEY || 'secret';
 const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
 
+const port = Number(process.env.PORT || 3000);
+const path = `http://localhost:${port}`;
+
 describe('Rooms tests', () => {
   for (let i = 0; i < numRooms; i++) {
     test('creates a new room', async () => {
-      const res = await app.request('/rooms', {
+      const res = await app.request(path + '/rooms', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +44,7 @@ describe('Rooms tests', () => {
     });
 
     test('fails with existing room number', async () => {
-      const res = await app.request('/rooms', {
+      const res = await app.request(path + '/rooms', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,7 +64,7 @@ describe('Rooms tests', () => {
   }
 
   test('returns a list of rooms', async () => {
-    const res = await app.request('/rooms', {
+    const res = await app.request(path + '/rooms', {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -73,7 +76,7 @@ describe('Rooms tests', () => {
   });
 
   test('returns a room', async () => {
-    const res = await app.request(`/rooms/${firstRoomId}`, {
+    const res = await app.request(path + `/rooms/${firstRoomId}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -84,7 +87,7 @@ describe('Rooms tests', () => {
   });
 
   test('updates a room', async () => {
-    const res = await app.request(`/rooms/${firstRoomId}`, {
+    const res = await app.request(path + `/rooms/${firstRoomId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -113,7 +116,7 @@ describe('Rooms tests', () => {
 
   test('fails with non-existing room id', async () => {
     const wrongRoomId = firstRoomId + numRooms + 10;
-    const res = await app.request(`/rooms/${wrongRoomId}`, {
+    const res = await app.request(path + `/rooms/${wrongRoomId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -134,7 +137,7 @@ describe('Rooms tests', () => {
   const lastRoomId = firstRoomId + numRooms - 1;
   for (let i = firstRoomId; i < lastRoomId; i++) {
     test('deletes a room', async () => {
-      const res = await app.request(`/rooms/${i}`, {
+      const res = await app.request(path + `/rooms/${i}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${adminToken}`,
@@ -144,7 +147,7 @@ describe('Rooms tests', () => {
     });
 
     test('fails with non-existing room id', async () => {
-      const res = await app.request(`/rooms/${i}`, {
+      const res = await app.request(path + `/rooms/${i}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${adminToken}`,
