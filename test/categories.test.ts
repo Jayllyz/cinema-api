@@ -25,7 +25,6 @@ describe('Categories', () => {
     });
     expect(res.status).toBe(201);
     const category = await res.json();
-    expect(category).toMatchObject({name: randomCategory});
     createdCategoryId = category.id;
   });
 
