@@ -126,6 +126,39 @@ export const buySuperTicket = createRoute({
   tags: ['super_tickets'],
 });
 
+export const useSuperTicket = createRoute({
+  method: 'post',
+  path: '/super_tickets/use/{id}',
+  summary: 'Use super ticket',
+  description: 'Use super ticket',
+  security: [{Bearer: []}],
+  request: {
+    params: z.object({id: z.coerce.number().min(1)}),
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z.object({
+            uses: z.number().min(0),
+          }),
+        },
+      },
+    },
+    400: {
+      description: 'Bad request',
+      content: {
+        'application/json': {
+          schema: z.object({error: z.string()}),
+        },
+      },
+    },
+    500: serverErrorSchema,
+  },
+  tags: ['super_tickets'],
+});
+
 export const updateSuperTicket = createRoute({
   method: 'patch',
   path: '/super_tickets/{id}',

@@ -5,6 +5,7 @@ import {
   getSuperTicketById,
   insertSuperTicket,
   buySuperTicket,
+  useSuperTicket,
   updateSuperTicket,
   deleteSuperTicket,
 } from '../routes/super_tickets';
@@ -127,6 +128,54 @@ superTickets.openapi(buySuperTicket, async (c) => {
         user_id: payload.id,
       },
       ...superTicketSelectOptions,
+    });
+
+    return c.json(updatedSuperTicket, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
+  }
+});
+
+superTickets.openapi(useSuperTicket, async (c) => {
+  try {
+    const token = c.req.header('authorization')?.split(' ')[1];
+    const payload: PayloadValidator = c.get('jwtPayload');
+    await checkToken(payload, Role.USER, token);
+
+    const {id} = c.req.valid('param');
+
+    const superTicket = await prisma.superTickets.findUnique({
+      where: {
+        id,
+      },
+      ...superTicketSelectOptions,
+    });
+
+    if (!superTicket) {
+      return c.json({error: 'Super ticket not found'}, 404);
+    }
+
+    if (!superTicket.user || superTicket.user.id !== payload.id) {
+      return c.json({error: 'Super ticket does not belong to the user'}, 400);
+    }
+
+    if (superTicket.uses <= 0) {
+      return c.json({error: 'Super ticket has no uses left'}, 400);
+    }
+
+    const updatedSuperTicket = await prisma.superTickets.update({
+      where: {
+        id,
+      },
+      data: {
+        uses: {
+          decrement: 1,
+        },
+      },
+      select: {
+        uses: true,
+      },
     });
 
     return c.json(updatedSuperTicket, 200);
