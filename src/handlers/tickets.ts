@@ -21,6 +21,7 @@ const ticketSelectOptions = {
   select: {
     id: true,
     used: true,
+    seat: true,
     price: true,
     user: {
       select: {
@@ -134,7 +135,7 @@ tickets.openapi(insertTicket, async (c) => {
     const payload: PayloadValidator = c.get('jwtPayload');
     await checkToken(payload, Role.ADMIN, token);
 
-    const {price, user_id, screening_id} = c.req.valid('json');
+    const {seat, price, user_id, screening_id} = c.req.valid('json');
 
     const capacity = await prisma.screenings.findUnique({
       where: {
@@ -164,6 +165,7 @@ tickets.openapi(insertTicket, async (c) => {
 
     const ticket = await prisma.tickets.create({
       data: {
+        seat,
         price,
         user_id,
         screening_id,
@@ -310,7 +312,7 @@ tickets.openapi(updateTicket, async (c) => {
     await checkToken(payload, Role.ADMIN, token);
 
     const {id} = c.req.valid('param');
-    const {used, price, user_id, screening_id} = c.req.valid('json');
+    const {used, seat, price, user_id, screening_id} = c.req.valid('json');
 
     const ticket = await prisma.tickets.findUnique({
       where: {
@@ -323,12 +325,25 @@ tickets.openapi(updateTicket, async (c) => {
       return c.json({error: 'Ticket not found'}, 404);
     }
 
+    const usedSeat = await prisma.tickets.findFirst({
+      where: {
+        seat,
+        screening_id,
+        used: false,
+      },
+    });
+
+    if (usedSeat) {
+      return c.json({error: 'Seat already taken'}, 400);
+    }
+
     const updatedTicket = await prisma.tickets.update({
       where: {
         id,
       },
       data: {
         used,
+        seat,
         price,
         user_id,
         screening_id,

@@ -123,6 +123,7 @@ screenings.openapi(insertScreening, async (c) => {
     for (let i = 0; i < roomExist.capacity; i++) {
       await prisma.tickets.create({
         data: {
+          seat: i + 1,
           price: ticket_price,
           screening_id: screening.id,
         },

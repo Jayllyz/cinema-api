@@ -126,7 +126,7 @@ export const buySuperTicket = createRoute({
   tags: ['super_tickets'],
 });
 
-export const useSuperTicket = createRoute({
+export const takeSeatSuperTicket = createRoute({
   method: 'patch',
   path: '/super_tickets/use/{id}',
   summary: 'Use super ticket',
@@ -137,7 +137,10 @@ export const useSuperTicket = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({screening_id: z.coerce.number().min(1)}),
+          schema: z.object({
+            seat: z.number().min(1),
+            screening_id: z.coerce.number().min(1),
+          }),
         },
       },
     },

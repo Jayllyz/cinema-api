@@ -5,7 +5,7 @@ import {
   getSuperTicketById,
   insertSuperTicket,
   buySuperTicket,
-  useSuperTicket,
+  takeSeatSuperTicket,
   updateSuperTicket,
   deleteSuperTicket,
 } from '../routes/super_tickets';
@@ -177,14 +177,14 @@ superTickets.openapi(updateSuperTicket, async (c) => {
   }
 });
 
-superTickets.openapi(useSuperTicket, async (c) => {
+superTickets.openapi(takeSeatSuperTicket, async (c) => {
   try {
     const token = c.req.header('authorization')?.split(' ')[1];
     const payload: PayloadValidator = c.get('jwtPayload');
     await checkToken(payload, Role.USER, token);
 
     const {id} = c.req.valid('param');
-    const {screening_id} = c.req.valid('json');
+    const {seat, screening_id} = c.req.valid('json');
 
     const superTicket = await prisma.superTickets.findUnique({
       where: {
@@ -215,8 +215,20 @@ superTickets.openapi(useSuperTicket, async (c) => {
       return c.json({error: 'Screening not found'}, 404);
     }
 
+    const takenSeat = await prisma.tickets.findUnique({
+      where: {
+        seat,
+        screening_id,
+      },
+    });
+
+    if (takenSeat) {
+      return c.json({error: 'Seat already taken'}, 400);
+    }
+
     await prisma.superTicketsSessions.create({
       data: {
+        seat,
         screening_id,
         super_ticket_id: id,
       },
