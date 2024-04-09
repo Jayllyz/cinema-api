@@ -15,7 +15,7 @@
   "dependencies": {
     "@hono/node-server": "^1.9.1",
     "@hono/swagger-ui": "^0.2.1",
-    "@hono/zod-openapi": "^0.9.10",
+    "@hono/zod-openapi": "^0.10.0",
     "@prisma/client": "^5.12.1",
     "bcryptjs": "^2.4.3",
     "hono": "^4.2.2",
