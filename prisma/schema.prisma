@@ -97,6 +97,7 @@ model Working_shifts {
 model Tickets {
   id            Int        @id @default(autoincrement())
   used          Boolean    @default(false)
+  seat          Int        @unique
   price         Int
   user_id       Int?
   user          Users?     @relation(fields: [user_id], references: [id])
@@ -119,6 +120,9 @@ model SuperTickets{
 }
 
 model SuperTicketsSessions{
+  used              Boolean       @default(false)
+  seat              Int
+  original_price    Int
   super_ticket_id   Int
   super_ticket      SuperTickets  @relation(fields: [super_ticket_id], references: [id])
   screening_id      Int

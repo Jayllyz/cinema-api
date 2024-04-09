@@ -126,9 +126,9 @@ export const buySuperTicket = createRoute({
   tags: ['super_tickets'],
 });
 
-export const useSuperTicket = createRoute({
+export const bookSeatSuperTicket = createRoute({
   method: 'patch',
-  path: '/super_tickets/use/{id}',
+  path: '/super_tickets/book/{id}',
   summary: 'Use super ticket',
   description: 'Use super ticket',
   security: [{Bearer: []}],
@@ -137,7 +137,10 @@ export const useSuperTicket = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z.object({screening_id: z.coerce.number().min(1)}),
+          schema: z.object({
+            seat: z.number().min(1),
+            screening_id: z.coerce.number().min(1),
+          }),
         },
       },
     },
@@ -204,6 +207,42 @@ export const updateSuperTicket = createRoute({
   tags: ['super_tickets'],
 });
 
+export const useSuperTicket = createRoute({
+  method: 'patch',
+  path: '/super_tickets/use/{id}',
+  summary: 'Use super ticket',
+  description: 'Use super ticket',
+  security: [{Bearer: []}],
+  request: {
+    params: z.object({id: z.coerce.number().min(1)}),
+    body: {
+      content: {
+        'application/json': {
+          schema: z.object({
+            seat: z.number().min(1),
+            screening_id: z.coerce.number().min(1),
+          }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+    },
+    400: {
+      description: 'Bad request',
+      content: {
+        'application/json': {
+          schema: z.object({error: z.string()}),
+        },
+      },
+    },
+    500: serverErrorSchema,
+  },
+  tags: ['super_tickets'],
+});
+
 export const deleteSuperTicket = createRoute({
   method: 'delete',
   path: '/super_tickets/{id}',
@@ -216,6 +255,49 @@ export const deleteSuperTicket = createRoute({
   responses: {
     200: {
       description: 'Successful response',
+    },
+    500: serverErrorSchema,
+  },
+  tags: ['super_tickets'],
+});
+
+export const cancelBookingSuperTicket = createRoute({
+  method: 'delete',
+  path: '/super_tickets/cancel/{id}',
+  summary: 'Cancel a seat booking with a super ticket',
+  description: 'Cancel a seat booking with a super ticket',
+  security: [{Bearer: []}],
+  request: {
+    params: z.object({id: z.coerce.number().min(1)}),
+    body: {
+      content: {
+        'application/json': {
+          schema: z.object({
+            seat: z.number().min(1),
+            screening_id: z.coerce.number().min(1),
+          }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z.object({
+            uses: z.number().min(0),
+          }),
+        },
+      },
+    },
+    400: {
+      description: 'Bad request',
+      content: {
+        'application/json': {
+          schema: z.object({error: z.string()}),
+        },
+      },
     },
     500: serverErrorSchema,
   },

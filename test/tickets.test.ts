@@ -1,6 +1,7 @@
 import app from '../src/app';
 import {sign} from 'hono/jwt';
 import {Role} from '../src/lib/token';
+import {Tickets} from '@prisma/client';
 
 const secret = process.env.SECRET_KEY || 'secret';
 const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
@@ -14,10 +15,11 @@ let trackedTicket: number;
 let trackedUser: number;
 let userToken: string;
 
-let deleteTest: number;
+let deleteTest: Tickets;
 
 const mondayOfNextWeek = new Date();
 mondayOfNextWeek.setDate(mondayOfNextWeek.getDate() + ((1 + 7 - mondayOfNextWeek.getDay()) % 7));
+mondayOfNextWeek.setHours(12, 0, 0, 0);
 
 const port = Number(process.env.PORT || 3000);
 const path = `http://localhost:${port}`;
@@ -83,6 +85,7 @@ describe('Tickets', () => {
   });
 
   test('Create a Screening', async () => {
+    console.log(mondayOfNextWeek.toISOString());
     const res = await app.request(path + '/screenings', {
       method: 'POST',
       headers: {
@@ -110,11 +113,11 @@ describe('Tickets', () => {
     expect(res.status).toBe(200);
     const tickets = await res.json();
     expect(tickets).toBeInstanceOf(Array);
-    deleteTest = tickets[0].id;
+    deleteTest = tickets[0];
   });
 
   test('DELETE /tickets/{id}', async () => {
-    const res = await app.request(path + `/tickets/${deleteTest}`, {
+    const res = await app.request(path + `/tickets/${deleteTest.id}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
@@ -132,6 +135,7 @@ describe('Tickets', () => {
       },
       body: JSON.stringify({
         price: 10,
+        seat: deleteTest.seat,
         user_id: null,
         screening_id: trackedScreening,
       }),
