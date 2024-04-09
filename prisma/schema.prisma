@@ -122,6 +122,7 @@ model SuperTickets{
 model SuperTicketsSessions{
   used              Boolean       @default(false)
   seat              Int
+  original_price    Int
   super_ticket_id   Int
   super_ticket      SuperTickets  @relation(fields: [super_ticket_id], references: [id])
   screening_id      Int

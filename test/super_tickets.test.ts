@@ -16,6 +16,7 @@ let userToken: string;
 
 const mondayOfNextWeek = new Date();
 mondayOfNextWeek.setDate(mondayOfNextWeek.getDate() + ((1 + 7 - mondayOfNextWeek.getDay()) % 7));
+mondayOfNextWeek.setHours(12, 0, 0, 0);
 
 const port = Number(process.env.PORT || 3000);
 const path = `http://localhost:${port}`;
@@ -220,8 +221,8 @@ describe('Super tickets', () => {
     expect(ticket).toMatchObject({price: 50});
   });
 
-  test('PATCH /super_tickets/use/{id}', async () => {
-    const res = await app.request(path + `/super_tickets/use/${trackedTicket}`, {
+  test('PATCH /super_tickets/book/{id}', async () => {
+    const res = await app.request(path + `/super_tickets/book/${trackedTicket}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -229,11 +230,29 @@ describe('Super tickets', () => {
       },
       body: JSON.stringify({
         screening_id: trackedScreening,
+        seat: 1,
       }),
     });
     expect(res.status).toBe(200);
     const ticket = await res.json();
     expect(ticket).toMatchObject({uses: 4});
+  });
+
+  test('DELETE /super_tickets/cancel/{id}', async () => {
+    const res = await app.request(path + `/super_tickets/cancel/${trackedTicket}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userToken}`,
+      },
+      body: JSON.stringify({
+        screening_id: trackedScreening,
+        seat: 1,
+      }),
+    });
+    expect(res.status).toBe(200);
+    const ticket = await res.json();
+    expect(ticket).toMatchObject({uses: 5});
   });
 
   test('DELETE /super_tickets/{id}', async () => {

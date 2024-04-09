@@ -77,11 +77,11 @@ screenings.openapi(insertScreening, async (c) => {
     end_time.setMinutes(end_time.getMinutes() + screening_duration_minutes);
 
     if (isBeforeHour(new Date(start_time), 9)) {
-      return c.json({error: 'The screening cannot start before 9 am'});
+      return c.json({error: 'The screening cannot start before 9 am'}, 400);
     }
 
     if (isAfterHour(end_time, 20)) {
-      return c.json({error: 'The screening cannot end after 8 pm'});
+      return c.json({error: 'The screening cannot end after 8 pm'}, 400);
     }
 
     const roomExist = await prisma.rooms.findUnique({

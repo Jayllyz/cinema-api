@@ -329,11 +329,10 @@ tickets.openapi(updateTicket, async (c) => {
       where: {
         seat,
         screening_id,
-        used: false,
       },
     });
 
-    if (usedSeat) {
+    if (usedSeat && usedSeat.used) {
       return c.json({error: 'Seat already taken'}, 400);
     }
 

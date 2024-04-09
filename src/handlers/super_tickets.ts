@@ -5,9 +5,11 @@ import {
   getSuperTicketById,
   insertSuperTicket,
   buySuperTicket,
-  takeSeatSuperTicket,
+  bookSeatSuperTicket,
   updateSuperTicket,
+  useSuperTicket,
   deleteSuperTicket,
+  cancelBookingSuperTicket,
 } from '../routes/super_tickets';
 import {checkToken, PayloadValidator, Role} from '../lib/token';
 import {zodErrorHook} from '../lib/zodError';
@@ -177,7 +179,7 @@ superTickets.openapi(updateSuperTicket, async (c) => {
   }
 });
 
-superTickets.openapi(takeSeatSuperTicket, async (c) => {
+superTickets.openapi(bookSeatSuperTicket, async (c) => {
   try {
     const token = c.req.header('authorization')?.split(' ')[1];
     const payload: PayloadValidator = c.get('jwtPayload');
@@ -219,18 +221,27 @@ superTickets.openapi(takeSeatSuperTicket, async (c) => {
       where: {
         seat,
         screening_id,
+        user_id: null,
       },
     });
 
-    if (takenSeat) {
-      return c.json({error: 'Seat already taken'}, 400);
+    if (!takenSeat) {
+      return c.json({error: "Seat already taken or doesn't exist"}, 400);
     }
 
     await prisma.superTicketsSessions.create({
       data: {
         seat,
+        original_price: takenSeat.price,
         screening_id,
         super_ticket_id: id,
+      },
+    });
+
+    await prisma.tickets.delete({
+      where: {
+        seat,
+        screening_id,
       },
     });
 
@@ -249,6 +260,74 @@ superTickets.openapi(takeSeatSuperTicket, async (c) => {
     });
 
     return c.json(updatedSuperTicket, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
+  }
+});
+
+superTickets.openapi(useSuperTicket, async (c) => {
+  try {
+    const token = c.req.header('authorization')?.split(' ')[1];
+    const payload: PayloadValidator = c.get('jwtPayload');
+    await checkToken(payload, Role.USER, token);
+
+    const {id} = c.req.valid('param');
+    const {seat, screening_id} = c.req.valid('json');
+
+    const superTicket = await prisma.superTickets.findUnique({
+      where: {
+        id: id,
+      },
+      ...superTicketSelectOptions,
+    });
+
+    if (!superTicket) {
+      return c.json({error: 'Super ticket not found'}, 404);
+    }
+
+    if (!superTicket.user || superTicket.user.id !== payload.id) {
+      return c.json({error: 'Super ticket does not belong to the user'}, 400);
+    }
+
+    const superTicketSession = await prisma.superTicketsSessions.findUnique({
+      where: {
+        seat,
+        super_ticket_id_screening_id: {
+          super_ticket_id: id,
+          screening_id,
+        },
+      },
+    });
+
+    if (!superTicketSession) {
+      return c.json(
+        {
+          error:
+            "Super ticket screening was not found or the seat wasn't booked by this super ticket",
+        },
+        404
+      );
+    }
+
+    if (superTicketSession.used) {
+      return c.json({error: 'The ticket has already been used on this screening'}, 400);
+    }
+
+    await prisma.superTicketsSessions.update({
+      where: {
+        seat,
+        super_ticket_id_screening_id: {
+          super_ticket_id: id,
+          screening_id,
+        },
+      },
+      data: {
+        used: true,
+      },
+    });
+
+    return c.json({message: 'Super ticket used'}, 200);
   } catch (error) {
     console.error(error);
     return c.json({error: error}, 500);
@@ -288,6 +367,94 @@ superTickets.openapi(deleteSuperTicket, async (c) => {
     });
 
     return c.json({message: 'Super ticket deleted'}, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({error: error}, 500);
+  }
+});
+
+superTickets.openapi(cancelBookingSuperTicket, async (c) => {
+  try {
+    const token = c.req.header('authorization')?.split(' ')[1];
+    const payload: PayloadValidator = c.get('jwtPayload');
+    await checkToken(payload, Role.USER, token);
+
+    const {id} = c.req.valid('param');
+    const {seat, screening_id} = c.req.valid('json');
+
+    const superTicket = await prisma.superTickets.findUnique({
+      where: {
+        id: id,
+      },
+      ...superTicketSelectOptions,
+    });
+
+    if (!superTicket) {
+      return c.json({error: 'Super ticket not found'}, 404);
+    }
+
+    if (!superTicket.user || superTicket.user.id !== payload.id) {
+      return c.json({error: 'Super ticket does not belong to the user'}, 400);
+    }
+
+    const superTicketSession = await prisma.superTicketsSessions.findUnique({
+      where: {
+        seat,
+        super_ticket_id_screening_id: {
+          super_ticket_id: id,
+          screening_id,
+        },
+      },
+    });
+
+    if (!superTicketSession) {
+      return c.json(
+        {
+          error:
+            "Super ticket screening was not found or the seat wasn't booked by this super ticket",
+        },
+        404
+      );
+    }
+
+    if (superTicketSession.used) {
+      return c.json({error: 'The ticket has already been used on this screening'}, 400);
+    }
+
+    await prisma.superTicketsSessions.delete({
+      where: {
+        seat,
+        super_ticket_id_screening_id: {
+          super_ticket_id: id,
+          screening_id,
+        },
+      },
+    });
+
+    await prisma.tickets.create({
+      data: {
+        seat,
+        user_id: null,
+        price: superTicketSession.original_price,
+        screening_id,
+      },
+    });
+
+    const updatedSuperTicket = await prisma.superTickets.update({
+      where: {
+        id: superTicket.id,
+      },
+      data: {
+        uses: {
+          increment: 1,
+        },
+      },
+      select: {
+        uses: true,
+      },
+    });
+
+    return c.json(updatedSuperTicket, 200);
   } catch (error) {
     console.error(error);
     return c.json({error: error}, 500);
