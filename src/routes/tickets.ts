@@ -1,8 +1,8 @@
-import {createRoute, z} from '@hono/zod-openapi';
+import { createRoute, z } from '@hono/zod-openapi';
 import {
+  insertTicketValidator,
   listTicketValidator,
   ticketValidator,
-  insertTicketValidator,
   updateTicketValidator,
 } from '../validators/tickets';
 
@@ -10,7 +10,7 @@ const serverErrorSchema = {
   description: 'Internal server error',
   content: {
     'application/json': {
-      schema: z.object({error: z.string()}),
+      schema: z.object({ error: z.string() }),
     },
   },
 };
@@ -20,7 +20,7 @@ export const getTickets = createRoute({
   path: '/tickets',
   summary: 'Get all tickets',
   description: 'Get all tickets',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     query: z.object({
       used: z.coerce.boolean().optional(),
@@ -52,9 +52,9 @@ export const getTicketById = createRoute({
   path: '/tickets/{id}',
   summary: 'Get ticket by id',
   description: 'Get ticket by id',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
   },
   responses: {
     200: {
@@ -69,7 +69,7 @@ export const getTicketById = createRoute({
       description: 'Ticket not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -83,7 +83,7 @@ export const insertTicket = createRoute({
   path: '/tickets',
   summary: 'Insert a ticket',
   description: 'Insert a ticket',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     body: {
       content: {
@@ -106,7 +106,7 @@ export const insertTicket = createRoute({
       description: 'Bad request',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -120,9 +120,9 @@ export const buyTicket = createRoute({
   path: '/tickets/buy/{id}',
   summary: 'Buy a ticket',
   description: 'Buy a ticket',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
   },
   responses: {
     201: {
@@ -137,7 +137,7 @@ export const buyTicket = createRoute({
       description: 'Bad request',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -151,9 +151,9 @@ export const refundTicket = createRoute({
   path: '/tickets/refund/{id}',
   summary: 'Refund a ticket',
   description: 'Refund a ticket',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
   },
   responses: {
     200: {
@@ -163,7 +163,7 @@ export const refundTicket = createRoute({
       description: 'Bad request',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -177,9 +177,9 @@ export const updateTicket = createRoute({
   path: '/tickets/{id}',
   summary: 'Update a ticket',
   description: 'Update a ticket',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
     body: {
       content: {
         'application/json': {
@@ -201,7 +201,7 @@ export const updateTicket = createRoute({
       description: 'Bad request',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -215,9 +215,9 @@ export const useTicket = createRoute({
   path: '/tickets/use/{id}',
   summary: 'Use a ticket',
   description: 'Use a ticket',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
   },
   responses: {
     200: {
@@ -232,7 +232,7 @@ export const useTicket = createRoute({
       description: 'Bad request',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -246,9 +246,9 @@ export const deleteTicket = createRoute({
   path: '/tickets/{id}',
   summary: 'Delete a ticket',
   description: 'Delete a ticket',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
   },
   responses: {
     204: {

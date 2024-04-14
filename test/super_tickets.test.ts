@@ -1,9 +1,9 @@
+import { sign } from 'hono/jwt';
 import app from '../src/app';
-import {sign} from 'hono/jwt';
-import {Role} from '../src/lib/token';
+import { Role } from '../src/lib/token';
 
 const secret = process.env.SECRET_KEY || 'secret';
-const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
+const adminToken = await sign({ id: 1, role: Role.ADMIN }, secret);
 
 let trackedMovie: number;
 let trackedCategory: number;
@@ -23,7 +23,7 @@ const path = `http://localhost:${port}`;
 
 describe('Super tickets', () => {
   test('Create a Category', async () => {
-    const res = await app.request(path + '/categories', {
+    const res = await app.request(`${path}/categories`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ describe('Super tickets', () => {
   });
 
   test('Create a Movie', async () => {
-    const res = await app.request(path + '/movies', {
+    const res = await app.request(`${path}/movies`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -61,14 +61,14 @@ describe('Super tickets', () => {
   });
 
   test('Create a Room', async () => {
-    const res = await app.request(path + '/rooms', {
+    const res = await app.request(`${path}/rooms`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
-        name: `testing ticket room`,
+        name: 'testing ticket room',
         description: 'Test room',
         capacity: 25,
         type: 'room',
@@ -82,7 +82,7 @@ describe('Super tickets', () => {
   });
 
   test('Create a Screening', async () => {
-    const res = await app.request(path + '/screenings', {
+    const res = await app.request(`${path}/screenings`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ describe('Super tickets', () => {
   });
 
   test('Create a user', async () => {
-    const res = await app.request(path + '/users', {
+    const res = await app.request(`${path}/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ describe('Super tickets', () => {
   });
 
   test('Login as a user', async () => {
-    const res = await app.request(path + '/auth/login', {
+    const res = await app.request(`${path}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -136,7 +136,7 @@ describe('Super tickets', () => {
   });
 
   test('Add money to user', async () => {
-    const res = await app.request(path + `/users/${trackedUser}`, {
+    const res = await app.request(`${path}/users/${trackedUser}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -148,11 +148,11 @@ describe('Super tickets', () => {
     });
     expect(res.status).toBe(200);
     const user = await res.json();
-    expect(user).toMatchObject({money: 50});
+    expect(user).toMatchObject({ money: 50 });
   });
 
   test('POST /super_tickets', async () => {
-    const res = await app.request(path + '/super_tickets', {
+    const res = await app.request(`${path}/super_tickets`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -166,11 +166,11 @@ describe('Super tickets', () => {
     expect(res.status).toBe(201);
     const ticket = await res.json();
     trackedTicket = ticket.id;
-    expect(ticket).toMatchObject({price: 100, uses: 10});
+    expect(ticket).toMatchObject({ price: 100, uses: 10 });
   });
 
   test('GET /super_tickets', async () => {
-    const res = await app.request(path + '/super_tickets', {
+    const res = await app.request(`${path}/super_tickets`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -181,18 +181,18 @@ describe('Super tickets', () => {
   });
 
   test('GET /super_tickets/{id}', async () => {
-    const res = await app.request(path + `/super_tickets/${trackedTicket}`, {
+    const res = await app.request(`${path}/super_tickets/${trackedTicket}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
     });
     expect(res.status).toBe(200);
     const ticket = await res.json();
-    expect(ticket).toMatchObject({price: 100, uses: 10});
+    expect(ticket).toMatchObject({ price: 100, uses: 10 });
   });
 
   test('PATCH /super_tickets/{id}', async () => {
-    const res = await app.request(path + `/super_tickets/${trackedTicket}`, {
+    const res = await app.request(`${path}/super_tickets/${trackedTicket}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -205,11 +205,11 @@ describe('Super tickets', () => {
     });
     expect(res.status).toBe(200);
     const ticket = await res.json();
-    expect(ticket).toMatchObject({price: 50, uses: 5});
+    expect(ticket).toMatchObject({ price: 50, uses: 5 });
   });
 
   test('POST /super_tickets/buy/{id}', async () => {
-    const res = await app.request(path + `/super_tickets/buy/${trackedTicket}`, {
+    const res = await app.request(`${path}/super_tickets/buy/${trackedTicket}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -218,11 +218,11 @@ describe('Super tickets', () => {
     });
     expect(res.status).toBe(200);
     const ticket = await res.json();
-    expect(ticket).toMatchObject({price: 50});
+    expect(ticket).toMatchObject({ price: 50 });
   });
 
   test('PATCH /super_tickets/book/{id}', async () => {
-    const res = await app.request(path + `/super_tickets/book/${trackedTicket}`, {
+    const res = await app.request(`${path}/super_tickets/book/${trackedTicket}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -235,11 +235,11 @@ describe('Super tickets', () => {
     });
     expect(res.status).toBe(200);
     const ticket = await res.json();
-    expect(ticket).toMatchObject({uses: 4});
+    expect(ticket).toMatchObject({ uses: 4 });
   });
 
   test('DELETE /super_tickets/cancel/{id}', async () => {
-    const res = await app.request(path + `/super_tickets/cancel/${trackedTicket}`, {
+    const res = await app.request(`${path}/super_tickets/cancel/${trackedTicket}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -252,11 +252,11 @@ describe('Super tickets', () => {
     });
     expect(res.status).toBe(200);
     const ticket = await res.json();
-    expect(ticket).toMatchObject({uses: 5});
+    expect(ticket).toMatchObject({ uses: 5 });
   });
 
   test('DELETE /super_tickets/{id}', async () => {
-    const res = await app.request(path + `/super_tickets/${trackedTicket}`, {
+    const res = await app.request(`${path}/super_tickets/${trackedTicket}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
@@ -266,7 +266,7 @@ describe('Super tickets', () => {
   });
 
   test('Clean up', async () => {
-    const res = await app.request(path + `/users/${trackedUser}`, {
+    const res = await app.request(`${path}/users/${trackedUser}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
@@ -274,7 +274,7 @@ describe('Super tickets', () => {
     });
     expect(res.status).toBe(200);
 
-    const res2 = await app.request(path + `/screenings/${trackedScreening}`, {
+    const res2 = await app.request(`${path}/screenings/${trackedScreening}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
@@ -282,7 +282,7 @@ describe('Super tickets', () => {
     });
     expect(res2.status).toBe(200);
 
-    const res3 = await app.request(path + `/rooms/${trackedRoom}`, {
+    const res3 = await app.request(`${path}/rooms/${trackedRoom}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
@@ -290,7 +290,7 @@ describe('Super tickets', () => {
     });
     expect(res3.status).toBe(200);
 
-    const res4 = await app.request(path + `/movies/${trackedMovie}`, {
+    const res4 = await app.request(`${path}/movies/${trackedMovie}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
@@ -298,7 +298,7 @@ describe('Super tickets', () => {
     });
     expect(res4.status).toBe(200);
 
-    const res5 = await app.request(path + `/categories/${trackedCategory}`, {
+    const res5 = await app.request(`${path}/categories/${trackedCategory}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,

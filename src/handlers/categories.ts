@@ -1,13 +1,8 @@
-import {OpenAPIHono} from '@hono/zod-openapi';
-import {prisma} from '../lib/database.js';
-import {
-  getCategories,
-  getCategoryById,
-  insertCategory,
-  deleteCategory,
-} from '../routes/categories.js';
-import {zodErrorHook} from '../lib/zodError.js';
-import {checkToken, PayloadValidator, Role} from '../lib/token.js';
+import { OpenAPIHono } from '@hono/zod-openapi';
+import { prisma } from '../lib/database.js';
+import { type PayloadValidator, Role, checkToken } from '../lib/token.js';
+import { zodErrorHook } from '../lib/zodError.js';
+import { deleteCategory, getCategories, getCategoryById, insertCategory } from '../routes/categories.js';
 
 export const categories = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -23,7 +18,7 @@ categories.openapi(getCategories, async (c) => {
     return c.json(categories, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -32,15 +27,15 @@ categories.openapi(getCategoryById, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.USER, token);
 
-  const {id} = c.req.valid('param');
+  const { id } = c.req.valid('param');
   try {
-    const category = await prisma.categories.findUnique({where: {id}});
-    if (!category) return c.json({error: `Category with id ${id} not found`}, 404);
+    const category = await prisma.categories.findUnique({ where: { id } });
+    if (!category) return c.json({ error: `Category with id ${id} not found` }, 404);
 
     return c.json(category, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -49,17 +44,17 @@ categories.openapi(insertCategory, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.ADMIN, token);
 
-  const {name} = c.req.valid('json');
+  const { name } = c.req.valid('json');
   try {
-    const exist = await prisma.categories.findUnique({where: {name}});
-    if (exist) return c.json({error: 'Category name already exists'}, 400);
+    const exist = await prisma.categories.findUnique({ where: { name } });
+    if (exist) return c.json({ error: 'Category name already exists' }, 400);
 
-    const category = await prisma.categories.create({data: {name}});
-    if (!category) return c.json({error: 'Category name already exists'}, 400);
+    const category = await prisma.categories.create({ data: { name } });
+    if (!category) return c.json({ error: 'Category name already exists' }, 400);
     return c.json(category, 201);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -68,15 +63,15 @@ categories.openapi(deleteCategory, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.ADMIN, token);
 
-  const {id} = c.req.valid('param');
+  const { id } = c.req.valid('param');
   try {
-    const category = await prisma.categories.findUnique({where: {id}});
-    if (!category) return c.json({error: `Category with id ${id} not found`}, 404);
+    const category = await prisma.categories.findUnique({ where: { id } });
+    if (!category) return c.json({ error: `Category with id ${id} not found` }, 404);
 
-    await prisma.categories.delete({where: {id}});
-    return c.json({message: 'Category deleted successfully'}, 200);
+    await prisma.categories.delete({ where: { id } });
+    return c.json({ message: 'Category deleted successfully' }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });

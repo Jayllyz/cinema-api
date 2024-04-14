@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import { z } from 'zod';
 
 export const userValidator = z.object({
   id: z.number().positive(),
@@ -26,7 +26,7 @@ export const insertUserValidator = z.object({
 });
 
 export const idValidator = z.object({
-  id: z.coerce.number().int({message: 'Invalid id'}).min(1, {message: 'Invalid id'}),
+  id: z.coerce.number().int({ message: 'Invalid id' }).min(1, { message: 'Invalid id' }),
 });
 
 export const updateUserValidator = z.object({

@@ -1,6 +1,6 @@
-import {createRoute, z} from '@hono/zod-openapi';
-import {loginValidator, signupValidator} from '../validators/auth';
-import {userValidator} from '../validators/users';
+import { createRoute, z } from '@hono/zod-openapi';
+import { loginValidator, signupValidator } from '../validators/auth';
+import { userValidator } from '../validators/users';
 
 export const loginUser = createRoute({
   method: 'post',
@@ -41,7 +41,7 @@ export const loginUser = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -86,7 +86,7 @@ export const signupUser = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },

@@ -1,4 +1,4 @@
-import {createRoute, z} from '@hono/zod-openapi';
+import { createRoute, z } from '@hono/zod-openapi';
 import {
   insertWorkingShiftsValidator,
   listworkingShiftsValidator,
@@ -11,7 +11,7 @@ export const insertWorkingShift = createRoute({
   path: '/working_shifts',
   summary: 'Insert an working shift',
   description: 'Insert an working shift',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     body: {
       content: {
@@ -34,7 +34,7 @@ export const insertWorkingShift = createRoute({
       description: 'Invalid body',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -42,7 +42,7 @@ export const insertWorkingShift = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -55,7 +55,7 @@ export const getWorkingShifts = createRoute({
   path: '/working_shifts',
   summary: 'Get all working shift',
   description: 'Get all working shift',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   responses: {
     200: {
       description: 'Successful response',
@@ -69,7 +69,7 @@ export const getWorkingShifts = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -82,9 +82,9 @@ export const getWorkingShiftById = createRoute({
   path: '/working_shifts/{id}',
   summary: 'Get a working shift by id',
   description: 'Get a working shift by id',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
   },
   responses: {
     200: {
@@ -99,7 +99,7 @@ export const getWorkingShiftById = createRoute({
       description: 'Working shift not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -107,7 +107,7 @@ export const getWorkingShiftById = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -120,16 +120,16 @@ export const deleteWorkingShift = createRoute({
   path: '/working_shifts/{id}',
   summary: 'Delete a working shift',
   description: 'Delete a working shift',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
   },
   responses: {
     200: {
       description: 'working shift deleted',
       content: {
         'application/json': {
-          schema: z.object({message: z.string()}),
+          schema: z.object({ message: z.string() }),
         },
       },
     },
@@ -137,7 +137,7 @@ export const deleteWorkingShift = createRoute({
       description: 'Working shift not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -145,7 +145,7 @@ export const deleteWorkingShift = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -158,9 +158,9 @@ export const updateWorkingShift = createRoute({
   path: '/working_shifts/{id}',
   summary: 'Update a working shift',
   description: 'Update a working shift',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
     body: {
       content: {
         'application/json': {
@@ -182,7 +182,7 @@ export const updateWorkingShift = createRoute({
       description: 'Invalid body',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -190,7 +190,7 @@ export const updateWorkingShift = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },

@@ -1,11 +1,11 @@
+import { sign } from 'hono/jwt';
 import app from '../src/app.js';
-import {sign} from 'hono/jwt';
-import {Role} from '../src/lib/token';
+import { Role } from '../src/lib/token';
 
 let createdEmployeeId: number;
 let createdWorkingShiftId: number;
 const secret = process.env.SECRET_KEY || 'secret';
-const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
+const adminToken = await sign({ id: 1, role: Role.ADMIN }, secret);
 
 const port = Number(process.env.PORT || 3000);
 const path = `http://localhost:${port}`;
@@ -20,7 +20,7 @@ if (tomorrow.getDay() === 0 || tomorrow.getDay() === 6) {
 
 describe('Employees', () => {
   test('POST /employees', async () => {
-    const res = await app.request(path + '/employees', {
+    const res = await app.request(`${path}/employees`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,7 +38,7 @@ describe('Employees', () => {
   });
 
   test('GET /employees', async () => {
-    const res = await app.request(path + '/movies', {
+    const res = await app.request(`${path}/movies`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -49,19 +49,19 @@ describe('Employees', () => {
   });
 
   test('GET /employees/{id}', async () => {
-    const res = await app.request(path + `/employees/${createdEmployeeId}`, {
+    const res = await app.request(`${path}/employees/${createdEmployeeId}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
     });
     expect(res.status).toBe(200);
     const employee = await res.json();
-    expect(employee).toMatchObject({last_name: 'Doe', first_name: 'John'});
+    expect(employee).toMatchObject({ last_name: 'Doe', first_name: 'John' });
   });
 
   test('PATCH /employees/{id}', async () => {
     const updateEmployee = 'johnny';
-    const res = await app.request(path + `/employees/${createdEmployeeId}`, {
+    const res = await app.request(`${path}/employees/${createdEmployeeId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ describe('Employees', () => {
     });
     expect(res.status).toBe(200);
     const employee = await res.json();
-    expect(employee).toMatchObject({first_name: updateEmployee});
+    expect(employee).toMatchObject({ first_name: updateEmployee });
   });
 
   test('POST /working_shifts', async () => {
@@ -83,7 +83,7 @@ describe('Employees', () => {
 
     console.log(end_time);
 
-    const res = await app.request(path + '/working_shifts', {
+    const res = await app.request(`${path}/working_shifts`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ describe('Employees', () => {
   });
 
   test('GET /working_shifts', async () => {
-    const res = await app.request(path + '/working_shifts', {
+    const res = await app.request(`${path}/working_shifts`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -113,19 +113,19 @@ describe('Employees', () => {
   });
 
   test('GET /working_shifts/{id}', async () => {
-    const res = await app.request(path + `/working_shifts/${createdWorkingShiftId}`, {
+    const res = await app.request(`${path}/working_shifts/${createdWorkingShiftId}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
     });
     expect(res.status).toBe(200);
     const workingShift = await res.json();
-    expect(workingShift).toMatchObject({id: createdWorkingShiftId});
+    expect(workingShift).toMatchObject({ id: createdWorkingShiftId });
   });
 
   test('PATCH /working_shifts/{id}', async () => {
     const updateWorkingShift = 'reception';
-    const res = await app.request(path + `/working_shifts/${createdWorkingShiftId}`, {
+    const res = await app.request(`${path}/working_shifts/${createdWorkingShiftId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -137,11 +137,11 @@ describe('Employees', () => {
     });
     expect(res.status).toBe(200);
     const workingShift = await res.json();
-    expect(workingShift).toMatchObject({position: 'reception'});
+    expect(workingShift).toMatchObject({ position: 'reception' });
   });
 
   test('DELETE /working_shifts/{id}', async () => {
-    const res = await app.request(path + `/working_shifts/${createdWorkingShiftId}`, {
+    const res = await app.request(`${path}/working_shifts/${createdWorkingShiftId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
@@ -151,7 +151,7 @@ describe('Employees', () => {
   });
 
   test('DELETE /employees/{id}', async () => {
-    const res = await app.request(path + `/employees/${createdEmployeeId}`, {
+    const res = await app.request(`${path}/employees/${createdEmployeeId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,

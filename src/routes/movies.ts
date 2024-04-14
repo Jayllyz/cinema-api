@@ -1,18 +1,18 @@
-import {createRoute, z} from '@hono/zod-openapi';
+import { createRoute, z } from '@hono/zod-openapi';
 import {
-  insertMovieValidator,
-  updateMovieValidator,
-  listMoviesValidator,
   MovieValidator,
+  insertMovieValidator,
+  listMoviesValidator,
+  updateMovieValidator,
 } from '../validators/movies.js';
-import {idValidator} from '../validators/rooms.js';
+import { idValidator } from '../validators/rooms.js';
 
 export const getMovies = createRoute({
   method: 'get',
   path: '/movies',
   summary: 'Get all movies',
   description: 'Get all movies',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     query: z.object({
       title: z.string().optional(),
@@ -36,7 +36,7 @@ export const getMovies = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -49,7 +49,7 @@ export const getMovieById = createRoute({
   path: '/movies/{id}',
   summary: 'Get a movie by id',
   description: 'Get a movie by id',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     params: idValidator,
   },
@@ -66,7 +66,7 @@ export const getMovieById = createRoute({
       description: 'Movie not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -79,7 +79,7 @@ export const insertMovie = createRoute({
   path: '/movies',
   summary: 'Insert a movie',
   description: 'Insert a movie',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     body: {
       content: {
@@ -102,7 +102,7 @@ export const insertMovie = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -115,7 +115,7 @@ export const updateMovie = createRoute({
   path: '/movies/{id}',
   summary: 'Update a movie',
   description: 'Update a movie',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     params: idValidator,
     body: {
@@ -139,7 +139,7 @@ export const updateMovie = createRoute({
       description: 'Movie not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -147,7 +147,7 @@ export const updateMovie = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -160,7 +160,7 @@ export const deleteMovie = createRoute({
   path: '/movies/{id}',
   summary: 'Delete a movie',
   description: 'Delete a movie',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     params: idValidator,
   },
@@ -169,7 +169,7 @@ export const deleteMovie = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: z.object({message: z.string()}),
+          schema: z.object({ message: z.string() }),
         },
       },
     },
@@ -177,7 +177,7 @@ export const deleteMovie = createRoute({
       description: 'Movie not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -185,7 +185,7 @@ export const deleteMovie = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },

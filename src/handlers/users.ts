@@ -1,16 +1,9 @@
-import {OpenAPIHono} from '@hono/zod-openapi';
-import {prisma} from '../lib/database';
-import {
-  getUserById,
-  getUsers,
-  insertUser,
-  updateUser,
-  deleteUser,
-  updateUserMoney,
-} from '../routes/users';
+import { OpenAPIHono } from '@hono/zod-openapi';
 import bcrypt from 'bcryptjs';
-import {checkToken, PayloadValidator, Role} from '../lib/token';
-import {zodErrorHook} from '../lib/zodError.js';
+import { prisma } from '../lib/database';
+import { type PayloadValidator, Role, checkToken } from '../lib/token';
+import { zodErrorHook } from '../lib/zodError.js';
+import { deleteUser, getUserById, getUsers, insertUser, updateUser, updateUserMoney } from '../routes/users';
 
 export const users = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -36,7 +29,7 @@ users.openapi(getUsers, async (c) => {
     return c.json(users, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -45,10 +38,10 @@ users.openapi(getUserById, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.STAFF, token);
 
-  const {id} = c.req.valid('param');
+  const { id } = c.req.valid('param');
   try {
     const user = await prisma.users.findUnique({
-      where: {id},
+      where: { id },
       select: {
         id: true,
         first_name: true,
@@ -59,12 +52,12 @@ users.openapi(getUserById, async (c) => {
       },
     });
 
-    if (!user) return c.json({error: `User with id ${id} not found`}, 404);
+    if (!user) return c.json({ error: `User with id ${id} not found` }, 404);
 
     return c.json(user, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -74,20 +67,20 @@ users.openapi(insertUser, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.ADMIN, token);
 
-  const {first_name, last_name, email, password} = c.req.valid('json');
+  const { first_name, last_name, email, password } = c.req.valid('json');
   try {
-    const emailUsed = await prisma.users.findUnique({where: {email}});
-    if (emailUsed) return c.json({error: 'email already used'}, 400);
+    const emailUsed = await prisma.users.findUnique({ where: { email } });
+    if (emailUsed) return c.json({ error: 'email already used' }, 400);
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.users.create({
-      data: {first_name, last_name, email, password: hashedPassword},
+      data: { first_name, last_name, email, password: hashedPassword },
     });
     return c.json(user, 201);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -97,19 +90,19 @@ users.openapi(updateUserMoney, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.USER, token);
 
-  const {deposit, withdraw} = c.req.valid('query');
+  const { deposit, withdraw } = c.req.valid('query');
   if (!deposit && !withdraw) {
-    return c.json({error: 'One of deposit or withdraw is required'}, 400);
+    return c.json({ error: 'One of deposit or withdraw is required' }, 400);
   }
 
   if (deposit && withdraw) {
-    return c.json({error: 'You can only deposit or withdraw at a time'}, 400);
+    return c.json({ error: 'You can only deposit or withdraw at a time' }, 400);
   }
 
   const id = payload.id;
   try {
     const userExists = await prisma.users.findUnique({
-      where: {id},
+      where: { id },
       select: {
         id: true,
         first_name: true,
@@ -119,13 +112,13 @@ users.openapi(updateUserMoney, async (c) => {
         role: true,
       },
     });
-    if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
+    if (!userExists) return c.json({ error: `User with id ${id} not found` }, 404);
 
     let user = userExists;
 
     if (deposit) {
       user = await prisma.users.update({
-        where: {id},
+        where: { id },
         select: {
           id: true,
           first_name: true,
@@ -134,16 +127,16 @@ users.openapi(updateUserMoney, async (c) => {
           money: true,
           role: true,
         },
-        data: {money: {increment: deposit}},
+        data: { money: { increment: deposit } },
       });
     }
     if (withdraw) {
       if (userExists.money < withdraw) {
-        return c.json({error: 'Not enough money to withdraw'}, 400);
+        return c.json({ error: 'Not enough money to withdraw' }, 400);
       }
 
       user = await prisma.users.update({
-        where: {id},
+        where: { id },
         select: {
           id: true,
           first_name: true,
@@ -152,14 +145,14 @@ users.openapi(updateUserMoney, async (c) => {
           money: true,
           role: true,
         },
-        data: {money: {decrement: withdraw}},
+        data: { money: { decrement: withdraw } },
       });
     }
 
     return c.json(user, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: 'An error occurred while updating the user money value'}, 500);
+    return c.json({ error: 'An error occurred while updating the user money value' }, 500);
   }
 });
 
@@ -168,20 +161,20 @@ users.openapi(updateUser, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.ADMIN, token);
 
-  const {id} = c.req.valid('param');
-  const {first_name, last_name, email, money} = c.req.valid('json');
+  const { id } = c.req.valid('param');
+  const { first_name, last_name, email, money } = c.req.valid('json');
   try {
-    const userExists = await prisma.users.findUnique({where: {id}});
-    if (!userExists) return c.json({error: `User with id ${id} not found`}, 404);
+    const userExists = await prisma.users.findUnique({ where: { id } });
+    if (!userExists) return c.json({ error: `User with id ${id} not found` }, 404);
 
     const user = await prisma.users.update({
-      where: {id},
-      data: {first_name, last_name, email, money},
+      where: { id },
+      data: { first_name, last_name, email, money },
     });
     return c.json(user, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -191,16 +184,16 @@ users.openapi(deleteUser, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.ADMIN, token);
 
-  const {id} = c.req.valid('param');
+  const { id } = c.req.valid('param');
   try {
-    const user = await prisma.users.findUnique({where: {id}});
-    if (!user) return c.json({error: `User with id ${id} not found`}, 404);
+    const user = await prisma.users.findUnique({ where: { id } });
+    if (!user) return c.json({ error: `User with id ${id} not found` }, 404);
 
-    await prisma.users.delete({where: {id}});
+    await prisma.users.delete({ where: { id } });
 
-    return c.json({message: `User with id ${id} deleted`}, 200);
+    return c.json({ message: `User with id ${id} deleted` }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });

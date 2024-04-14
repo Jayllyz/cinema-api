@@ -1,13 +1,13 @@
-import {z} from 'zod';
-import {MovieValidator} from './movies';
-import {RoomValidator} from './rooms';
-import {validateDay} from '../lib/date';
+import { z } from 'zod';
+import { validateDay } from '../lib/date';
+import { MovieValidator } from './movies';
+import { RoomValidator } from './rooms';
 
 export const insertScreeningValidator = z.object({
   start_time: z.coerce
     .date()
-    .min(new Date(), {message: 'start date cannot be in the past.'})
-    .refine((date) => validateDay(date), {message: 'The screening cannot be during the week-end'})
+    .min(new Date(), { message: 'start date cannot be in the past.' })
+    .refine((date) => validateDay(date), { message: 'The screening cannot be during the week-end' })
     .transform((date) => date.toISOString()),
   movie_id: z.number().min(1),
   room_id: z.number().min(1),
@@ -17,8 +17,8 @@ export const insertScreeningValidator = z.object({
 export const updateScreeningValidator = z.object({
   start_time: z.coerce
     .date()
-    .min(new Date(), {message: 'start date cannot be in the pastday.'})
-    .refine((date) => validateDay(date), {message: 'The screening cannot be during the week-end'})
+    .min(new Date(), { message: 'start date cannot be in the pastday.' })
+    .refine((date) => validateDay(date), { message: 'The screening cannot be during the week-end' })
     .transform((date) => date.toISOString())
     .optional(),
   movie_id: z.number().min(1).optional(),

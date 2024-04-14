@@ -1,8 +1,8 @@
-import {createRoute, z} from '@hono/zod-openapi';
+import { createRoute, z } from '@hono/zod-openapi';
 import {
+  insertSuperTicketValidator,
   listSuperTicketValidator,
   superTicketValidator,
-  insertSuperTicketValidator,
   updateSuperTicketValidator,
 } from '../validators/super_tickets';
 
@@ -10,7 +10,7 @@ const serverErrorSchema = {
   description: 'Internal server error',
   content: {
     'application/json': {
-      schema: z.object({error: z.string()}),
+      schema: z.object({ error: z.string() }),
     },
   },
 };
@@ -20,7 +20,7 @@ export const getSuperTickets = createRoute({
   path: '/super_tickets',
   summary: 'Get all super tickets',
   description: 'Get all super tickets',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   responses: {
     200: {
       description: 'Successful response',
@@ -40,9 +40,9 @@ export const getSuperTicketById = createRoute({
   path: '/super_tickets/{id}',
   summary: 'Get super ticket by id',
   description: 'Get super ticket by id',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
   },
   responses: {
     200: {
@@ -63,7 +63,7 @@ export const insertSuperTicket = createRoute({
   path: '/super_tickets',
   summary: 'Insert super ticket',
   description: 'Insert super ticket',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     body: {
       content: {
@@ -86,7 +86,7 @@ export const insertSuperTicket = createRoute({
       description: 'Bad request',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -100,9 +100,9 @@ export const buySuperTicket = createRoute({
   path: '/super_tickets/buy/{id}',
   summary: 'Buy super ticket',
   description: 'Buy super ticket',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
   },
   responses: {
     200: {
@@ -117,7 +117,7 @@ export const buySuperTicket = createRoute({
       description: 'Bad request',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -131,9 +131,9 @@ export const bookSeatSuperTicket = createRoute({
   path: '/super_tickets/book/{id}',
   summary: 'Use super ticket',
   description: 'Use super ticket',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
     body: {
       content: {
         'application/json': {
@@ -160,7 +160,7 @@ export const bookSeatSuperTicket = createRoute({
       description: 'Bad request',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -174,9 +174,9 @@ export const updateSuperTicket = createRoute({
   path: '/super_tickets/{id}',
   summary: 'Update super ticket',
   description: 'Update super ticket',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
     body: {
       content: {
         'application/json': {
@@ -198,7 +198,7 @@ export const updateSuperTicket = createRoute({
       description: 'Bad request',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -212,9 +212,9 @@ export const useSuperTicket = createRoute({
   path: '/super_tickets/use/{id}',
   summary: 'Use super ticket',
   description: 'Use super ticket',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
     body: {
       content: {
         'application/json': {
@@ -234,7 +234,7 @@ export const useSuperTicket = createRoute({
       description: 'Bad request',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -248,9 +248,9 @@ export const deleteSuperTicket = createRoute({
   path: '/super_tickets/{id}',
   summary: 'Delete super ticket',
   description: 'Delete super ticket',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
   },
   responses: {
     200: {
@@ -266,9 +266,9 @@ export const cancelBookingSuperTicket = createRoute({
   path: '/super_tickets/cancel/{id}',
   summary: 'Cancel a seat booking with a super ticket',
   description: 'Cancel a seat booking with a super ticket',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
     body: {
       content: {
         'application/json': {
@@ -295,7 +295,7 @@ export const cancelBookingSuperTicket = createRoute({
       description: 'Bad request',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },

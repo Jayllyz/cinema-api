@@ -10,33 +10,32 @@
     "prisma:generate": "npx prisma generate",
     "prisma:push": "npx prisma db push",
     "prisma:init": "npx prisma generate && npx prisma db push",
-    "test": "vitest --run"
+    "test": "vitest --run",
+    "lint": "biome check --apply .",
+    "lint:check": "biome ci ."
   },
   "dependencies": {
-    "@hono/node-server": "^1.9.1",
+    "@hono/node-server": "^1.10.0",
     "@hono/swagger-ui": "^0.2.1",
-    "@hono/zod-openapi": "^0.10.0",
+    "@hono/zod-openapi": "^0.11.0",
     "@prisma/client": "^5.12.1",
     "bcryptjs": "^2.4.3",
-    "hono": "^4.2.2",
+    "hono": "^4.2.4",
     "zod": "^3.22.4",
     "zod-validation-error": "^3.1.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.6.4",
     "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^20.12.5",
+    "@types/node": "^20.12.7",
     "@types/swagger-ui-dist": "^3.30.4",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
-    "prettier": "^3.2.5",
     "prisma": "^5.12.1",
     "tsx": "^4.7.2",
-    "typescript": "^5.4.4",
-    "typescript-eslint": "^7.5.0",
-    "vitest": "^1.4.0"
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0"
   },
   "engines": {
     "node": ">=20.11"
   },
-  "packageManager": "pnpm@8.15.5"
+  "packageManager": "pnpm@8.15.7"
 }

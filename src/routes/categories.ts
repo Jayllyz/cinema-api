@@ -1,13 +1,13 @@
-import {createRoute, z} from '@hono/zod-openapi';
-import {categoryValidator, listCategoriesValidator} from '../validators/categories.js';
-import {idValidator} from '../validators/rooms.js';
+import { createRoute, z } from '@hono/zod-openapi';
+import { categoryValidator, listCategoriesValidator } from '../validators/categories.js';
+import { idValidator } from '../validators/rooms.js';
 
 export const getCategories = createRoute({
   method: 'get',
   path: '/categories',
   summary: 'Get all categories',
   description: 'Get all categories',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   responses: {
     200: {
       description: 'Successful response',
@@ -21,7 +21,7 @@ export const getCategories = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -34,7 +34,7 @@ export const getCategoryById = createRoute({
   path: '/categories/{id}',
   summary: 'Get a category by id',
   description: 'Get a category by id',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     params: idValidator,
   },
@@ -51,7 +51,7 @@ export const getCategoryById = createRoute({
       description: 'Category not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -64,7 +64,7 @@ export const insertCategory = createRoute({
   path: '/categories',
   summary: 'Insert a category',
   description: 'Insert a category',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     body: {
       content: {
@@ -87,7 +87,7 @@ export const insertCategory = createRoute({
       description: 'Invalid request',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -95,7 +95,7 @@ export const insertCategory = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -108,7 +108,7 @@ export const deleteCategory = createRoute({
   path: '/categories/{id}',
   summary: 'Delete a category',
   description: 'Delete a category',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     params: idValidator,
   },
@@ -117,7 +117,7 @@ export const deleteCategory = createRoute({
       description: 'Category deleted',
       content: {
         'application/json': {
-          schema: z.object({message: z.string()}),
+          schema: z.object({ message: z.string() }),
         },
       },
     },
@@ -125,7 +125,7 @@ export const deleteCategory = createRoute({
       description: 'Category not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -133,7 +133,7 @@ export const deleteCategory = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },

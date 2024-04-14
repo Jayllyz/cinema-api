@@ -1,18 +1,18 @@
-import {OpenAPIHono} from '@hono/zod-openapi';
-import {prisma} from '../lib/database';
+import { OpenAPIHono } from '@hono/zod-openapi';
+import { prisma } from '../lib/database';
+import { type PayloadValidator, Role, checkToken } from '../lib/token';
+import { zodErrorHook } from '../lib/zodError';
 import {
-  getSuperTickets,
-  getSuperTicketById,
-  insertSuperTicket,
-  buySuperTicket,
   bookSeatSuperTicket,
+  buySuperTicket,
+  cancelBookingSuperTicket,
+  deleteSuperTicket,
+  getSuperTicketById,
+  getSuperTickets,
+  insertSuperTicket,
   updateSuperTicket,
   useSuperTicket,
-  deleteSuperTicket,
-  cancelBookingSuperTicket,
 } from '../routes/super_tickets';
-import {checkToken, PayloadValidator, Role} from '../lib/token';
-import {zodErrorHook} from '../lib/zodError';
 
 export const superTickets = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -45,7 +45,7 @@ superTickets.openapi(getSuperTickets, async (c) => {
     return c.json(superTickets);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -55,7 +55,7 @@ superTickets.openapi(getSuperTicketById, async (c) => {
     const payload: PayloadValidator = c.get('jwtPayload');
     await checkToken(payload, Role.USER, token);
 
-    const {id} = c.req.valid('param');
+    const { id } = c.req.valid('param');
 
     const superTicket = await prisma.superTickets.findUnique({
       where: {
@@ -65,13 +65,13 @@ superTickets.openapi(getSuperTicketById, async (c) => {
     });
 
     if (!superTicket) {
-      return c.json({error: 'Super ticket not found'}, 404);
+      return c.json({ error: 'Super ticket not found' }, 404);
     }
 
     return c.json(superTicket);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -82,7 +82,7 @@ superTickets.openapi(insertSuperTicket, async (c) => {
     const payload: PayloadValidator = c.get('jwtPayload');
     await checkToken(payload, Role.ADMIN, token);
 
-    const {price, uses} = c.req.valid('json');
+    const { price, uses } = c.req.valid('json');
 
     const superTicket = await prisma.superTickets.create({
       data: {
@@ -95,7 +95,7 @@ superTickets.openapi(insertSuperTicket, async (c) => {
     return c.json(superTicket, 201);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -105,7 +105,7 @@ superTickets.openapi(buySuperTicket, async (c) => {
     const payload: PayloadValidator = c.get('jwtPayload');
     await checkToken(payload, Role.USER, token);
 
-    const {id} = c.req.valid('param');
+    const { id } = c.req.valid('param');
 
     const superTicket = await prisma.superTickets.findUnique({
       where: {
@@ -115,11 +115,11 @@ superTickets.openapi(buySuperTicket, async (c) => {
     });
 
     if (!superTicket) {
-      return c.json({error: 'Super ticket not found'}, 404);
+      return c.json({ error: 'Super ticket not found' }, 404);
     }
 
     if (superTicket.user) {
-      return c.json({error: 'Super ticket already bought'}, 400);
+      return c.json({ error: 'Super ticket already bought' }, 400);
     }
 
     const updatedSuperTicket = await prisma.superTickets.update({
@@ -135,7 +135,7 @@ superTickets.openapi(buySuperTicket, async (c) => {
     return c.json(updatedSuperTicket, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -146,8 +146,8 @@ superTickets.openapi(updateSuperTicket, async (c) => {
     const payload: PayloadValidator = c.get('jwtPayload');
     await checkToken(payload, Role.ADMIN, token);
 
-    const {id} = c.req.valid('param');
-    const {uses, price, user_id} = c.req.valid('json');
+    const { id } = c.req.valid('param');
+    const { uses, price, user_id } = c.req.valid('json');
 
     const superTicket = await prisma.superTickets.findUnique({
       where: {
@@ -157,7 +157,7 @@ superTickets.openapi(updateSuperTicket, async (c) => {
     });
 
     if (!superTicket) {
-      return c.json({error: 'Super ticket not found'}, 404);
+      return c.json({ error: 'Super ticket not found' }, 404);
     }
 
     const updatedSuperTicket = await prisma.superTickets.update({
@@ -175,7 +175,7 @@ superTickets.openapi(updateSuperTicket, async (c) => {
     return c.json(updatedSuperTicket, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -185,8 +185,8 @@ superTickets.openapi(bookSeatSuperTicket, async (c) => {
     const payload: PayloadValidator = c.get('jwtPayload');
     await checkToken(payload, Role.USER, token);
 
-    const {id} = c.req.valid('param');
-    const {seat, screening_id} = c.req.valid('json');
+    const { id } = c.req.valid('param');
+    const { seat, screening_id } = c.req.valid('json');
 
     const superTicket = await prisma.superTickets.findUnique({
       where: {
@@ -196,15 +196,15 @@ superTickets.openapi(bookSeatSuperTicket, async (c) => {
     });
 
     if (!superTicket) {
-      return c.json({error: 'Super ticket not found'}, 404);
+      return c.json({ error: 'Super ticket not found' }, 404);
     }
 
     if (!superTicket.user || superTicket.user.id !== payload.id) {
-      return c.json({error: 'Super ticket does not belong to the user'}, 400);
+      return c.json({ error: 'Super ticket does not belong to the user' }, 400);
     }
 
     if (superTicket.uses <= 0) {
-      return c.json({error: 'Super ticket has no uses left'}, 400);
+      return c.json({ error: 'Super ticket has no uses left' }, 400);
     }
 
     const screening = await prisma.screenings.findUnique({
@@ -214,7 +214,7 @@ superTickets.openapi(bookSeatSuperTicket, async (c) => {
     });
 
     if (!screening) {
-      return c.json({error: 'Screening not found'}, 404);
+      return c.json({ error: 'Screening not found' }, 404);
     }
 
     const takenSeat = await prisma.tickets.findUnique({
@@ -226,7 +226,7 @@ superTickets.openapi(bookSeatSuperTicket, async (c) => {
     });
 
     if (!takenSeat) {
-      return c.json({error: "Seat already taken or doesn't exist"}, 400);
+      return c.json({ error: "Seat already taken or doesn't exist" }, 400);
     }
 
     await prisma.superTicketsSessions.create({
@@ -262,7 +262,7 @@ superTickets.openapi(bookSeatSuperTicket, async (c) => {
     return c.json(updatedSuperTicket, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -272,8 +272,8 @@ superTickets.openapi(useSuperTicket, async (c) => {
     const payload: PayloadValidator = c.get('jwtPayload');
     await checkToken(payload, Role.USER, token);
 
-    const {id} = c.req.valid('param');
-    const {seat, screening_id} = c.req.valid('json');
+    const { id } = c.req.valid('param');
+    const { seat, screening_id } = c.req.valid('json');
 
     const superTicket = await prisma.superTickets.findUnique({
       where: {
@@ -283,11 +283,11 @@ superTickets.openapi(useSuperTicket, async (c) => {
     });
 
     if (!superTicket) {
-      return c.json({error: 'Super ticket not found'}, 404);
+      return c.json({ error: 'Super ticket not found' }, 404);
     }
 
     if (!superTicket.user || superTicket.user.id !== payload.id) {
-      return c.json({error: 'Super ticket does not belong to the user'}, 400);
+      return c.json({ error: 'Super ticket does not belong to the user' }, 400);
     }
 
     const superTicketSession = await prisma.superTicketsSessions.findUnique({
@@ -303,15 +303,14 @@ superTickets.openapi(useSuperTicket, async (c) => {
     if (!superTicketSession) {
       return c.json(
         {
-          error:
-            "Super ticket screening was not found or the seat wasn't booked by this super ticket",
+          error: "Super ticket screening was not found or the seat wasn't booked by this super ticket",
         },
-        404
+        404,
       );
     }
 
     if (superTicketSession.used) {
-      return c.json({error: 'The ticket has already been used on this screening'}, 400);
+      return c.json({ error: 'The ticket has already been used on this screening' }, 400);
     }
 
     await prisma.superTicketsSessions.update({
@@ -327,10 +326,10 @@ superTickets.openapi(useSuperTicket, async (c) => {
       },
     });
 
-    return c.json({message: 'Super ticket used'}, 200);
+    return c.json({ message: 'Super ticket used' }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -341,7 +340,7 @@ superTickets.openapi(deleteSuperTicket, async (c) => {
     const payload: PayloadValidator = c.get('jwtPayload');
     await checkToken(payload, Role.ADMIN, token);
 
-    const {id} = c.req.valid('param');
+    const { id } = c.req.valid('param');
 
     const superTicket = await prisma.superTickets.findUnique({
       where: {
@@ -351,7 +350,7 @@ superTickets.openapi(deleteSuperTicket, async (c) => {
     });
 
     if (!superTicket) {
-      return c.json({error: 'Super ticket not found'}, 404);
+      return c.json({ error: 'Super ticket not found' }, 404);
     }
 
     await prisma.superTicketsSessions.deleteMany({
@@ -366,10 +365,10 @@ superTickets.openapi(deleteSuperTicket, async (c) => {
       },
     });
 
-    return c.json({message: 'Super ticket deleted'}, 200);
+    return c.json({ message: 'Super ticket deleted' }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -379,8 +378,8 @@ superTickets.openapi(cancelBookingSuperTicket, async (c) => {
     const payload: PayloadValidator = c.get('jwtPayload');
     await checkToken(payload, Role.USER, token);
 
-    const {id} = c.req.valid('param');
-    const {seat, screening_id} = c.req.valid('json');
+    const { id } = c.req.valid('param');
+    const { seat, screening_id } = c.req.valid('json');
 
     const superTicket = await prisma.superTickets.findUnique({
       where: {
@@ -390,11 +389,11 @@ superTickets.openapi(cancelBookingSuperTicket, async (c) => {
     });
 
     if (!superTicket) {
-      return c.json({error: 'Super ticket not found'}, 404);
+      return c.json({ error: 'Super ticket not found' }, 404);
     }
 
     if (!superTicket.user || superTicket.user.id !== payload.id) {
-      return c.json({error: 'Super ticket does not belong to the user'}, 400);
+      return c.json({ error: 'Super ticket does not belong to the user' }, 400);
     }
 
     const superTicketSession = await prisma.superTicketsSessions.findUnique({
@@ -410,15 +409,14 @@ superTickets.openapi(cancelBookingSuperTicket, async (c) => {
     if (!superTicketSession) {
       return c.json(
         {
-          error:
-            "Super ticket screening was not found or the seat wasn't booked by this super ticket",
+          error: "Super ticket screening was not found or the seat wasn't booked by this super ticket",
         },
-        404
+        404,
       );
     }
 
     if (superTicketSession.used) {
-      return c.json({error: 'The ticket has already been used on this screening'}, 400);
+      return c.json({ error: 'The ticket has already been used on this screening' }, 400);
     }
 
     await prisma.superTicketsSessions.delete({
@@ -457,6 +455,6 @@ superTickets.openapi(cancelBookingSuperTicket, async (c) => {
     return c.json(updatedSuperTicket, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });

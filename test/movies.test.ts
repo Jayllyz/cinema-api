@@ -1,21 +1,21 @@
+import { sign } from 'hono/jwt';
 import app from '../src/app.js';
-import {randomString} from './utils.js';
-import {sign} from 'hono/jwt';
-import {Role} from '../src/lib/token';
+import { Role } from '../src/lib/token';
+import { randomString } from './utils.js';
 
 let createdMovieId = 1;
 let createdCategoryId = 1;
 const randomMovie = randomString(5);
 
 const secret = process.env.SECRET_KEY || 'secret';
-const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
+const adminToken = await sign({ id: 1, role: Role.ADMIN }, secret);
 
 const port = Number(process.env.PORT || 3000);
 const path = `http://localhost:${port}`;
 
 describe('Movies', () => {
   test('POST /categories', async () => {
-    const res = await app.request(path + '/categories', {
+    const res = await app.request(`${path}/categories`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ describe('Movies', () => {
   });
 
   test('POST /movies', async () => {
-    const res = await app.request(path + '/movies', {
+    const res = await app.request(`${path}/movies`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -49,12 +49,12 @@ describe('Movies', () => {
     });
     expect(res.status).toBe(201);
     const movie = await res.json();
-    expect(movie).toMatchObject({title: randomMovie});
+    expect(movie).toMatchObject({ title: randomMovie });
     createdMovieId = movie.id;
   });
 
   test('GET /movies', async () => {
-    const res = await app.request(path + '/movies', {
+    const res = await app.request(`${path}/movies`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -65,19 +65,19 @@ describe('Movies', () => {
   });
 
   test('GET /movies/{id}', async () => {
-    const res = await app.request(path + `/movies/${createdMovieId}`, {
+    const res = await app.request(`${path}/movies/${createdMovieId}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
     });
     expect(res.status).toBe(200);
     const movie = await res.json();
-    expect(movie).toMatchObject({title: randomMovie});
+    expect(movie).toMatchObject({ title: randomMovie });
   });
 
   test('PATCH /movies/{id}', async () => {
     const updatedMovie = randomString(5);
-    const res = await app.request(path + `/movies/${createdMovieId}`, {
+    const res = await app.request(`${path}/movies/${createdMovieId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -92,11 +92,11 @@ describe('Movies', () => {
     });
     expect(res.status).toBe(200);
     const movie = await res.json();
-    expect(movie).toMatchObject({title: updatedMovie, status: 'unavailable'});
+    expect(movie).toMatchObject({ title: updatedMovie, status: 'unavailable' });
   });
 
   test('DELETE /movies/{id}', async () => {
-    const res = await app.request(path + `/movies/${createdMovieId}`, {
+    const res = await app.request(`${path}/movies/${createdMovieId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
