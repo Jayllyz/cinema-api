@@ -1,5 +1,9 @@
-import {OpenAPIHono} from '@hono/zod-openapi';
-import {getOverlapingScreenings, prisma} from '../lib/database.js';
+import { OpenAPIHono } from '@hono/zod-openapi';
+import { getOverlapingScreenings, prisma } from '../lib/database.js';
+import { isAfterHour, isBeforeHour } from '../lib/date.js';
+import { refundTicketsScreening } from '../lib/refund.js';
+import { type PayloadValidator, Role, checkToken } from '../lib/token.js';
+import { zodErrorHook } from '../lib/zodError.js';
 import {
   deleteScreening,
   getScreeningById,
@@ -7,10 +11,6 @@ import {
   insertScreening,
   updateScreening,
 } from '../routes/screenings.js';
-import {isAfterHour, isBeforeHour} from '../lib/date.js';
-import {zodErrorHook} from '../lib/zodError.js';
-import {checkToken, PayloadValidator, Role} from '../lib/token.js';
-import {refundTicketsScreening} from '../lib/refund.js';
 
 export const screenings = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -47,7 +47,7 @@ screenings.openapi(getScreenings, async (c) => {
     return c.json(screenings, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -56,7 +56,7 @@ screenings.openapi(insertScreening, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.STAFF, token);
 
-  const {start_time, movie_id, room_id, ticket_price} = c.req.valid('json');
+  const { start_time, movie_id, room_id, ticket_price } = c.req.valid('json');
 
   try {
     const movie = await prisma.movies.findUnique({
@@ -69,7 +69,7 @@ screenings.openapi(insertScreening, async (c) => {
     });
 
     if (!movie) {
-      return c.json({error: `movie with id ${movie_id} not found`}, 400);
+      return c.json({ error: `movie with id ${movie_id} not found` }, 400);
     }
 
     const screening_duration_minutes = movie.duration + 30;
@@ -77,11 +77,11 @@ screenings.openapi(insertScreening, async (c) => {
     end_time.setMinutes(end_time.getMinutes() + screening_duration_minutes);
 
     if (isBeforeHour(new Date(start_time), 9)) {
-      return c.json({error: 'The screening cannot start before 9 am'}, 400);
+      return c.json({ error: 'The screening cannot start before 9 am' }, 400);
     }
 
     if (isAfterHour(end_time, 20)) {
-      return c.json({error: 'The screening cannot end after 8 pm'}, 400);
+      return c.json({ error: 'The screening cannot end after 8 pm' }, 400);
     }
 
     const roomExist = await prisma.rooms.findUnique({
@@ -91,14 +91,10 @@ screenings.openapi(insertScreening, async (c) => {
     });
 
     if (!roomExist) {
-      return c.json({error: `room with id ${room_id} not found`}, 400);
+      return c.json({ error: `room with id ${room_id} not found` }, 400);
     }
 
-    const screeningAtSameTime = await getOverlapingScreenings(
-      room_id,
-      new Date(start_time),
-      end_time
-    );
+    const screeningAtSameTime = await getOverlapingScreenings(room_id, new Date(start_time), end_time);
 
     if (screeningAtSameTime) {
       return c.json(
@@ -106,7 +102,7 @@ screenings.openapi(insertScreening, async (c) => {
           error: 'A screening is already programmed at this time slot',
           screening: screeningAtSameTime,
         },
-        400
+        400,
       );
     }
 
@@ -133,7 +129,7 @@ screenings.openapi(insertScreening, async (c) => {
     return c.json(screening, 201);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -142,12 +138,12 @@ screenings.openapi(updateScreening, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.STAFF, token);
 
-  const {id} = c.req.valid('param');
-  const {movie_id, start_time, room_id} = c.req.valid('json');
+  const { id } = c.req.valid('param');
+  const { movie_id, start_time, room_id } = c.req.valid('json');
 
   try {
-    const screening = await prisma.screenings.findUnique({where: {id}});
-    if (!screening) return c.json({error: `Screening with id ${id} not found`}, 404);
+    const screening = await prisma.screenings.findUnique({ where: { id } });
+    if (!screening) return c.json({ error: `Screening with id ${id} not found` }, 404);
 
     if (movie_id) screening.movie_id = movie_id;
 
@@ -157,7 +153,7 @@ screenings.openapi(updateScreening, async (c) => {
       },
     });
 
-    if (!movie) return c.json({error: `Movie with id ${movie_id} not found`}, 404);
+    if (!movie) return c.json({ error: `Movie with id ${movie_id} not found` }, 404);
 
     if (room_id) screening.room_id = room_id;
 
@@ -167,7 +163,7 @@ screenings.openapi(updateScreening, async (c) => {
       },
     });
 
-    if (!room) return c.json({error: `Room with id ${room_id} not found`}, 404);
+    if (!room) return c.json({ error: `Room with id ${room_id} not found` }, 404);
 
     if (start_time) screening.start_time = new Date(start_time);
 
@@ -176,11 +172,11 @@ screenings.openapi(updateScreening, async (c) => {
     end_time.setMinutes(end_time.getMinutes() + screening_duration_minutes);
 
     if (isBeforeHour(screening.start_time, 9)) {
-      return c.json({error: 'The screening cannot start before 9 am'});
+      return c.json({ error: 'The screening cannot start before 9 am' });
     }
 
     if (isAfterHour(end_time, 20)) {
-      return c.json({error: 'The screening cannot end after 8 pm'});
+      return c.json({ error: 'The screening cannot end after 8 pm' });
     }
 
     const screeningAtSameTime = await prisma.screenings.findFirst({
@@ -191,16 +187,13 @@ screenings.openapi(updateScreening, async (c) => {
         },
         OR: [
           {
-            AND: [{start_time: {gte: screening.start_time}}, {end_time: {lte: end_time}}],
+            AND: [{ start_time: { gte: screening.start_time } }, { end_time: { lte: end_time } }],
           },
           {
-            AND: [
-              {start_time: {lte: screening.start_time}},
-              {end_time: {gt: screening.start_time}},
-            ],
+            AND: [{ start_time: { lte: screening.start_time } }, { end_time: { gt: screening.start_time } }],
           },
           {
-            AND: [{start_time: {lt: end_time}}, {end_time: {gte: end_time}}],
+            AND: [{ start_time: { lt: end_time } }, { end_time: { gte: end_time } }],
           },
         ],
       },
@@ -212,19 +205,19 @@ screenings.openapi(updateScreening, async (c) => {
           error: 'A screening is already programmed at this time slot',
           screening: screeningAtSameTime,
         },
-        400
+        400,
       );
     }
 
     const res = await prisma.screenings.update({
-      where: {id: id},
-      data: {movie_id, start_time, room_id},
+      where: { id: id },
+      data: { movie_id, start_time, room_id },
     });
 
     return c.json(res, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -233,19 +226,19 @@ screenings.openapi(deleteScreening, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.STAFF, token);
 
-  const {id} = c.req.valid('param');
+  const { id } = c.req.valid('param');
   try {
-    const screening = await prisma.screenings.findUnique({where: {id}});
-    if (!screening) return c.json({error: `screening with id ${id} not found`}, 404);
+    const screening = await prisma.screenings.findUnique({ where: { id } });
+    if (!screening) return c.json({ error: `screening with id ${id} not found` }, 404);
 
     await refundTicketsScreening(id);
-    await prisma.tickets.deleteMany({where: {screening_id: Number(id)}});
-    await prisma.screenings.delete({where: {id: Number(id)}});
+    await prisma.tickets.deleteMany({ where: { screening_id: Number(id) } });
+    await prisma.screenings.delete({ where: { id: Number(id) } });
 
-    return c.json({message: `screening with id ${id} deleted`}, 200);
+    return c.json({ message: `screening with id ${id} deleted` }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -254,10 +247,10 @@ screenings.openapi(getScreeningById, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.USER, token);
 
-  const {id} = c.req.valid('param');
+  const { id } = c.req.valid('param');
   try {
     const screening = await prisma.screenings.findUnique({
-      where: {id},
+      where: { id },
       select: {
         id: true,
         start_time: true,
@@ -278,11 +271,11 @@ screenings.openapi(getScreeningById, async (c) => {
         room: true,
       },
     });
-    if (!screening) return c.json({error: `Screening with id ${id} not found`}, 404);
+    if (!screening) return c.json({ error: `Screening with id ${id} not found` }, 404);
 
     return c.json(screening, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });

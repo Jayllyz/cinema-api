@@ -1,11 +1,11 @@
+import { sign } from 'hono/jwt';
 import app from '../src/app';
-import {randomString} from './utils';
-import {sign} from 'hono/jwt';
-import {Role} from '../src/lib/token';
+import { Role } from '../src/lib/token';
+import { randomString } from './utils';
 
 const randomUser = randomString(10);
 const secret = process.env.SECRET_KEY || 'secret';
-let adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
+let adminToken = await sign({ id: 1, role: Role.ADMIN }, secret);
 
 const port = Number(process.env.PORT || 3000);
 const path = `http://localhost:${port}`;
@@ -15,7 +15,7 @@ let trackedMoney: number;
 
 describe('Users', () => {
   test('POST /users', async () => {
-    const res = await app.request(path + '/users', {
+    const res = await app.request(`${path}/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -31,12 +31,12 @@ describe('Users', () => {
     expect(res.status).toBe(201);
     const user = await res.json();
     toDelete = user.id;
-    adminToken = await sign({id: user.id, role: Role.ADMIN}, secret);
-    expect(user).toMatchObject({first_name: randomUser});
+    adminToken = await sign({ id: user.id, role: Role.ADMIN }, secret);
+    expect(user).toMatchObject({ first_name: randomUser });
   });
 
   test('GET /users', async () => {
-    const res = await app.request(path + '/users', {
+    const res = await app.request(`${path}/users`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -47,18 +47,18 @@ describe('Users', () => {
   });
 
   test('GET /users/{id}', async () => {
-    const res = await app.request(path + `/users/${toDelete}`, {
+    const res = await app.request(`${path}/users/${toDelete}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
     });
     expect(res.status).toBe(200);
     const user = await res.json();
-    expect(user).toMatchObject({id: toDelete});
+    expect(user).toMatchObject({ id: toDelete });
   });
 
   test('PATCH /users/{id}', async () => {
-    const res = await app.request(path + `/users/${toDelete}`, {
+    const res = await app.request(`${path}/users/${toDelete}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -72,11 +72,11 @@ describe('Users', () => {
     expect(res.status).toBe(200);
     const user = await res.json();
     trackedMoney = user.money;
-    expect(user).toMatchObject({first_name: 'modified'});
+    expect(user).toMatchObject({ first_name: 'modified' });
   });
 
   test('PATCH /users/money', async () => {
-    const res = await app.request(path + '/users/money?deposit=50', {
+    const res = await app.request(`${path}/users/money?deposit=50`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -85,12 +85,12 @@ describe('Users', () => {
     });
     expect(res.status).toBe(200);
     const user = await res.json();
-    expect(user).toMatchObject({money: trackedMoney + 50});
+    expect(user).toMatchObject({ money: trackedMoney + 50 });
     trackedMoney += 50;
   });
 
   test('PATCH /users/money', async () => {
-    const res = await app.request(path + '/users/money?withdraw=50', {
+    const res = await app.request(`${path}/users/money?withdraw=50`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -99,12 +99,12 @@ describe('Users', () => {
     });
     expect(res.status).toBe(200);
     const user = await res.json();
-    expect(user).toMatchObject({money: trackedMoney - 50});
+    expect(user).toMatchObject({ money: trackedMoney - 50 });
     trackedMoney -= 50;
   });
 
   test('DELETE /users/{id}', async () => {
-    const res = await app.request(path + `/users/${toDelete}`, {
+    const res = await app.request(`${path}/users/${toDelete}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,

@@ -1,6 +1,8 @@
-import {OpenAPIHono} from '@hono/zod-openapi';
-import {getOverlapingShift, prisma} from '../lib/database.js';
-import {zodErrorHook} from '../lib/zodError.js';
+import { OpenAPIHono } from '@hono/zod-openapi';
+import { getOverlapingShift, prisma } from '../lib/database.js';
+import { isAfterHour, isBeforeHour, isSameDay } from '../lib/date.js';
+import { type PayloadValidator, Role, checkToken } from '../lib/token.js';
+import { zodErrorHook } from '../lib/zodError.js';
 import {
   deleteWorkingShift,
   getWorkingShiftById,
@@ -8,8 +10,6 @@ import {
   insertWorkingShift,
   updateWorkingShift,
 } from '../routes/working_shifts.js';
-import {isAfterHour, isBeforeHour, isSameDay} from '../lib/date.js';
-import {checkToken, PayloadValidator, Role} from '../lib/token.js';
 
 export const workingShift = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -35,7 +35,7 @@ workingShift.openapi(getWorkingShifts, async (c) => {
     return c.json(working_shift, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -44,18 +44,18 @@ workingShift.openapi(getWorkingShiftById, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.STAFF, token);
 
-  const {id} = c.req.valid('param');
+  const { id } = c.req.valid('param');
   try {
     const workingShift = await prisma.working_shifts.findUnique({
-      where: {id},
+      where: { id },
       select: selectShiftWithEmployee,
     });
-    if (!workingShift) return c.json({error: `Working shift with id ${id} not found`}, 404);
+    if (!workingShift) return c.json({ error: `Working shift with id ${id} not found` }, 404);
 
     return c.json(workingShift, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -64,12 +64,12 @@ workingShift.openapi(insertWorkingShift, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.ADMIN, token);
 
-  const {start_time, end_time, position, employee_id} = c.req.valid('json');
+  const { start_time, end_time, position, employee_id } = c.req.valid('json');
   try {
     try {
       validateShiftDates(start_time, end_time);
     } catch (error) {
-      return c.json({error: error}, 400);
+      return c.json({ error: error }, 400);
     }
 
     const overlapingShift = await getOverlapingShift(start_time, end_time, position);
@@ -80,18 +80,18 @@ workingShift.openapi(insertWorkingShift, async (c) => {
           error: 'A working shift with the same position is already attributed',
           working_shift: overlapingShift,
         },
-        400
+        400,
       );
     }
 
     const workingShift = await prisma.working_shifts.create({
-      data: {start_time, end_time, position, employee_id},
+      data: { start_time, end_time, position, employee_id },
       select: selectShiftWithEmployee,
     });
     return c.json(workingShift, 201);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -100,17 +100,17 @@ workingShift.openapi(deleteWorkingShift, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.ADMIN, token);
 
-  const {id} = c.req.valid('param');
+  const { id } = c.req.valid('param');
   try {
-    const workingShift = await prisma.working_shifts.findUnique({where: {id}});
-    if (!workingShift) return c.json({error: `Working shift with id ${id} not found`}, 404);
+    const workingShift = await prisma.working_shifts.findUnique({ where: { id } });
+    if (!workingShift) return c.json({ error: `Working shift with id ${id} not found` }, 404);
 
-    await prisma.working_shifts.delete({where: {id: Number(id)}});
+    await prisma.working_shifts.delete({ where: { id: Number(id) } });
 
-    return c.json({message: `Working shift with id ${id} deleted`}, 200);
+    return c.json({ message: `Working shift with id ${id} deleted` }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 
@@ -119,17 +119,14 @@ workingShift.openapi(updateWorkingShift, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.ADMIN, token);
 
-  const {id} = c.req.valid('param');
-  const {start_time, end_time, position, employee_id} = c.req.valid('json');
+  const { id } = c.req.valid('param');
+  const { start_time, end_time, position, employee_id } = c.req.valid('json');
   try {
-    const workingShift = await prisma.working_shifts.findUnique({where: {id}});
-    if (!workingShift) return c.json({error: `Working shift with id ${id} not found`}, 404);
+    const workingShift = await prisma.working_shifts.findUnique({ where: { id } });
+    if (!workingShift) return c.json({ error: `Working shift with id ${id} not found` }, 404);
 
     if ((!start_time && end_time) || (start_time && !end_time)) {
-      return c.json(
-        {error: `Working shift need the start time and the end time if patching the time`},
-        400
-      );
+      return c.json({ error: 'Working shift need the start time and the end time if patching the time' }, 400);
     }
 
     if ((start_time && end_time) || position) {
@@ -144,7 +141,7 @@ workingShift.openapi(updateWorkingShift, async (c) => {
         const overlapingShift = await getOverlapingShift(
           workingShift.start_time,
           workingShift.end_time,
-          workingShift.position
+          workingShift.position,
         );
 
         if (overlapingShift) {
@@ -153,24 +150,24 @@ workingShift.openapi(updateWorkingShift, async (c) => {
               error: 'A working shift with the same position is already attributed',
               working_shift: overlapingShift,
             },
-            400
+            400,
           );
         }
       } catch (error) {
-        return c.json({error: error});
+        return c.json({ error: error });
       }
     }
 
     const res = await prisma.working_shifts.update({
-      where: {id: id},
-      data: {start_time, end_time, position, employee_id},
+      where: { id: id },
+      data: { start_time, end_time, position, employee_id },
       select: selectShiftWithEmployee,
     });
 
     return c.json(res, 200);
   } catch (error) {
     console.error(error);
-    return c.json({error: error}, 500);
+    return c.json({ error: error }, 500);
   }
 });
 

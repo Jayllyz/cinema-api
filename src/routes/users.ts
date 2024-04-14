@@ -1,11 +1,11 @@
-import {createRoute, z} from '@hono/zod-openapi';
+import { createRoute, z } from '@hono/zod-openapi';
 import {
-  listUsersValidator,
-  insertUserValidator,
-  userValidator,
   idValidator,
-  updateUserValidator,
+  insertUserValidator,
+  listUsersValidator,
   updateUserMoneyValidator,
+  updateUserValidator,
+  userValidator,
 } from '../validators/users';
 
 // GET ROUTES
@@ -14,7 +14,7 @@ export const getUsers = createRoute({
   path: '/users',
   summary: 'Get all users',
   description: 'Get all users',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   responses: {
     200: {
       description: 'Successful response',
@@ -28,7 +28,7 @@ export const getUsers = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -41,7 +41,7 @@ export const getUserById = createRoute({
   path: '/users/{id}',
   summary: 'Get a user by id',
   description: 'Get a user by id',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     params: idValidator,
   },
@@ -58,7 +58,7 @@ export const getUserById = createRoute({
       description: 'User not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -72,7 +72,7 @@ export const insertUser = createRoute({
   path: '/users',
   summary: 'Insert a user',
   description: 'Insert a user',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     body: {
       content: {
@@ -105,7 +105,7 @@ export const insertUser = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -119,7 +119,7 @@ export const updateUser = createRoute({
   path: '/users/{id}',
   summary: 'Update a user',
   description: 'Update a user',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     params: idValidator,
     body: {
@@ -153,7 +153,7 @@ export const updateUser = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -166,7 +166,7 @@ export const updateUserMoney = createRoute({
   path: '/users/money',
   summary: 'Update user money',
   description: 'Update user money',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     query: updateUserMoneyValidator,
   },
@@ -193,7 +193,7 @@ export const updateUserMoney = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -207,7 +207,7 @@ export const deleteUser = createRoute({
   path: '/users/{id}',
   summary: 'Delete a user',
   description: 'Delete a user',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     params: idValidator,
   },
@@ -216,7 +216,7 @@ export const deleteUser = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: z.object({message: z.string()}),
+          schema: z.object({ message: z.string() }),
         },
       },
     },
@@ -224,7 +224,7 @@ export const deleteUser = createRoute({
       description: 'User not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -232,7 +232,7 @@ export const deleteUser = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },

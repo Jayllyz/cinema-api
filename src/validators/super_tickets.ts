@@ -1,5 +1,5 @@
-import {z} from 'zod';
-import {limitedUserValidator} from './users';
+import { z } from 'zod';
+import { limitedUserValidator } from './users';
 
 export const superTicketValidator = z.object({
   id: z.number().min(1),

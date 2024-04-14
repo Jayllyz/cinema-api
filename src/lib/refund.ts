@@ -1,4 +1,4 @@
-import {prisma} from './database';
+import { prisma } from './database';
 
 export async function refundTicketsScreening(screeningId: number): Promise<void> {
   const tickets = await prisma.tickets.findMany({
@@ -21,7 +21,7 @@ export async function refundTicketsScreening(screeningId: number): Promise<void>
     if (!ticket.user_id) continue;
 
     await prisma.users.update({
-      where: {id: ticket.user_id},
+      where: { id: ticket.user_id },
       data: {
         money: {
           increment: ticket.price,

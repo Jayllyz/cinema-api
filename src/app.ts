@@ -1,20 +1,20 @@
-import {serve} from '@hono/node-server';
-import {swaggerUI} from '@hono/swagger-ui';
-import {OpenAPIHono, createRoute} from '@hono/zod-openapi';
-import {HTTPException} from 'hono/http-exception';
-import {jwt} from 'hono/jwt';
-import {prettyJSON} from 'hono/pretty-json';
-import {secureHeaders} from 'hono/secure-headers';
-import {auth} from './handlers/auth';
-import {categories} from './handlers/categories.js';
-import {movies} from './handlers/movies.js';
-import {rooms} from './handlers/rooms.js';
-import {screenings} from './handlers/screenings.js';
-import {employees} from './handlers/employees.js';
-import {workingShift} from './handlers/working_shift.js';
-import {tickets} from './handlers/tickets';
-import {superTickets} from './handlers/super_tickets';
-import {users} from './handlers/users';
+import { serve } from '@hono/node-server';
+import { swaggerUI } from '@hono/swagger-ui';
+import { OpenAPIHono, createRoute } from '@hono/zod-openapi';
+import { HTTPException } from 'hono/http-exception';
+import { jwt } from 'hono/jwt';
+import { prettyJSON } from 'hono/pretty-json';
+import { secureHeaders } from 'hono/secure-headers';
+import { auth } from './handlers/auth';
+import { categories } from './handlers/categories.js';
+import { employees } from './handlers/employees.js';
+import { movies } from './handlers/movies.js';
+import { rooms } from './handlers/rooms.js';
+import { screenings } from './handlers/screenings.js';
+import { superTickets } from './handlers/super_tickets';
+import { tickets } from './handlers/tickets';
+import { users } from './handlers/users';
+import { workingShift } from './handlers/working_shift.js';
 
 const app = new OpenAPIHono();
 
@@ -54,7 +54,7 @@ app.use(async (c, next) => {
       !baseUrl.startsWith('/super_tickets/buy/') &&
       (!contentType || !contentType.includes('application/json'))
     ) {
-      return c.json({error: 'A json body is required'}, 400);
+      return c.json({ error: 'A json body is required' }, 400);
     }
   }
   return next();
@@ -70,7 +70,7 @@ const healthCheck = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: {type: 'string'},
+          schema: { type: 'string' },
         },
       },
     },
@@ -78,7 +78,7 @@ const healthCheck = createRoute({
   tags: ['health'],
 });
 app.openapi(healthCheck, (c) => c.json('OK', 200));
-app.notFound((c) => c.json({error: 'Path not found'}, 404));
+app.notFound((c) => c.json({ error: 'Path not found' }, 404));
 app.route('/auth/', auth);
 
 app.route('/', rooms);
@@ -111,14 +111,14 @@ app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
   bearerFormat: 'JWT',
 });
 
-app.get('/ui', swaggerUI({url: '/doc'}));
+app.get('/ui', swaggerUI({ url: '/doc' }));
 
 app.onError((err, c) => {
   if (err instanceof HTTPException) {
     return err.getResponse();
   }
   console.error(err);
-  return c.json({error: 'Internal server error'}, 500);
+  return c.json({ error: 'Internal server error' }, 500);
 });
 
 console.log(`Server is running on port ${port}`);

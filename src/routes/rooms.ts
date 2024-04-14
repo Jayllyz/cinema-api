@@ -1,10 +1,10 @@
-import {createRoute, z} from '@hono/zod-openapi';
+import { createRoute, z } from '@hono/zod-openapi';
 import {
-  insertRoomValidator,
-  updateRoomValidator,
-  idValidator,
-  listRoomsValidator,
   RoomValidator,
+  idValidator,
+  insertRoomValidator,
+  listRoomsValidator,
+  updateRoomValidator,
 } from '../validators/rooms.js';
 
 export const getRooms = createRoute({
@@ -12,7 +12,7 @@ export const getRooms = createRoute({
   path: '/rooms',
   summary: 'Get all rooms',
   description: 'Get all rooms',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   responses: {
     200: {
       description: 'Successful response',
@@ -26,7 +26,7 @@ export const getRooms = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -39,7 +39,7 @@ export const getRoomById = createRoute({
   path: '/rooms/{id}',
   summary: 'Get a room by id',
   description: 'Get a room by id',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     params: idValidator,
   },
@@ -56,7 +56,7 @@ export const getRoomById = createRoute({
       description: 'Room not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -64,7 +64,7 @@ export const getRoomById = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -77,7 +77,7 @@ export const insertRoom = createRoute({
   path: '/rooms',
   summary: 'Insert a room',
   description: 'Insert a room',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     body: {
       content: {
@@ -100,7 +100,7 @@ export const insertRoom = createRoute({
       description: 'Invalid body',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -108,7 +108,7 @@ export const insertRoom = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -121,7 +121,7 @@ export const deleteRoom = createRoute({
   path: '/rooms/{id}',
   summary: 'Delete a room',
   description: 'Delete a room',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     params: idValidator,
   },
@@ -130,7 +130,7 @@ export const deleteRoom = createRoute({
       description: 'Room deleted',
       content: {
         'application/json': {
-          schema: z.object({message: z.string()}),
+          schema: z.object({ message: z.string() }),
         },
       },
     },
@@ -138,7 +138,7 @@ export const deleteRoom = createRoute({
       description: 'Room not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -146,7 +146,7 @@ export const deleteRoom = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -159,7 +159,7 @@ export const updateRoom = createRoute({
   path: '/rooms/{id}',
   summary: 'Update a room',
   description: 'Update a room',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     params: idValidator,
     body: {
@@ -183,7 +183,7 @@ export const updateRoom = createRoute({
       description: 'Invalid body',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -191,7 +191,7 @@ export const updateRoom = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },

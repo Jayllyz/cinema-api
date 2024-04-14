@@ -1,4 +1,4 @@
-import {createRoute, z} from '@hono/zod-openapi';
+import { createRoute, z } from '@hono/zod-openapi';
 import {
   employeeResponseSchema,
   employeeValidator,
@@ -12,7 +12,7 @@ export const insertEmployee = createRoute({
   path: '/employees',
   summary: 'Insert an employee',
   description: 'Insert an employee',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
     body: {
       content: {
@@ -35,7 +35,7 @@ export const insertEmployee = createRoute({
       description: 'Invalid body',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -43,7 +43,7 @@ export const insertEmployee = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -56,7 +56,7 @@ export const getEmployees = createRoute({
   path: '/employees',
   summary: 'Get all employee',
   description: 'Get all employee',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   responses: {
     200: {
       description: 'Successful response',
@@ -70,7 +70,7 @@ export const getEmployees = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -83,9 +83,9 @@ export const getEmployeeById = createRoute({
   path: '/employees/{id}',
   summary: 'Get an employee by id',
   description: 'Get an employee by id',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
   },
   responses: {
     200: {
@@ -100,7 +100,7 @@ export const getEmployeeById = createRoute({
       description: 'Employee not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -108,7 +108,7 @@ export const getEmployeeById = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -121,16 +121,16 @@ export const deleteEmployee = createRoute({
   path: '/employees/{id}',
   summary: 'Delete an employee',
   description: 'Delete an employee',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
   },
   responses: {
     200: {
       description: 'employee deleted',
       content: {
         'application/json': {
-          schema: z.object({message: z.string()}),
+          schema: z.object({ message: z.string() }),
         },
       },
     },
@@ -138,7 +138,7 @@ export const deleteEmployee = createRoute({
       description: 'Employee not found',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -146,7 +146,7 @@ export const deleteEmployee = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -159,9 +159,9 @@ export const updateEmployee = createRoute({
   path: '/employees/{id}',
   summary: 'Update a employee',
   description: 'Update a employee',
-  security: [{Bearer: []}],
+  security: [{ Bearer: [] }],
   request: {
-    params: z.object({id: z.coerce.number().min(1)}),
+    params: z.object({ id: z.coerce.number().min(1) }),
     body: {
       content: {
         'application/json': {
@@ -183,7 +183,7 @@ export const updateEmployee = createRoute({
       description: 'Invalid body',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },
@@ -191,7 +191,7 @@ export const updateEmployee = createRoute({
       description: 'Internal server error',
       content: {
         'application/json': {
-          schema: z.object({error: z.string()}),
+          schema: z.object({ error: z.string() }),
         },
       },
     },

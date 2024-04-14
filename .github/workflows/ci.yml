@@ -1,4 +1,4 @@
-name: Run tests
+name: CI
 on:
   push:
     branches:
@@ -18,7 +18,7 @@ permissions:
   pull-requests: read
 
 jobs:
-  test:
+  ci:
     runs-on: ubuntu-latest
 
     env:
@@ -35,7 +35,7 @@ jobs:
           - 5432:5432
         options: >-
           --health-cmd pg_isready
-          --health-interval 10s
+          --health-interval 5s
           --health-timeout 5s
           --health-retries 5
 
@@ -56,6 +56,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Lint & format
+        run: pnpm run lint:check
 
       - name: Initialize database
         run: pnpm run prisma:init

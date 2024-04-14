@@ -1,7 +1,7 @@
+import { sign } from 'hono/jwt';
 import app from '../src/app.js';
-import {randomString} from './utils.js';
-import {sign} from 'hono/jwt';
-import {Role} from '../src/lib/token';
+import { Role } from '../src/lib/token';
+import { randomString } from './utils.js';
 
 let createScreeningId = 1;
 let createdRoomId = 1;
@@ -10,7 +10,7 @@ let createdCategoryId = 1;
 const randomMovie = randomString(5);
 
 const secret = process.env.SECRET_KEY || 'secret';
-const adminToken = await sign({id: 1, role: Role.ADMIN}, secret);
+const adminToken = await sign({ id: 1, role: Role.ADMIN }, secret);
 
 const port = Number(process.env.PORT || 3000);
 const path = `http://localhost:${port}`;
@@ -25,7 +25,7 @@ if (tomorrow.getDay() === 0 || tomorrow.getDay() === 6) {
 
 describe('Screenings', () => {
   test('POST /categories', async () => {
-    const res = await app.request(path + '/categories', {
+    const res = await app.request(`${path}/categories`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ describe('Screenings', () => {
   });
 
   test('POST /movies', async () => {
-    const res = await app.request(path + '/movies', {
+    const res = await app.request(`${path}/movies`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,12 +59,12 @@ describe('Screenings', () => {
     });
     expect(res.status).toBe(201);
     const movie = await res.json();
-    expect(movie).toMatchObject({title: randomMovie});
+    expect(movie).toMatchObject({ title: randomMovie });
     createdMovieId = movie.id;
   });
 
   test('POST /rooms', async () => {
-    const res = await app.request(path + '/rooms', {
+    const res = await app.request(`${path}/rooms`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -81,12 +81,12 @@ describe('Screenings', () => {
     });
     expect(res.status).toBe(201);
     const room = await res.json();
-    expect(room).toMatchObject({name: 'Room Screenings'});
+    expect(room).toMatchObject({ name: 'Room Screenings' });
     createdRoomId = room.id;
   });
 
   test('POST /screenings', async () => {
-    const res = await app.request(path + '/screenings', {
+    const res = await app.request(`${path}/screenings`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ describe('Screenings', () => {
   });
 
   test('GET /screenings', async () => {
-    const res = await app.request(path + '/rooms', {
+    const res = await app.request(`${path}/rooms`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -117,21 +117,21 @@ describe('Screenings', () => {
   });
 
   test('GET /screenings/{id}', async () => {
-    const res = await app.request(path + `/screenings/${createScreeningId}`, {
+    const res = await app.request(`${path}/screenings/${createScreeningId}`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
     });
     expect(res.status).toBe(200);
     const screening = await res.json();
-    expect(screening).toMatchObject({id: createScreeningId});
+    expect(screening).toMatchObject({ id: createScreeningId });
   });
 
   const patchedDate: Date = tomorrow;
   patchedDate.setMinutes(15);
 
   test('PATCH /screenings/{id}', async () => {
-    const res = await app.request(path + `/screenings/${createScreeningId}`, {
+    const res = await app.request(`${path}/screenings/${createScreeningId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ describe('Screenings', () => {
   });
 
   test('DELETE /screenings/{id}', async () => {
-    const res = await app.request(path + `/screenings/${createScreeningId}`, {
+    const res = await app.request(`${path}/screenings/${createScreeningId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
@@ -157,7 +157,7 @@ describe('Screenings', () => {
   });
 
   test('DELETE /movies/{id}', async () => {
-    const res = await app.request(path + `/movies/${createdMovieId}`, {
+    const res = await app.request(`${path}/movies/${createdMovieId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
@@ -167,7 +167,7 @@ describe('Screenings', () => {
   });
 
   test('DELETE /rooms/{id}', async () => {
-    const res = await app.request(path + `/rooms/${createdRoomId}`, {
+    const res = await app.request(`${path}/rooms/${createdRoomId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${adminToken}`,
