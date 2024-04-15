@@ -244,10 +244,11 @@ tickets.openapi(buyTicket, async (c) => {
     await prisma.logs.create({
       data: {
         user_id: payload.id,
-        action: `Bought ticket ${id} of the screening ${ticket.screening.id} for ${ticket.price} €`,
+        action: 'BUY',
+        description: `Bought ticket ${id} of the screening ${ticket.screening.id} for ${ticket.price} €`,
         created_at: new Date(),
-      }
-    })
+      },
+    });
 
     return c.json(updatedTicket, 200);
   } catch (error) {
@@ -307,10 +308,11 @@ tickets.openapi(refundTicket, async (c) => {
     await prisma.logs.create({
       data: {
         user_id: payload.id,
-        action: `Refunded ticket ${id} of the screening ${ticket.screening.id} for ${ticket.price} €`,
+        action: 'REFUND',
+        description: `Refunded ticket ${id} of the screening ${ticket.screening.id} for ${ticket.price} €`,
         created_at: new Date(),
-      }
-    })
+      },
+    });
 
     return c.json({ message: 'Refund successful' }, 200);
   } catch (error) {
@@ -412,10 +414,11 @@ tickets.openapi(useTicket, async (c) => {
     await prisma.logs.create({
       data: {
         user_id: payload.id,
-        action: `Used ticket ${id} of the screening ${ticket.screening.id}`,
+        action: 'USE',
+        description: `Used ticket ${id} of the screening ${ticket.screening.id}`,
         created_at: new Date(),
-      }
-    })
+      },
+    });
 
     return c.json(updatedTicket, 200);
   } catch (error) {

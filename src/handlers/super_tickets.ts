@@ -135,7 +135,8 @@ superTickets.openapi(buySuperTicket, async (c) => {
     await prisma.logs.create({
       data: {
         user_id: payload.id,
-        action: `Bought super ticket with id ${id}`,
+        action: 'BUY',
+        description: `Bought super ticket with id ${id}`,
         created_at: new Date(),
       },
     });
@@ -270,7 +271,8 @@ superTickets.openapi(bookSeatSuperTicket, async (c) => {
     await prisma.logs.create({
       data: {
         user_id: payload.id,
-        action: `Booked seat ${seat} in screening ${screening_id} with super ticket ${id}`,
+        action: 'BOOK',
+        description: `Booked seat ${seat} in screening ${screening_id} with super ticket ${id}`,
         created_at: new Date(),
       },
     });
@@ -345,7 +347,8 @@ superTickets.openapi(useSuperTicket, async (c) => {
     await prisma.logs.create({
       data: {
         user_id: payload.id,
-        action: `Used super ticket ${id} in seat ${seat} in screening ${screening_id}`,
+        action: 'USE',
+        description: `Used super ticket ${id} in seat ${seat} in screening ${screening_id}`,
         created_at: new Date(),
       },
     });
@@ -479,7 +482,8 @@ superTickets.openapi(cancelBookingSuperTicket, async (c) => {
     await prisma.logs.create({
       data: {
         user_id: payload.id,
-        action: `Canceled booking of seat ${seat} in screening ${screening_id} with super ticket ${id}`,
+        action: 'CANCEL',
+        description: `Canceled booking of seat ${seat} in screening ${screening_id} with super ticket ${id}`,
         created_at: new Date(),
       },
     });

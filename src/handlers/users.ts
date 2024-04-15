@@ -133,7 +133,8 @@ users.openapi(updateUserMoney, async (c) => {
       await prisma.logs.create({
         data: {
           user_id: id,
-          action: `Deposited ${deposit} €`,
+          action: 'DEPOSIT',
+          description: `Deposited ${deposit} €`,
           created_at: new Date(),
         },
       });
@@ -159,7 +160,8 @@ users.openapi(updateUserMoney, async (c) => {
       await prisma.logs.create({
         data: {
           user_id: id,
-          action: `Withdrew ${withdraw} €`,
+          action: 'WITHDRAW',
+          description: `Withdrew ${withdraw} €`,
           created_at: new Date(),
         },
       });

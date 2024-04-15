@@ -138,6 +138,7 @@ model Logs{
   user_id     Int
   user        Users   @relation(fields: [user_id], references: [id])
   action      String
+  description String
   created_at  DateTime
 
   @@map(name: "LOGS")
