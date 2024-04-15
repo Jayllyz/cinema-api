@@ -10,6 +10,6 @@ interface Result<T> {
 
 export const zodErrorHook = <T>(result: Result<T>, c: Context) => {
   if (result.success) return;
-  console.error(result);
-  return c.json({ error: fromZodError(result.error as ZodError<unknown>) }, 400);
+  if (result.error) return c.json({ error: fromZodError(result.error).message }, 400);
+  return c.json({ error: 'Internal server error' }, 500);
 };
