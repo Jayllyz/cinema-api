@@ -129,6 +129,14 @@ users.openapi(updateUserMoney, async (c) => {
         },
         data: { money: { increment: deposit } },
       });
+
+      await prisma.logs.create({
+        data: {
+          user_id: id,
+          action: `Deposited ${deposit} €`,
+          created_at: new Date(),
+        },
+      });
     }
     if (withdraw) {
       if (userExists.money < withdraw) {
@@ -146,6 +154,14 @@ users.openapi(updateUserMoney, async (c) => {
           role: true,
         },
         data: { money: { decrement: withdraw } },
+      });
+
+      await prisma.logs.create({
+        data: {
+          user_id: id,
+          action: `Withdrew ${withdraw} €`,
+          created_at: new Date(),
+        },
       });
     }
 

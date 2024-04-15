@@ -132,6 +132,14 @@ superTickets.openapi(buySuperTicket, async (c) => {
       ...superTicketSelectOptions,
     });
 
+    await prisma.logs.create({
+      data: {
+        user_id: payload.id,
+        action: `Bought super ticket with id ${id}`,
+        created_at: new Date(),
+      },
+    });
+
     return c.json(updatedSuperTicket, 200);
   } catch (error) {
     console.error(error);
@@ -259,6 +267,14 @@ superTickets.openapi(bookSeatSuperTicket, async (c) => {
       },
     });
 
+    await prisma.logs.create({
+      data: {
+        user_id: payload.id,
+        action: `Booked seat ${seat} in screening ${screening_id} with super ticket ${id}`,
+        created_at: new Date(),
+      },
+    });
+
     return c.json(updatedSuperTicket, 200);
   } catch (error) {
     console.error(error);
@@ -323,6 +339,14 @@ superTickets.openapi(useSuperTicket, async (c) => {
       },
       data: {
         used: true,
+      },
+    });
+
+    await prisma.logs.create({
+      data: {
+        user_id: payload.id,
+        action: `Used super ticket ${id} in seat ${seat} in screening ${screening_id}`,
+        created_at: new Date(),
       },
     });
 
@@ -449,6 +473,14 @@ superTickets.openapi(cancelBookingSuperTicket, async (c) => {
       },
       select: {
         uses: true,
+      },
+    });
+
+    await prisma.logs.create({
+      data: {
+        user_id: payload.id,
+        action: `Canceled booking of seat ${seat} in screening ${screening_id} with super ticket ${id}`,
+        created_at: new Date(),
       },
     });
 

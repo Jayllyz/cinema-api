@@ -31,6 +31,7 @@ model Users {
   token         String    @default("")
   tickets       Tickets[]
   superTickets  SuperTickets[]
+  logs          Logs[]
 
   @@map(name: "USERS")
 }
@@ -130,4 +131,14 @@ model SuperTicketsSessions{
   
   @@id([super_ticket_id, screening_id])
   @@map(name: "SUPER_TICKETS_SESSIONS")
+}
+
+model Logs{
+  id          Int     @id @default(autoincrement())
+  user_id     Int
+  user        Users   @relation(fields: [user_id], references: [id])
+  action      String
+  created_at  DateTime
+
+  @@map(name: "LOGS")
 }
