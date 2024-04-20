@@ -5,6 +5,7 @@ import {
   superTicketValidator,
   updateSuperTicketValidator,
 } from '../validators/super_tickets';
+import authMiddleware from '../middlewares/token';
 
 const serverErrorSchema = {
   description: 'Internal server error',
@@ -20,6 +21,7 @@ export const getSuperTickets = createRoute({
   path: '/super_tickets',
   summary: 'Get all super tickets',
   description: 'Get all super tickets',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   responses: {
     200: {
@@ -40,6 +42,7 @@ export const getSuperTicketById = createRoute({
   path: '/super_tickets/{id}',
   summary: 'Get super ticket by id',
   description: 'Get super ticket by id',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -63,6 +66,7 @@ export const insertSuperTicket = createRoute({
   path: '/super_tickets',
   summary: 'Insert super ticket',
   description: 'Insert super ticket',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     body: {
@@ -100,6 +104,7 @@ export const buySuperTicket = createRoute({
   path: '/super_tickets/buy/{id}',
   summary: 'Buy super ticket',
   description: 'Buy super ticket',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -131,6 +136,7 @@ export const bookSeatSuperTicket = createRoute({
   path: '/super_tickets/book/{id}',
   summary: 'Use super ticket',
   description: 'Use super ticket',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -174,6 +180,7 @@ export const updateSuperTicket = createRoute({
   path: '/super_tickets/{id}',
   summary: 'Update super ticket',
   description: 'Update super ticket',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -212,6 +219,7 @@ export const useSuperTicket = createRoute({
   path: '/super_tickets/use/{id}',
   summary: 'Use super ticket',
   description: 'Use super ticket',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -248,6 +256,7 @@ export const deleteSuperTicket = createRoute({
   path: '/super_tickets/{id}',
   summary: 'Delete super ticket',
   description: 'Delete super ticket',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -266,6 +275,7 @@ export const cancelBookingSuperTicket = createRoute({
   path: '/super_tickets/cancel/{id}',
   summary: 'Cancel a seat booking with a super ticket',
   description: 'Cancel a seat booking with a super ticket',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),

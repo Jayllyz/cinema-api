@@ -6,13 +6,15 @@ import {
   updateMovieValidator,
 } from '../validators/movies.js';
 import { idValidator } from '../validators/rooms.js';
+import authMiddleware from '../middlewares/token.js';
 
 export const getMovies = createRoute({
   method: 'get',
   path: '/movies',
   summary: 'Get all movies',
   description: 'Get all movies',
-  security: [{ Bearer: [] }],
+  middleware: authMiddleware,
+  security:  [{ Bearer: [] }],
   request: {
     query: z.object({
       title: z.string().optional(),
@@ -49,6 +51,7 @@ export const getMovieById = createRoute({
   path: '/movies/{id}',
   summary: 'Get a movie by id',
   description: 'Get a movie by id',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,
@@ -79,6 +82,7 @@ export const insertMovie = createRoute({
   path: '/movies',
   summary: 'Insert a movie',
   description: 'Insert a movie',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     body: {
@@ -115,6 +119,7 @@ export const updateMovie = createRoute({
   path: '/movies/{id}',
   summary: 'Update a movie',
   description: 'Update a movie',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,
@@ -160,6 +165,7 @@ export const deleteMovie = createRoute({
   path: '/movies/{id}',
   summary: 'Delete a movie',
   description: 'Delete a movie',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,

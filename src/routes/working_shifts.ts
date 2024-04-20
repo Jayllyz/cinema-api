@@ -5,12 +5,14 @@ import {
   updateWorkingShiftsValidator,
   workingShiftsResponseSchema,
 } from '../validators/working_shifts';
+import authMiddleware from '../middlewares/token';
 
 export const insertWorkingShift = createRoute({
   method: 'post',
   path: '/working_shifts',
   summary: 'Insert an working shift',
   description: 'Insert an working shift',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     body: {
@@ -55,6 +57,7 @@ export const getWorkingShifts = createRoute({
   path: '/working_shifts',
   summary: 'Get all working shift',
   description: 'Get all working shift',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   responses: {
     200: {
@@ -82,6 +85,7 @@ export const getWorkingShiftById = createRoute({
   path: '/working_shifts/{id}',
   summary: 'Get a working shift by id',
   description: 'Get a working shift by id',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -120,6 +124,7 @@ export const deleteWorkingShift = createRoute({
   path: '/working_shifts/{id}',
   summary: 'Delete a working shift',
   description: 'Delete a working shift',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -158,6 +163,7 @@ export const updateWorkingShift = createRoute({
   path: '/working_shifts/{id}',
   summary: 'Update a working shift',
   description: 'Update a working shift',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),

@@ -6,6 +6,7 @@ import {
   screeningValidator,
   updateScreeningValidator,
 } from '../validators/screenings';
+import authMiddleware from '../middlewares/token';
 
 const serverErrorSchema = {
   description: 'Internal server error',
@@ -116,6 +117,7 @@ export const getScreeningById = createRoute({
   path: '/screenings/{id}',
   summary: 'Get a screening by id',
   description: 'Get a screening by id',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -147,6 +149,7 @@ export const deleteScreening = createRoute({
   path: '/screenings/{id}',
   summary: 'Delete a screening',
   description: 'Delete a screening',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
