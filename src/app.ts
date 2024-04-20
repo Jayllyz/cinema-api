@@ -3,7 +3,6 @@ import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono, createRoute } from '@hono/zod-openapi';
 import { compress } from 'hono/compress';
 import { HTTPException } from 'hono/http-exception';
-import { jwt } from 'hono/jwt';
 import { logger } from 'hono/logger';
 import { prettyJSON } from 'hono/pretty-json';
 import { secureHeaders } from 'hono/secure-headers';
@@ -33,7 +32,6 @@ app.onError((err, c) => {
   if (err instanceof HTTPException) {
     return err.getResponse();
   }
-  console.error(err);
   return c.json({ error: 'Internal server error' }, 500);
 });
 

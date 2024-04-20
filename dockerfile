@@ -2,7 +2,7 @@
 FROM node:21-alpine as base
 
 RUN apk add --no-cache libc6-compat && \
-    npm install -g pnpm@latest
+    corepack enable pnpm
 
 USER node
 WORKDIR /app
