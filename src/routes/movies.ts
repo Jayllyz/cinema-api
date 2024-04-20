@@ -1,4 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
+import authMiddleware from '../middlewares/token.js';
 import {
   MovieValidator,
   insertMovieValidator,
@@ -6,7 +7,6 @@ import {
   updateMovieValidator,
 } from '../validators/movies.js';
 import { idValidator } from '../validators/rooms.js';
-import authMiddleware from '../middlewares/token.js';
 
 export const getMovies = createRoute({
   method: 'get',
@@ -14,7 +14,7 @@ export const getMovies = createRoute({
   summary: 'Get all movies',
   description: 'Get all movies',
   middleware: authMiddleware,
-  security:  [{ Bearer: [] }],
+  security: [{ Bearer: [] }],
   request: {
     query: z.object({
       title: z.string().optional(),

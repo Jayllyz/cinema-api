@@ -1,4 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
+import authMiddleware from '../middlewares/token';
 import {
   insertScreeningValidator,
   listScreeningValidator,
@@ -6,7 +7,6 @@ import {
   screeningValidator,
   updateScreeningValidator,
 } from '../validators/screenings';
-import authMiddleware from '../middlewares/token';
 
 const serverErrorSchema = {
   description: 'Internal server error',

@@ -1,4 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
+import authMiddleware from '../middlewares/token.js';
 import {
   RoomValidator,
   idValidator,
@@ -6,7 +7,6 @@ import {
   listRoomsValidator,
   updateRoomValidator,
 } from '../validators/rooms.js';
-import authMiddleware from '../middlewares/token.js';
 
 export const getRooms = createRoute({
   method: 'get',

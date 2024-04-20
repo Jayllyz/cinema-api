@@ -1,11 +1,11 @@
 import { createRoute, z } from '@hono/zod-openapi';
+import authMiddleware from '../middlewares/token';
 import {
   insertTicketValidator,
   listTicketValidator,
   ticketValidator,
   updateTicketValidator,
 } from '../validators/tickets';
-import authMiddleware from '../middlewares/token';
 
 const serverErrorSchema = {
   description: 'Internal server error',

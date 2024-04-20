@@ -1,8 +1,10 @@
 import { serve } from '@hono/node-server';
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono, createRoute } from '@hono/zod-openapi';
+import { compress } from 'hono/compress';
 import { HTTPException } from 'hono/http-exception';
 import { jwt } from 'hono/jwt';
+import { logger } from 'hono/logger';
 import { prettyJSON } from 'hono/pretty-json';
 import { secureHeaders } from 'hono/secure-headers';
 import { auth } from './handlers/auth';
@@ -15,8 +17,6 @@ import { superTickets } from './handlers/super_tickets';
 import { tickets } from './handlers/tickets';
 import { users } from './handlers/users';
 import { workingShift } from './handlers/working_shift.js';
-import { compress } from 'hono/compress';
-import { logger } from 'hono/logger';
 
 const port = Number(process.env.PORT || 3000);
 const app = new OpenAPIHono();
