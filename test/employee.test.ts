@@ -1,6 +1,6 @@
 import { sign } from 'hono/jwt';
 import app from '../src/app.js';
-import { Role } from '../src/lib/token';
+import { Role } from '../src/lib/token.js';
 
 let createdEmployeeId: number;
 let createdWorkingShiftId: number;
@@ -80,8 +80,6 @@ describe('Employees', () => {
     const end_time: Date = new Date(tomorrow);
 
     end_time.setUTCHours(tomorrow.getUTCHours() + 2);
-
-    console.log(end_time);
 
     const res = await app.request(`${path}/working_shifts`, {
       method: 'POST',

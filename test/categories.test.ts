@@ -1,6 +1,6 @@
 import { sign } from 'hono/jwt';
 import app from '../src/app.js';
-import { Role } from '../src/lib/token';
+import { Role } from '../src/lib/token.js';
 import { randomString } from './utils.js';
 
 let createdCategoryId = 1;

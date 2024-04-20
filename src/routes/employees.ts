@@ -1,4 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
+import authMiddleware from '../middlewares/token';
 import {
   employeeResponseSchema,
   employeeValidator,
@@ -12,6 +13,7 @@ export const insertEmployee = createRoute({
   path: '/employees',
   summary: 'Insert an employee',
   description: 'Insert an employee',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     body: {
@@ -56,6 +58,7 @@ export const getEmployees = createRoute({
   path: '/employees',
   summary: 'Get all employee',
   description: 'Get all employee',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   responses: {
     200: {
@@ -83,6 +86,7 @@ export const getEmployeeById = createRoute({
   path: '/employees/{id}',
   summary: 'Get an employee by id',
   description: 'Get an employee by id',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -121,6 +125,7 @@ export const deleteEmployee = createRoute({
   path: '/employees/{id}',
   summary: 'Delete an employee',
   description: 'Delete an employee',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -159,6 +164,7 @@ export const updateEmployee = createRoute({
   path: '/employees/{id}',
   summary: 'Update a employee',
   description: 'Update a employee',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),

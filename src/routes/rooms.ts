@@ -1,4 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
+import authMiddleware from '../middlewares/token.js';
 import {
   RoomValidator,
   idValidator,
@@ -12,6 +13,7 @@ export const getRooms = createRoute({
   path: '/rooms',
   summary: 'Get all rooms',
   description: 'Get all rooms',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   responses: {
     200: {
@@ -39,6 +41,7 @@ export const getRoomById = createRoute({
   path: '/rooms/{id}',
   summary: 'Get a room by id',
   description: 'Get a room by id',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,
@@ -77,6 +80,7 @@ export const insertRoom = createRoute({
   path: '/rooms',
   summary: 'Insert a room',
   description: 'Insert a room',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     body: {
@@ -121,6 +125,7 @@ export const deleteRoom = createRoute({
   path: '/rooms/{id}',
   summary: 'Delete a room',
   description: 'Delete a room',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,
@@ -159,6 +164,7 @@ export const updateRoom = createRoute({
   path: '/rooms/{id}',
   summary: 'Update a room',
   description: 'Update a room',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,

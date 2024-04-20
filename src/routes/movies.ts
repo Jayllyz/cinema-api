@@ -1,4 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
+import authMiddleware from '../middlewares/token.js';
 import {
   MovieValidator,
   insertMovieValidator,
@@ -12,6 +13,7 @@ export const getMovies = createRoute({
   path: '/movies',
   summary: 'Get all movies',
   description: 'Get all movies',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     query: z.object({
@@ -49,6 +51,7 @@ export const getMovieById = createRoute({
   path: '/movies/{id}',
   summary: 'Get a movie by id',
   description: 'Get a movie by id',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,
@@ -79,6 +82,7 @@ export const insertMovie = createRoute({
   path: '/movies',
   summary: 'Insert a movie',
   description: 'Insert a movie',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     body: {
@@ -115,6 +119,7 @@ export const updateMovie = createRoute({
   path: '/movies/{id}',
   summary: 'Update a movie',
   description: 'Update a movie',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,
@@ -160,6 +165,7 @@ export const deleteMovie = createRoute({
   path: '/movies/{id}',
   summary: 'Delete a movie',
   description: 'Delete a movie',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,

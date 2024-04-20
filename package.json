@@ -10,18 +10,19 @@
     "prisma:generate": "npx prisma generate",
     "prisma:push": "npx prisma db push",
     "prisma:init": "npx prisma generate && npx prisma db push",
+    "prisma:reset": "npx prisma migrate reset --force && npx prisma db push",
     "test": "vitest --run",
     "lint": "biome check --apply .",
     "lint:check": "biome ci ."
   },
   "dependencies": {
-    "@hono/node-server": "^1.10.0",
+    "@hono/node-server": "^1.11.0",
     "@hono/swagger-ui": "^0.2.1",
     "@hono/zod-openapi": "^0.11.0",
     "@prisma/client": "^5.12.1",
     "bcryptjs": "^2.4.3",
-    "hono": "^4.2.4",
-    "zod": "^3.22.4",
+    "hono": "^4.2.5",
+    "zod": "^3.22.5",
     "zod-validation-error": "^3.1.0"
   },
   "devDependencies": {
@@ -37,5 +38,5 @@
   "engines": {
     "node": ">=20.11"
   },
-  "packageManager": "pnpm@8.15.7"
+  "packageManager": "pnpm@9.0.4"
 }

@@ -1,4 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
+import authMiddleware from '../middlewares/token.js';
 import { categoryValidator, listCategoriesValidator } from '../validators/categories.js';
 import { idValidator } from '../validators/rooms.js';
 
@@ -6,6 +7,7 @@ export const getCategories = createRoute({
   method: 'get',
   path: '/categories',
   summary: 'Get all categories',
+  middleware: authMiddleware,
   description: 'Get all categories',
   security: [{ Bearer: [] }],
   responses: {
@@ -34,6 +36,7 @@ export const getCategoryById = createRoute({
   path: '/categories/{id}',
   summary: 'Get a category by id',
   description: 'Get a category by id',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,
@@ -64,6 +67,7 @@ export const insertCategory = createRoute({
   path: '/categories',
   summary: 'Insert a category',
   description: 'Insert a category',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     body: {
@@ -108,6 +112,7 @@ export const deleteCategory = createRoute({
   path: '/categories/{id}',
   summary: 'Delete a category',
   description: 'Delete a category',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,

@@ -1,4 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
+import authMiddleware from '../middlewares/token';
 import {
   insertTicketValidator,
   listTicketValidator,
@@ -20,6 +21,7 @@ export const getTickets = createRoute({
   path: '/tickets',
   summary: 'Get all tickets',
   description: 'Get all tickets',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     query: z.object({
@@ -52,6 +54,7 @@ export const getTicketById = createRoute({
   path: '/tickets/{id}',
   summary: 'Get ticket by id',
   description: 'Get ticket by id',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -83,6 +86,7 @@ export const insertTicket = createRoute({
   path: '/tickets',
   summary: 'Insert a ticket',
   description: 'Insert a ticket',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     body: {
@@ -120,6 +124,7 @@ export const buyTicket = createRoute({
   path: '/tickets/buy/{id}',
   summary: 'Buy a ticket',
   description: 'Buy a ticket',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -151,6 +156,7 @@ export const refundTicket = createRoute({
   path: '/tickets/refund/{id}',
   summary: 'Refund a ticket',
   description: 'Refund a ticket',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -177,6 +183,7 @@ export const updateTicket = createRoute({
   path: '/tickets/{id}',
   summary: 'Update a ticket',
   description: 'Update a ticket',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -215,6 +222,7 @@ export const useTicket = createRoute({
   path: '/tickets/use/{id}',
   summary: 'Use a ticket',
   description: 'Use a ticket',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -246,6 +254,7 @@ export const deleteTicket = createRoute({
   path: '/tickets/{id}',
   summary: 'Delete a ticket',
   description: 'Delete a ticket',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),

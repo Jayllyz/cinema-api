@@ -1,4 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
+import authMiddleware from '../middlewares/token';
 import {
   idValidator,
   insertUserValidator,
@@ -14,6 +15,7 @@ export const getUsers = createRoute({
   path: '/users',
   summary: 'Get all users',
   description: 'Get all users',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   responses: {
     200: {
@@ -41,6 +43,7 @@ export const getUserById = createRoute({
   path: '/users/{id}',
   summary: 'Get a user by id',
   description: 'Get a user by id',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,
@@ -72,6 +75,7 @@ export const insertUser = createRoute({
   path: '/users',
   summary: 'Insert a user',
   description: 'Insert a user',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     body: {
@@ -119,6 +123,7 @@ export const updateUser = createRoute({
   path: '/users/{id}',
   summary: 'Update a user',
   description: 'Update a user',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,
@@ -166,6 +171,7 @@ export const updateUserMoney = createRoute({
   path: '/users/money',
   summary: 'Update user money',
   description: 'Update user money',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     query: updateUserMoneyValidator,
@@ -207,6 +213,7 @@ export const deleteUser = createRoute({
   path: '/users/{id}',
   summary: 'Delete a user',
   description: 'Delete a user',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: idValidator,

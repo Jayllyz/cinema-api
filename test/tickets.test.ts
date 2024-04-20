@@ -85,7 +85,6 @@ describe('Tickets', () => {
   });
 
   test('Create a Screening', async () => {
-    console.log(mondayOfNextWeek.toISOString());
     const res = await app.request(`${path}/screenings`, {
       method: 'POST',
       headers: {

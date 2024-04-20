@@ -1,4 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
+import authMiddleware from '../middlewares/token';
 import {
   insertScreeningValidator,
   listScreeningValidator,
@@ -41,6 +42,7 @@ export const insertScreening = createRoute({
   path: '/screenings',
   summary: 'Insert a screening',
   description: 'Insert a screening',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     body: {
@@ -78,6 +80,7 @@ export const updateScreening = createRoute({
   path: '/screenings/{id}',
   summary: 'Update a screening',
   description: 'Update a screening',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -116,6 +119,7 @@ export const getScreeningById = createRoute({
   path: '/screenings/{id}',
   summary: 'Get a screening by id',
   description: 'Get a screening by id',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),
@@ -147,6 +151,7 @@ export const deleteScreening = createRoute({
   path: '/screenings/{id}',
   summary: 'Delete a screening',
   description: 'Delete a screening',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
     params: z.object({ id: z.coerce.number().min(1) }),

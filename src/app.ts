@@ -1,8 +1,9 @@
 import { serve } from '@hono/node-server';
 import { swaggerUI } from '@hono/swagger-ui';
 import { OpenAPIHono, createRoute } from '@hono/zod-openapi';
+import { compress } from 'hono/compress';
 import { HTTPException } from 'hono/http-exception';
-import { jwt } from 'hono/jwt';
+import { logger } from 'hono/logger';
 import { prettyJSON } from 'hono/pretty-json';
 import { secureHeaders } from 'hono/secure-headers';
 import { auth } from './handlers/auth';
@@ -16,30 +17,22 @@ import { tickets } from './handlers/tickets';
 import { users } from './handlers/users';
 import { workingShift } from './handlers/working_shift.js';
 
+const port = Number(process.env.PORT || 3000);
 const app = new OpenAPIHono();
 
-app.use(prettyJSON());
-app.use(secureHeaders());
+if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+  app.use('*', logger());
+}
+app.use('*', prettyJSON());
+app.use('*', secureHeaders());
+app.use('*', compress());
 app.get('/', (c) => c.text('Welcome to the API!'));
 
-const port = Number(process.env.PORT || 3000);
-
-const jwtMiddleware = jwt({
-  secret: process.env.SECRET_KEY || 'secret',
-});
-
-app.use((c, next) => {
-  const baseUrl = c.req.url.split(`http://localhost:${port}`)[1];
-
-  if (
-    !baseUrl.startsWith('/auth') &&
-    !baseUrl.startsWith('/health') &&
-    !baseUrl.startsWith('/doc') &&
-    !baseUrl.startsWith('/ui')
-  ) {
-    return jwtMiddleware(c, next);
+app.onError((err, c) => {
+  if (err instanceof HTTPException) {
+    return err.getResponse();
   }
-  return next();
+  return c.json({ error: 'Internal server error' }, 500);
 });
 
 app.use(async (c, next) => {
@@ -112,14 +105,6 @@ app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
 });
 
 app.get('/ui', swaggerUI({ url: '/doc' }));
-
-app.onError((err, c) => {
-  if (err instanceof HTTPException) {
-    return err.getResponse();
-  }
-  console.error(err);
-  return c.json({ error: 'Internal server error' }, 500);
-});
 
 console.log(`Server is running on port ${port}`);
 
