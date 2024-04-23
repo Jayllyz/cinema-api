@@ -60,6 +60,9 @@ jobs:
       - name: Lint & format
         run: pnpm run lint:check
 
+      - name: Check type coverage
+        run: pnpm run type-coverage
+
       - name: Initialize database
         run: pnpm run prisma:init
 

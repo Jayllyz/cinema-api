@@ -37,7 +37,7 @@ describe('Tickets', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const category = await res.json();
+    const category = await res.json() as { id: number };
     trackedCategory = category.id;
   });
 
@@ -59,7 +59,7 @@ describe('Tickets', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const movie = await res.json();
+    const movie = await res.json() as { id: number };
     trackedMovie = movie.id;
   });
 
@@ -80,7 +80,7 @@ describe('Tickets', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const room = await res.json();
+    const room = await res.json() as { id: number };
     trackedRoom = room.id;
   });
 
@@ -99,7 +99,7 @@ describe('Tickets', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const screening = await res.json();
+    const screening = await res.json() as { id: number };
     trackedScreening = screening.id;
   });
 
@@ -110,7 +110,7 @@ describe('Tickets', () => {
       },
     });
     expect(res.status).toBe(200);
-    const tickets = await res.json();
+    const tickets = await res.json() as Tickets[];
     expect(tickets).toBeInstanceOf(Array);
     deleteTest = tickets[0];
   });
@@ -140,7 +140,7 @@ describe('Tickets', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const ticket = await res.json();
+    const ticket = await res.json() as { id: number, price: number };
     trackedTicket = ticket.id;
     expect(ticket).toMatchObject({ price: 10 });
   });
@@ -152,7 +152,7 @@ describe('Tickets', () => {
       },
     });
     expect(res.status).toBe(200);
-    const ticket = await res.json();
+    const ticket = await res.json() as { id: number };
     expect(ticket).toMatchObject({ id: trackedTicket });
   });
 
@@ -171,7 +171,7 @@ describe('Tickets', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const user = await res.json();
+    const user = await res.json() as { id: number };
     trackedUser = user.id;
   });
 
@@ -187,7 +187,7 @@ describe('Tickets', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const token = await res.json();
+    const token = await res.json() as { token: string };
     userToken = token.token;
   });
 
@@ -203,7 +203,7 @@ describe('Tickets', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const user = await res.json();
+    const user = await res.json() as { money: number };
     expect(user).toMatchObject({ money: 100 });
   });
 
@@ -222,7 +222,7 @@ describe('Tickets', () => {
         Authorization: `Bearer ${adminToken}`,
       },
     });
-    const updatedUser = await user.json();
+    const updatedUser = await user.json() as { money: number };
     expect(updatedUser).toMatchObject({ money: 90 });
   });
 
@@ -238,7 +238,7 @@ describe('Tickets', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const ticket = await res.json();
+    const ticket = await res.json() as { price: number };
     expect(ticket).toMatchObject({ price: 5 });
   });
 
@@ -257,7 +257,7 @@ describe('Tickets', () => {
         Authorization: `Bearer ${adminToken}`,
       },
     });
-    const updatedUser = await user.json();
+    const updatedUser = await user.json() as { money: number };
     expect(updatedUser).toMatchObject({ money: 95 });
   });
 
@@ -276,7 +276,7 @@ describe('Tickets', () => {
         Authorization: `Bearer ${adminToken}`,
       },
     });
-    const updatedUser = await user.json();
+    const updatedUser = await user.json() as { money: number };
     expect(updatedUser).toMatchObject({ money: 90 });
   });
 
@@ -295,7 +295,7 @@ describe('Tickets', () => {
         Authorization: `Bearer ${adminToken}`,
       },
     });
-    const updatedTicket = await ticket.json();
+    const updatedTicket = await ticket.json() as { used: boolean };
     expect(updatedTicket).toMatchObject({ used: true });
   });
 

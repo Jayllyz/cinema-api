@@ -1,6 +1,7 @@
 import { sign } from 'hono/jwt';
 import app from '../src/app.js';
 import { Role } from '../src/lib/token.js';
+import type { Employees, Working_shifts } from '@prisma/client';
 
 let createdEmployeeId: number;
 let createdWorkingShiftId: number;
@@ -33,7 +34,7 @@ describe('Employees', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const employee = await res.json();
+    const employee: Employees = await res.json();
     createdEmployeeId = employee.id;
   });
 
@@ -44,8 +45,9 @@ describe('Employees', () => {
       },
     });
     expect(res.status).toBe(200);
-    const employees = await res.json();
+    const employees: Employees[] = await res.json();
     expect(employees).toBeInstanceOf(Array);
+    expect(employees.length).toBeGreaterThanOrEqual(1);
   });
 
   test('GET /employees/{id}', async () => {
@@ -55,7 +57,7 @@ describe('Employees', () => {
       },
     });
     expect(res.status).toBe(200);
-    const employee = await res.json();
+    const employee: Employees = await res.json();
     expect(employee).toMatchObject({ last_name: 'Doe', first_name: 'John' });
   });
 
@@ -72,7 +74,7 @@ describe('Employees', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const employee = await res.json();
+    const employee: Employees = await res.json();
     expect(employee).toMatchObject({ first_name: updateEmployee });
   });
 
@@ -95,7 +97,7 @@ describe('Employees', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const workingShift = await res.json();
+    const workingShift: Working_shifts = await res.json();
     createdWorkingShiftId = workingShift.id;
   });
 
@@ -106,8 +108,9 @@ describe('Employees', () => {
       },
     });
     expect(res.status).toBe(200);
-    const workingShifts = await res.json();
+    const workingShifts: Working_shifts[] = await res.json();
     expect(workingShifts).toBeInstanceOf(Array);
+    expect(workingShifts.length).toBeGreaterThanOrEqual(1);
   });
 
   test('GET /working_shifts/{id}', async () => {
@@ -117,7 +120,7 @@ describe('Employees', () => {
       },
     });
     expect(res.status).toBe(200);
-    const workingShift = await res.json();
+    const workingShift: Working_shifts = await res.json();
     expect(workingShift).toMatchObject({ id: createdWorkingShiftId });
   });
 
@@ -134,7 +137,7 @@ describe('Employees', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const workingShift = await res.json();
+    const workingShift: Working_shifts = await res.json();
     expect(workingShift).toMatchObject({ position: 'reception' });
   });
 

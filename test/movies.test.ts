@@ -2,6 +2,7 @@ import { sign } from 'hono/jwt';
 import app from '../src/app.js';
 import { Role } from '../src/lib/token.js';
 import { randomString } from './utils.js';
+import type { Categories, Movies } from '@prisma/client';
 
 let createdMovieId = 1;
 let createdCategoryId = 1;
@@ -26,7 +27,7 @@ describe('Movies', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const category = await res.json();
+    const category: Categories = await res.json();
     createdCategoryId = category.id;
   });
 
@@ -48,7 +49,7 @@ describe('Movies', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const movie = await res.json();
+    const movie: Movies = await res.json();
     expect(movie).toMatchObject({ title: randomMovie });
     createdMovieId = movie.id;
   });
@@ -60,8 +61,9 @@ describe('Movies', () => {
       },
     });
     expect(res.status).toBe(200);
-    const movies = await res.json();
+    const movies: Movies[] = await res.json();
     expect(movies).toBeInstanceOf(Array);
+    expect(movies.length).toBeGreaterThanOrEqual(1);
   });
 
   test('GET /movies/{id}', async () => {
@@ -71,7 +73,7 @@ describe('Movies', () => {
       },
     });
     expect(res.status).toBe(200);
-    const movie = await res.json();
+    const movie: Movies = await res.json();
     expect(movie).toMatchObject({ title: randomMovie });
   });
 
@@ -91,7 +93,7 @@ describe('Movies', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const movie = await res.json();
+    const movie: Movies = await res.json();
     expect(movie).toMatchObject({ title: updatedMovie, status: 'unavailable' });
   });
 
