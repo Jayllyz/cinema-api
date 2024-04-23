@@ -1,8 +1,8 @@
+import type { Categories, Movies, Rooms, Screenings } from '@prisma/client';
 import { sign } from 'hono/jwt';
 import app from '../src/app.js';
 import { Role } from '../src/lib/token.js';
 import { randomString } from './utils.js';
-import type { Categories, Movies, Rooms, Screenings } from '@prisma/client';
 
 let createScreeningId = 1;
 let createdRoomId = 1;

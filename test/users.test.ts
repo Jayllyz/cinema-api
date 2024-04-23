@@ -1,8 +1,8 @@
+import type { Users } from '@prisma/client';
 import { sign } from 'hono/jwt';
 import app from '../src/app';
 import { Role } from '../src/lib/token';
 import { randomString } from './utils';
-import type { Users } from '@prisma/client';
 
 const randomUser = randomString(10);
 const secret = process.env.SECRET_KEY || 'secret';

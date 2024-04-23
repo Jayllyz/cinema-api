@@ -1,7 +1,7 @@
+import type { Categories, Movies, Rooms, Screenings, Tickets, Users } from '@prisma/client';
 import { sign } from 'hono/jwt';
 import app from '../src/app';
 import { Role } from '../src/lib/token';
-import type { Categories, Movies, Rooms, Screenings, Tickets, Users } from '@prisma/client';
 
 const secret = process.env.SECRET_KEY || 'secret';
 const adminToken = await sign({ id: 1, role: Role.ADMIN }, secret);
@@ -132,7 +132,7 @@ describe('Super tickets', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const token = await res.json() as { token: string };
+    const token = (await res.json()) as { token: string };
     userToken = token.token;
   });
 
@@ -253,7 +253,7 @@ describe('Super tickets', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const ticket = await res.json() as { uses: number };
+    const ticket = (await res.json()) as { uses: number };
     expect(ticket).toMatchObject({ uses: 5 });
   });
 

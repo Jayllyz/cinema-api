@@ -22,7 +22,7 @@ describe('Auth', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const users: { id: number, first_name: string } = await res.json();
+    const users: { id: number; first_name: string } = await res.json();
     trackedUser = users.id;
     expect(users).toMatchObject({ first_name: 'John' });
   });

@@ -1,8 +1,8 @@
+import type { Categories } from '@prisma/client';
 import { sign } from 'hono/jwt';
 import app from '../src/app.js';
 import { Role } from '../src/lib/token.js';
 import { randomString } from './utils.js';
-import type { Categories } from '@prisma/client';
 
 let createdCategoryId = 1;
 const randomCategory = randomString(5);

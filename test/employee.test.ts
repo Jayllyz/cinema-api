@@ -1,7 +1,7 @@
+import type { Employees, Working_shifts } from '@prisma/client';
 import { sign } from 'hono/jwt';
 import app from '../src/app.js';
 import { Role } from '../src/lib/token.js';
-import type { Employees, Working_shifts } from '@prisma/client';
 
 let createdEmployeeId: number;
 let createdWorkingShiftId: number;
