@@ -1,3 +1,4 @@
+import type { Categories } from '@prisma/client';
 import { sign } from 'hono/jwt';
 import app from '../src/app.js';
 import { Role } from '../src/lib/token.js';
@@ -24,7 +25,7 @@ describe('Categories', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const category = await res.json();
+    const category: Categories = await res.json();
     createdCategoryId = category.id;
   });
 
@@ -35,7 +36,7 @@ describe('Categories', () => {
       },
     });
     expect(res.status).toBe(200);
-    const categories = await res.json();
+    const categories: Categories[] = await res.json();
     expect(categories).toBeInstanceOf(Array);
   });
 
@@ -46,7 +47,7 @@ describe('Categories', () => {
       },
     });
     expect(res.status).toBe(200);
-    const category = await res.json();
+    const category: Categories = await res.json();
     expect(category).toMatchObject({ name: randomCategory });
   });
 

@@ -1,3 +1,4 @@
+import type { Categories, Movies, Rooms, Screenings } from '@prisma/client';
 import { sign } from 'hono/jwt';
 import app from '../src/app.js';
 import { Role } from '../src/lib/token.js';
@@ -36,7 +37,7 @@ describe('Screenings', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const category = await res.json();
+    const category: Categories = await res.json();
     createdCategoryId = category.id;
   });
 
@@ -58,7 +59,7 @@ describe('Screenings', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const movie = await res.json();
+    const movie: Movies = await res.json();
     expect(movie).toMatchObject({ title: randomMovie });
     createdMovieId = movie.id;
   });
@@ -80,7 +81,7 @@ describe('Screenings', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const room = await res.json();
+    const room: Rooms = await res.json();
     expect(room).toMatchObject({ name: 'Room Screenings' });
     createdRoomId = room.id;
   });
@@ -100,7 +101,7 @@ describe('Screenings', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const screening = await res.json();
+    const screening: Screenings = await res.json();
     expect(screening).toBeInstanceOf(Object);
     createScreeningId = screening.id;
   });
@@ -112,8 +113,9 @@ describe('Screenings', () => {
       },
     });
     expect(res.status).toBe(200);
-    const screenings = await res.json();
+    const screenings: Screenings[] = await res.json();
     expect(screenings).toBeInstanceOf(Array);
+    expect(screenings.length).toBeGreaterThanOrEqual(1);
   });
 
   test('GET /screenings/{id}', async () => {
@@ -123,7 +125,7 @@ describe('Screenings', () => {
       },
     });
     expect(res.status).toBe(200);
-    const screening = await res.json();
+    const screening: Screenings = await res.json();
     expect(screening).toMatchObject({ id: createScreeningId });
   });
 
@@ -142,7 +144,7 @@ describe('Screenings', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const screening = await res.json();
+    const screening: Screenings = await res.json();
     expect(screening).toHaveProperty('start_time', patchedDate.toISOString());
   });
 

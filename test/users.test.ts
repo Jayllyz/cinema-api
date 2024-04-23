@@ -1,3 +1,4 @@
+import type { Users } from '@prisma/client';
 import { sign } from 'hono/jwt';
 import app from '../src/app';
 import { Role } from '../src/lib/token';
@@ -29,7 +30,7 @@ describe('Users', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const user = await res.json();
+    const user: Users = await res.json();
     toDelete = user.id;
     adminToken = await sign({ id: user.id, role: Role.ADMIN }, secret);
     expect(user).toMatchObject({ first_name: randomUser });
@@ -42,8 +43,9 @@ describe('Users', () => {
       },
     });
     expect(res.status).toBe(200);
-    const users = await res.json();
+    const users: Users[] = await res.json();
     expect(users).toBeInstanceOf(Array);
+    expect(users.length).toBeGreaterThanOrEqual(1);
   });
 
   test('GET /users/{id}', async () => {
@@ -53,7 +55,7 @@ describe('Users', () => {
       },
     });
     expect(res.status).toBe(200);
-    const user = await res.json();
+    const user: Users = await res.json();
     expect(user).toMatchObject({ id: toDelete });
   });
 
@@ -70,7 +72,7 @@ describe('Users', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const user = await res.json();
+    const user: Users = await res.json();
     trackedMoney = user.money;
     expect(user).toMatchObject({ first_name: 'modified' });
   });
@@ -84,7 +86,7 @@ describe('Users', () => {
       },
     });
     expect(res.status).toBe(200);
-    const user = await res.json();
+    const user: Users = await res.json();
     expect(user).toMatchObject({ money: trackedMoney + 50 });
     trackedMoney += 50;
   });
@@ -98,7 +100,7 @@ describe('Users', () => {
       },
     });
     expect(res.status).toBe(200);
-    const user = await res.json();
+    const user: Users = await res.json();
     expect(user).toMatchObject({ money: trackedMoney - 50 });
     trackedMoney -= 50;
   });
