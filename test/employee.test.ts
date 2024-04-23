@@ -39,7 +39,7 @@ describe('Employees', () => {
   });
 
   test('GET /employees', async () => {
-    const res = await app.request(`${path}/movies`, {
+    const res = await app.request(`${path}/employees`, {
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },

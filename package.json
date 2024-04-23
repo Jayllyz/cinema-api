@@ -14,7 +14,7 @@
     "test": "vitest --run",
     "lint": "biome check --apply .",
     "lint:check": "biome ci .",
-    "type-coverage": "npx type-coverage --detail"
+    "type-coverage": "type-coverage --detail"
   },
   "dependencies": {
     "@hono/node-server": "^1.11.0",
@@ -33,6 +33,7 @@
     "@types/swagger-ui-dist": "^3.30.4",
     "prisma": "^5.13.0",
     "tsx": "^4.7.2",
+    "type-coverage": "^2.28.1",
     "typescript": "^5.4.5",
     "vitest": "^1.5.0"
   },
