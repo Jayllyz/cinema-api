@@ -1,5 +1,5 @@
 # Base server
-FROM node:21-alpine as base
+FROM node:22-alpine as base
 
 RUN apk add --no-cache libc6-compat && \
     corepack enable pnpm
