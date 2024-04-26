@@ -253,7 +253,7 @@ describe('Super tickets', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const ticket = (await res.json()) as { uses: number };
+    const ticket: Tickets = await res.json();
     expect(ticket).toMatchObject({ uses: 5 });
   });
 
