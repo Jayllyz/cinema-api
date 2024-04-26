@@ -1,7 +1,8 @@
 # Base server
 FROM node:22-alpine as base
 
-RUN apk add --no-cache libc6-compat && \
+# hadolint ignore=DL3018
+RUN apk add --no-cache gcompat && \
     corepack enable pnpm
 
 USER node
@@ -21,7 +22,7 @@ ENV NODE_ENV=development
 RUN pnpm fetch && \
     pnpm install
 COPY --chown=node:node . .
-CMD ["pnpm", "run", "dev"]
+CMD ["node", "--run", "dev"]
 
 
 # Build
