@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { employeeValidator } from './employees';
+import { employeeValidator } from './employees.js';
 
 export const workingShiftsResponseSchema = z.object({
   start_time: z.string(),

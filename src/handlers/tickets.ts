@@ -1,7 +1,7 @@
 import { OpenAPIHono } from '@hono/zod-openapi';
-import { prisma } from '../lib/database';
-import { type PayloadValidator, Role, checkToken } from '../lib/token';
-import { zodErrorHook } from '../lib/zodError';
+import { prisma } from '../lib/database.js';
+import { type PayloadValidator, Role, checkToken } from '../lib/token.js';
+import { zodErrorHook } from '../lib/zodError.js';
 import {
   buyTicket,
   deleteTicket,
@@ -11,7 +11,7 @@ import {
   refundTicket,
   updateTicket,
   useTicket,
-} from '../routes/tickets';
+} from '../routes/tickets.js';
 
 export const tickets = new OpenAPIHono({
   defaultHook: zodErrorHook,

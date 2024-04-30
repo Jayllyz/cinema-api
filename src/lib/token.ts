@@ -1,5 +1,5 @@
 import { HTTPException } from 'hono/http-exception';
-import { prisma } from './database';
+import { prisma } from './database.js';
 
 export enum Role {
   USER = 1,

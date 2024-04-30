@@ -34,7 +34,7 @@ describe('Employees', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const employee: Employees = await res.json();
+    const employee = (await res.json()) as Employees;
     createdEmployeeId = employee.id;
   });
 
@@ -45,7 +45,7 @@ describe('Employees', () => {
       },
     });
     expect(res.status).toBe(200);
-    const employees: Employees[] = await res.json();
+    const employees = (await res.json()) as Employees[];
     expect(employees).toBeInstanceOf(Array);
     expect(employees.length).toBeGreaterThanOrEqual(1);
   });
@@ -57,7 +57,7 @@ describe('Employees', () => {
       },
     });
     expect(res.status).toBe(200);
-    const employee: Employees = await res.json();
+    const employee = (await res.json()) as Employees;
     expect(employee).toMatchObject({ last_name: 'Doe', first_name: 'John' });
   });
 
@@ -74,7 +74,7 @@ describe('Employees', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const employee: Employees = await res.json();
+    const employee = (await res.json()) as Employees;
     expect(employee).toMatchObject({ first_name: updateEmployee });
   });
 
@@ -97,7 +97,7 @@ describe('Employees', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const workingShift: Working_shifts = await res.json();
+    const workingShift = (await res.json()) as Working_shifts;
     createdWorkingShiftId = workingShift.id;
   });
 
@@ -108,7 +108,7 @@ describe('Employees', () => {
       },
     });
     expect(res.status).toBe(200);
-    const workingShifts: Working_shifts[] = await res.json();
+    const workingShifts = (await res.json()) as Working_shifts[];
     expect(workingShifts).toBeInstanceOf(Array);
     expect(workingShifts.length).toBeGreaterThanOrEqual(1);
   });
@@ -120,7 +120,7 @@ describe('Employees', () => {
       },
     });
     expect(res.status).toBe(200);
-    const workingShift: Working_shifts = await res.json();
+    const workingShift = (await res.json()) as Working_shifts;
     expect(workingShift).toMatchObject({ id: createdWorkingShiftId });
   });
 
@@ -137,7 +137,7 @@ describe('Employees', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const workingShift: Working_shifts = await res.json();
+    const workingShift = (await res.json()) as Working_shifts;
     expect(workingShift).toMatchObject({ position: 'reception' });
   });
 

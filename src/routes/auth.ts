@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import { loginValidator, signupValidator } from '../validators/auth';
-import { userValidator } from '../validators/users';
+import { loginValidator, signupValidator } from '../validators/auth.js';
+import { userValidator } from '../validators/users.js';
 
 export const loginUser = createRoute({
   method: 'post',

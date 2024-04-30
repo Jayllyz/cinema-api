@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { screeningValidator } from './screenings';
-import { limitedUserValidator } from './users';
+import { screeningValidator } from './screenings.js';
+import { limitedUserValidator } from './users.js';
 
 export const ticketValidator = z.object({
   id: z.number().min(1),

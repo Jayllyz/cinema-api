@@ -25,7 +25,7 @@ describe('Categories', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const category: Categories = await res.json();
+    const category: Categories = (await res.json()) as Categories;
     createdCategoryId = category.id;
   });
 
@@ -36,7 +36,7 @@ describe('Categories', () => {
       },
     });
     expect(res.status).toBe(200);
-    const categories: Categories[] = await res.json();
+    const categories: Categories[] = (await res.json()) as Categories[];
     expect(categories).toBeInstanceOf(Array);
   });
 
@@ -47,7 +47,7 @@ describe('Categories', () => {
       },
     });
     expect(res.status).toBe(200);
-    const category: Categories = await res.json();
+    const category: Categories = (await res.json()) as Categories;
     expect(category).toMatchObject({ name: randomCategory });
   });
 

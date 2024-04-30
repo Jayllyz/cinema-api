@@ -37,7 +37,7 @@ describe('Screenings', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const category: Categories = await res.json();
+    const category = (await res.json()) as Categories;
     createdCategoryId = category.id;
   });
 
@@ -59,7 +59,7 @@ describe('Screenings', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const movie: Movies = await res.json();
+    const movie = (await res.json()) as Movies;
     expect(movie).toMatchObject({ title: randomMovie });
     createdMovieId = movie.id;
   });
@@ -81,7 +81,7 @@ describe('Screenings', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const room: Rooms = await res.json();
+    const room = (await res.json()) as Rooms;
     expect(room).toMatchObject({ name: 'Room Screenings' });
     createdRoomId = room.id;
   });
@@ -101,7 +101,7 @@ describe('Screenings', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const screening: Screenings = await res.json();
+    const screening = (await res.json()) as Screenings;
     expect(screening).toBeInstanceOf(Object);
     createScreeningId = screening.id;
   });
@@ -113,7 +113,7 @@ describe('Screenings', () => {
       },
     });
     expect(res.status).toBe(200);
-    const screenings: Screenings[] = await res.json();
+    const screenings = (await res.json()) as Screenings[];
     expect(screenings).toBeInstanceOf(Array);
     expect(screenings.length).toBeGreaterThanOrEqual(1);
   });
@@ -125,7 +125,7 @@ describe('Screenings', () => {
       },
     });
     expect(res.status).toBe(200);
-    const screening: Screenings = await res.json();
+    const screening = (await res.json()) as Screenings;
     expect(screening).toMatchObject({ id: createScreeningId });
   });
 
@@ -144,7 +144,7 @@ describe('Screenings', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const screening: Screenings = await res.json();
+    const screening = (await res.json()) as Screenings;
     expect(screening).toHaveProperty('start_time', patchedDate.toISOString());
   });
 

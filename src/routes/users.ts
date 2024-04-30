@@ -1,5 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import authMiddleware from '../middlewares/token';
+import authMiddleware from '../middlewares/token.js';
 import {
   idValidator,
   insertUserValidator,
@@ -7,7 +7,7 @@ import {
   updateUserMoneyValidator,
   updateUserValidator,
   userValidator,
-} from '../validators/users';
+} from '../validators/users.js';
 
 // GET ROUTES
 export const getUsers = createRoute({

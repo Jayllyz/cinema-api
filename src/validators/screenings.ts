@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { validateDay } from '../lib/date';
-import { MovieValidator } from './movies';
-import { RoomValidator } from './rooms';
+import { validateDay } from '../lib/date.js';
+import { MovieValidator } from './movies.js';
+import { RoomValidator } from './rooms.js';
 
 export const insertScreeningValidator = z.object({
   start_time: z.coerce

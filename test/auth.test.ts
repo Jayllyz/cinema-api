@@ -1,6 +1,7 @@
+import type { Users } from '@prisma/client';
 import { sign } from 'hono/jwt';
-import app from '../src/app';
-import { Role } from '../src/lib/token';
+import app from '../src/app.js';
+import { Role } from '../src/lib/token.js';
 
 const secret = process.env.SECRET_KEY || 'secret';
 const adminToken = await sign({ id: 1, role: Role.ADMIN }, secret);
@@ -22,7 +23,7 @@ describe('Auth', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const users: { id: number; first_name: string } = await res.json();
+    const users: Users = (await res.json()) as Users;
     trackedUser = users.id;
     expect(users).toMatchObject({ first_name: 'John' });
   });
@@ -37,7 +38,7 @@ describe('Auth', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const token: { token: string } = await res.json();
+    const token: { token: string } = (await res.json()) as { token: string };
     expect(token).toHaveProperty('token');
   });
 

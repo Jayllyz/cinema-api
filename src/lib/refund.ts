@@ -1,4 +1,4 @@
-import { prisma } from './database';
+import { prisma } from './database.js';
 
 export async function refundTicketsScreening(screeningId: number): Promise<void> {
   const tickets = await prisma.tickets.findMany({
