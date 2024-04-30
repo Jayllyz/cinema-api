@@ -23,7 +23,7 @@ describe('Movies', () => {
         Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
-        name: randomString(5),
+        name: 'MovieTestCategory',
       }),
     });
     expect(res.status).toBe(201);
