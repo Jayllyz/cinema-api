@@ -1,8 +1,8 @@
 import type { Users } from '@prisma/client';
 import { sign } from 'hono/jwt';
-import app from '../src/app';
-import { Role } from '../src/lib/token';
-import { randomString } from './utils';
+import app from '../src/app.js';
+import { Role } from '../src/lib/token.js';
+import { randomString } from './utils.js';
 
 const randomUser = randomString(10);
 const secret = process.env.SECRET_KEY || 'secret';
@@ -30,7 +30,7 @@ describe('Users', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const user: Users = await res.json();
+    const user = (await res.json()) as Users;
     toDelete = user.id;
     adminToken = await sign({ id: user.id, role: Role.ADMIN }, secret);
     expect(user).toMatchObject({ first_name: randomUser });
@@ -43,7 +43,7 @@ describe('Users', () => {
       },
     });
     expect(res.status).toBe(200);
-    const users: Users[] = await res.json();
+    const users = (await res.json()) as Users[];
     expect(users).toBeInstanceOf(Array);
     expect(users.length).toBeGreaterThanOrEqual(1);
   });
@@ -55,7 +55,7 @@ describe('Users', () => {
       },
     });
     expect(res.status).toBe(200);
-    const user: Users = await res.json();
+    const user = (await res.json()) as Users;
     expect(user).toMatchObject({ id: toDelete });
   });
 
@@ -72,7 +72,7 @@ describe('Users', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const user: Users = await res.json();
+    const user = (await res.json()) as Users;
     trackedMoney = user.money;
     expect(user).toMatchObject({ first_name: 'modified' });
   });
@@ -86,7 +86,7 @@ describe('Users', () => {
       },
     });
     expect(res.status).toBe(200);
-    const user: Users = await res.json();
+    const user = (await res.json()) as Users;
     expect(user).toMatchObject({ money: trackedMoney + 50 });
     trackedMoney += 50;
   });
@@ -100,7 +100,7 @@ describe('Users', () => {
       },
     });
     expect(res.status).toBe(200);
-    const user: Users = await res.json();
+    const user = (await res.json()) as Users;
     expect(user).toMatchObject({ money: trackedMoney - 50 });
     trackedMoney -= 50;
   });

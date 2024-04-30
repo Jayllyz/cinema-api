@@ -27,7 +27,7 @@ describe('Movies', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const category: Categories = await res.json();
+    const category = (await res.json()) as Categories;
     createdCategoryId = category.id;
   });
 
@@ -49,7 +49,7 @@ describe('Movies', () => {
       }),
     });
     expect(res.status).toBe(201);
-    const movie: Movies = await res.json();
+    const movie = (await res.json()) as Movies;
     expect(movie).toMatchObject({ title: randomMovie });
     createdMovieId = movie.id;
   });
@@ -61,7 +61,7 @@ describe('Movies', () => {
       },
     });
     expect(res.status).toBe(200);
-    const movies: Movies[] = await res.json();
+    const movies = (await res.json()) as Movies[];
     expect(movies).toBeInstanceOf(Array);
     expect(movies.length).toBeGreaterThanOrEqual(1);
   });
@@ -73,7 +73,7 @@ describe('Movies', () => {
       },
     });
     expect(res.status).toBe(200);
-    const movie: Movies = await res.json();
+    const movie = (await res.json()) as Movies;
     expect(movie).toMatchObject({ title: randomMovie });
   });
 
@@ -93,7 +93,7 @@ describe('Movies', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const movie: Movies = await res.json();
+    const movie = (await res.json()) as Movies;
     expect(movie).toMatchObject({ title: updatedMovie, status: 'unavailable' });
   });
 

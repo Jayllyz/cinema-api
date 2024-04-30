@@ -1,11 +1,11 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import authMiddleware from '../middlewares/token';
+import authMiddleware from '../middlewares/token.js';
 import {
   insertWorkingShiftsValidator,
   listworkingShiftsValidator,
   updateWorkingShiftsValidator,
   workingShiftsResponseSchema,
-} from '../validators/working_shifts';
+} from '../validators/working_shifts.js';
 
 export const insertWorkingShift = createRoute({
   method: 'post',

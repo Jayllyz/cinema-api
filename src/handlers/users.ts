@@ -1,9 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi';
 import bcrypt from 'bcryptjs';
-import { prisma } from '../lib/database';
-import { type PayloadValidator, Role, checkToken } from '../lib/token';
+import { prisma } from '../lib/database.js';
+import { type PayloadValidator, Role, checkToken } from '../lib/token.js';
 import { zodErrorHook } from '../lib/zodError.js';
-import { deleteUser, getUserById, getUsers, insertUser, updateUser, updateUserMoney } from '../routes/users';
+import { deleteUser, getUserById, getUsers, insertUser, updateUser, updateUserMoney } from '../routes/users.js';
 
 export const users = new OpenAPIHono({
   defaultHook: zodErrorHook,

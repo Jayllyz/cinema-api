@@ -1,12 +1,12 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import authMiddleware from '../middlewares/token';
+import authMiddleware from '../middlewares/token.js';
 import {
   employeeResponseSchema,
   employeeValidator,
   insertEmployeeValidator,
   listEmployeesValidator,
   updateEmployeeValidator,
-} from '../validators/employees';
+} from '../validators/employees.js';
 
 export const insertEmployee = createRoute({
   method: 'post',

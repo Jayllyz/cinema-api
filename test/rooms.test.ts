@@ -31,7 +31,7 @@ describe('Rooms tests', () => {
         }),
       });
       expect(res.status).toBe(201);
-      const room: Rooms = await res.json();
+      const room = (await res.json()) as Rooms;
       expect(room).toMatchObject({
         name: `Room ${i}`,
         description: 'Test room',
@@ -70,7 +70,7 @@ describe('Rooms tests', () => {
       },
     });
     expect(res.status).toBe(200);
-    const rooms: Rooms[] = await res.json();
+    const rooms = (await res.json()) as Rooms[];
     expect(rooms).toBeInstanceOf(Array);
     expect(rooms.length).toBeGreaterThanOrEqual(numRooms);
   });
@@ -82,7 +82,7 @@ describe('Rooms tests', () => {
       },
     });
     expect(res.status).toBe(200);
-    const room: Rooms = await res.json();
+    const room = (await res.json()) as Rooms;
     expect(room).toMatchObject({ name: 'Room 0' });
   });
 
@@ -103,7 +103,7 @@ describe('Rooms tests', () => {
       }),
     });
     expect(res.status).toBe(200);
-    const room: Rooms = await res.json();
+    const room = (await res.json()) as Rooms;
     expect(room).toMatchObject({
       name: 'Room 0',
       description: 'Test room',

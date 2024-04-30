@@ -1,10 +1,10 @@
 import { OpenAPIHono } from '@hono/zod-openapi';
 import bcrypt from 'bcryptjs';
 import { sign } from 'hono/jwt';
-import { prisma } from '../lib/database';
-import { Role } from '../lib/token';
+import { prisma } from '../lib/database.js';
+import { Role } from '../lib/token.js';
 import { zodErrorHook } from '../lib/zodError.js';
-import { loginUser, signupUser } from '../routes/auth';
+import { loginUser, signupUser } from '../routes/auth.js';
 
 export const auth = new OpenAPIHono({
   defaultHook: zodErrorHook,
