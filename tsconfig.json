@@ -3,7 +3,7 @@
     "target": "es2022",
     "module": "NodeNext",
     "moduleDetection": "force",
-    
+
     // strict check
     "strict": true,
     "noUncheckedIndexedAccess": true,
