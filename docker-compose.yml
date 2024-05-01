@@ -17,21 +17,24 @@ services:
     ports:
       - '${DB_PORT}:5432'
 
-  # server:
-  #   build:
-  #     context: .
-  #     target: dev
-  #     dockerfile: Dockerfile
-  #   tty: true
-  #   stdin_open: true
-  #   restart: unless-stopped
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - /app/node_modules
-  #     - .:/app:rw
-  #   ports:
-  #     - '${NODE_PORT}:${NODE_PORT}'
+  server:
+    build:
+      context: .
+      target: dev
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - /app/node_modules
+      - .:/app:rw
+    ports:
+      - '${NODE_PORT}:${NODE_PORT}'
+    depends_on:
+      db:
+        condition: service_healthy
 
   adminer:
     image: adminer
