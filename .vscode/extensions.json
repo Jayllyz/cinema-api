@@ -1,7 +1,6 @@
 {
   "recommendations": [
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
+    "biomejs.biome",
     "yoavbls.pretty-ts-errors",
     "mylesmurphy.prettify-ts",
     "ms-azuretools.vscode-docker",

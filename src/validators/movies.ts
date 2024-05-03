@@ -2,11 +2,11 @@ import { z } from 'zod';
 import { categoryValidator } from './categories.js';
 
 export const MovieValidator = z.object({
-  id: z.number().positive(),
+  id: z.number().min(1),
   title: z.string(),
   description: z.string(),
   author: z.string(),
-  release_date: z.string().datetime(),
+  release_date: z.coerce.date(),
   duration: z.number().positive(),
   status: z.string(),
   category: categoryValidator,
@@ -29,7 +29,7 @@ export const updateMovieValidator = z.object({
   description: z.string().optional(),
   duration: z.number().positive().optional(),
   status: z.string().optional(),
-  category_id: z.number().positive().optional(),
+  category_id: z.number().min(1).optional(),
 });
 
 export const listMoviesValidator = z.array(MovieValidator);

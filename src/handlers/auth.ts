@@ -32,13 +32,13 @@ auth.openapi(loginUser, async (c) => {
 
     await prisma.users.update({
       where: { id: user.id },
-      data: { token: token },
+      data: { token },
     });
 
     return c.json({ token }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -63,6 +63,6 @@ auth.openapi(signupUser, async (c) => {
     return c.json(user, 201);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });

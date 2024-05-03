@@ -39,8 +39,8 @@ export const responseScreeningValidator = z.object({
   start_time: z.coerce.date().transform((date) => date.toISOString()),
   end_time: z.coerce.date().transform((date) => date.toISOString()),
   screening_duration_minutes: z.number().int().min(1),
-  movie_id: z.number(),
-  room_id: z.number(),
+  movie_id: z.number().min(1),
+  room_id: z.number().min(1),
 });
 
 export const listScreeningValidator = z.array(screeningValidator);
