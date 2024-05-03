@@ -36,8 +36,8 @@ RUN npx prisma generate && \
 
 # Production
 FROM base as prod
-ENV NODE_ENV=production
+ENV NODE_ENV production
 COPY --from=build --chown=node:node /app/dist ./dist
 COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/prisma ./prisma
-CMD ["node", "dist/app.js"]
+CMD ["node", "dist/src/app.js"]

@@ -83,3 +83,14 @@ jobs:
         run: |
           # shellcheck disable=SC2086
           echo "image-tag=${{ steps.docker_meta.outputs.version }}" >> $GITHUB_OUTPUT
+
+      - name: Deploy to VPS
+        if: github.ref == 'refs/heads/main'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /opt/stacks/cinema-api && docker compose pull && docker compose up -d
