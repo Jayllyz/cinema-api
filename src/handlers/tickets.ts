@@ -69,10 +69,10 @@ tickets.openapi(getTickets, async (c) => {
     const { used, price_higher, price_lesser, user_id, screening_id, category, room, available } = c.req.valid('query');
 
     const whereCondition = {
-      used: used,
+      used,
       price: { gte: price_lesser, lte: price_higher },
-      user_id: user_id,
-      screening_id: screening_id,
+      user_id,
+      screening_id,
       screening: {
         movie: {
           category: {
@@ -97,7 +97,7 @@ tickets.openapi(getTickets, async (c) => {
     return c.json(tickets, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -111,7 +111,7 @@ tickets.openapi(getTicketById, async (c) => {
 
     const ticket = await prisma.tickets.findUnique({
       where: {
-        id: id,
+        id,
       },
       ...ticketSelectOptions,
     });
@@ -123,7 +123,7 @@ tickets.openapi(getTicketById, async (c) => {
     return c.json(ticket, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -175,7 +175,7 @@ tickets.openapi(insertTicket, async (c) => {
     return c.json(ticket, 201);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -244,7 +244,7 @@ tickets.openapi(buyTicket, async (c) => {
     return c.json(updatedTicket, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -299,7 +299,7 @@ tickets.openapi(refundTicket, async (c) => {
     return c.json({ message: 'Refund successful' }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -352,7 +352,7 @@ tickets.openapi(updateTicket, async (c) => {
     return c.json(updatedTicket, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -396,7 +396,7 @@ tickets.openapi(useTicket, async (c) => {
     return c.json(updatedTicket, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -429,6 +429,6 @@ tickets.openapi(deleteTicket, async (c) => {
     return c.json({ message: 'Ticket deleted' }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });

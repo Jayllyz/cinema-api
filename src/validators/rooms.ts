@@ -1,12 +1,15 @@
 import { z } from 'zod';
 
 export const idValidator = z.object({
-  id: z.coerce.number().openapi({
-    param: {
-      name: 'id',
-      in: 'path',
-    },
-  }),
+  id: z.coerce
+    .number()
+    .min(1)
+    .openapi({
+      param: {
+        name: 'id',
+        in: 'path',
+      },
+    }),
 });
 
 export const insertRoomValidator = z.object({
@@ -28,7 +31,7 @@ export const updateRoomValidator = z.object({
 });
 
 export const RoomValidator = z.object({
-  id: z.number().positive(),
+  id: z.number().min(1),
   name: z.string(),
   description: z.string(),
   capacity: z.number().min(15).max(30),

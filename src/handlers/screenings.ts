@@ -47,7 +47,7 @@ screenings.openapi(getScreenings, async (c) => {
     return c.json(screenings, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -133,7 +133,7 @@ screenings.openapi(insertScreening, async (c) => {
     return c.json(screening, 201);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -191,7 +191,7 @@ screenings.openapi(updateScreening, async (c) => {
       where: {
         room_id: screening.room_id,
         NOT: {
-          id: id,
+          id,
         },
         OR: [
           {
@@ -218,14 +218,14 @@ screenings.openapi(updateScreening, async (c) => {
     }
 
     const res = await prisma.screenings.update({
-      where: { id: id },
+      where: { id },
       data: { movie_id, start_time, room_id },
     });
 
     return c.json(res, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -246,7 +246,7 @@ screenings.openapi(deleteScreening, async (c) => {
     return c.json({ message: `screening with id ${id} deleted` }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -284,6 +284,6 @@ screenings.openapi(getScreeningById, async (c) => {
     return c.json(screening, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });

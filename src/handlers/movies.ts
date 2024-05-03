@@ -22,7 +22,7 @@ movies.openapi(getMovies, async (c) => {
         author: { contains: author },
         release_date: { gte: gt, lte: lt },
         status: { equals: status },
-        category_id: category_id,
+        category_id,
       },
       select: {
         id: true,
@@ -38,7 +38,7 @@ movies.openapi(getMovies, async (c) => {
     return c.json(movies, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -67,7 +67,7 @@ movies.openapi(getMovieById, async (c) => {
     return c.json(movie, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -100,7 +100,7 @@ movies.openapi(insertMovie, async (c) => {
     return c.json(movie, 201);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -119,7 +119,7 @@ movies.openapi(deleteMovie, async (c) => {
     return c.json({ message: 'Movie deleted' }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -153,6 +153,6 @@ movies.openapi(updateMovie, async (c) => {
     return c.json(movie, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });

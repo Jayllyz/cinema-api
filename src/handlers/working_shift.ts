@@ -35,7 +35,7 @@ workingShift.openapi(getWorkingShifts, async (c) => {
     return c.json(working_shift, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -55,7 +55,7 @@ workingShift.openapi(getWorkingShiftById, async (c) => {
     return c.json(workingShift, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -69,7 +69,7 @@ workingShift.openapi(insertWorkingShift, async (c) => {
     try {
       validateShiftDates(start_time, end_time);
     } catch (error) {
-      return c.json({ error: error }, 400);
+      return c.json({ error }, 400);
     }
 
     const overlapingShift = await getOverlapingShift(start_time, end_time, position);
@@ -91,7 +91,7 @@ workingShift.openapi(insertWorkingShift, async (c) => {
     return c.json(workingShift, 201);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -110,7 +110,7 @@ workingShift.openapi(deleteWorkingShift, async (c) => {
     return c.json({ message: `Working shift with id ${id} deleted` }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -154,12 +154,12 @@ workingShift.openapi(updateWorkingShift, async (c) => {
           );
         }
       } catch (error) {
-        return c.json({ error: error });
+        return c.json({ error });
       }
     }
 
     const res = await prisma.working_shifts.update({
-      where: { id: id },
+      where: { id },
       data: { start_time, end_time, position, employee_id },
       select: selectShiftWithEmployee,
     });
@@ -167,7 +167,7 @@ workingShift.openapi(updateWorkingShift, async (c) => {
     return c.json(res, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 

@@ -4,7 +4,7 @@ export const userValidator = z.object({
   id: z.number().positive(),
   first_name: z.string(),
   last_name: z.string(),
-  email: z.string(),
+  email: z.string().email(),
   money: z.number(),
   role: z.number().min(1).max(4),
 });
@@ -13,7 +13,7 @@ export const limitedUserValidator = z.object({
   id: z.number().positive(),
   first_name: z.string(),
   last_name: z.string(),
-  email: z.string(),
+  email: z.string().email(),
 });
 
 export const listUsersValidator = z.array(userValidator);

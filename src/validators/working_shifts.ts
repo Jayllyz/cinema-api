@@ -2,8 +2,8 @@ import { z } from 'zod';
 import { employeeValidator } from './employees.js';
 
 export const workingShiftsResponseSchema = z.object({
-  start_time: z.string(),
-  end_time: z.string(),
+  start_time: z.string().datetime(),
+  end_time: z.string().datetime(),
   position: z.string(),
   employee: employeeValidator,
 });

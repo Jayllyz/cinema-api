@@ -29,7 +29,7 @@ users.openapi(getUsers, async (c) => {
     return c.json(users, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -57,7 +57,7 @@ users.openapi(getUserById, async (c) => {
     return c.json(user, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -80,7 +80,7 @@ users.openapi(insertUser, async (c) => {
     return c.json(user, 201);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -174,7 +174,7 @@ users.openapi(updateUser, async (c) => {
     return c.json(user, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -194,6 +194,6 @@ users.openapi(deleteUser, async (c) => {
     return c.json({ message: `User with id ${id} deleted` }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });

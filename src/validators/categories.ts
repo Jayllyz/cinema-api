@@ -6,7 +6,7 @@ export const categoryValidator = z.object({
 
 export const listCategoriesValidator = z.array(
   z.object({
-    id: z.number().positive(),
+    id: z.number().min(1),
     name: z.string(),
   }),
 );

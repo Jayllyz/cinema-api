@@ -18,7 +18,7 @@ categories.openapi(getCategories, async (c) => {
     return c.json(categories, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -35,7 +35,7 @@ categories.openapi(getCategoryById, async (c) => {
     return c.json(category, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -54,7 +54,7 @@ categories.openapi(insertCategory, async (c) => {
     return c.json(category, 201);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
 
@@ -72,6 +72,6 @@ categories.openapi(deleteCategory, async (c) => {
     return c.json({ message: 'Category deleted successfully' }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error: error }, 500);
+    return c.json({ error }, 500);
   }
 });
