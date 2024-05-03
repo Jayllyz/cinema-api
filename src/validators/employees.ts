@@ -16,7 +16,10 @@ export const insertEmployeeValidator = z.object({
 export const updateEmployeeValidator = z.object({
   first_name: z.string().optional(),
   last_name: z.string().optional(),
-  phone_number: z.string().regex(phoneE164regex, 'The phone number need to be in international format (e164)').optional(),
+  phone_number: z
+    .string()
+    .regex(phoneE164regex, 'The phone number need to be in international format (e164)')
+    .optional(),
 });
 
 export const employeeValidator = z.object({
