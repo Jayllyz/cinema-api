@@ -106,4 +106,14 @@ describe('Movies', () => {
     });
     expect(res.status).toBe(200);
   });
+
+  test('DELETE /categories/{id}', async () => {
+    const res = await app.request(`${path}/categories/${createdCategoryId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
+    expect(res.status).toBe(200);
+  });
 });
