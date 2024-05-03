@@ -8,7 +8,7 @@ RUN apk add --no-cache gcompat && \
 USER node
 WORKDIR /app
 
-COPY --chown=node:node package*.json .
+COPY --chown=node:node package.json pnpm-lock.yaml ./
 
 ENV PORT $PORT
 EXPOSE $PORT
@@ -30,7 +30,7 @@ FROM base as build
 RUN pnpm fetch && \
     pnpm install
 COPY --chown=node:node . .
-RUN npx prisma generate && \
+RUN npx --yes prisma generate && \
     pnpm run build && \
     pnpm prune --prod
 
