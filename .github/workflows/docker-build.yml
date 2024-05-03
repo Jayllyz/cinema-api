@@ -93,4 +93,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
-            cd /opt/stacks/cinema-api && docker compose pull && docker compose up -d
+            cd /opt/stacks/cinema-api
+            docker compose pull
+            docker compose up -d
+            docker compose exec server pnpm prisma:deploy

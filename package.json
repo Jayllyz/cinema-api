@@ -11,6 +11,7 @@
     "prisma:push": "npx prisma db push",
     "prisma:init": "npx prisma generate && npx prisma db push",
     "prisma:reset": "npx prisma migrate reset --force && npx prisma db push",
+    "prisma:deploy": "npx --yes prisma generate && npx --yes prisma migrate deploy",
     "test": "vitest --run",
     "lint": "biome check --apply .",
     "lint:check": "biome ci .",
