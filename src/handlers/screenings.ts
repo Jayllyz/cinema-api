@@ -59,7 +59,6 @@ screenings.openapi(insertScreening, async (c) => {
   const { start_time, movie_id, room_id, ticket_price } = c.req.valid('json');
 
   try {
-
     if (new Date(start_time) < new Date()) {
       return c.json({ error: 'The screening cannot be in the past' }, 400);
     }
