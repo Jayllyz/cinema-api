@@ -9,3 +9,5 @@ node_modules/
 .github/
 .vscode/
 .mega-linter.yml
+.deepsource.toml
+LICENSE

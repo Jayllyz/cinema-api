@@ -96,6 +96,10 @@ app.doc('/doc', (c: Context) => ({
       url: new URL(c.req.url).origin,
       description: 'Current environment',
     },
+    {
+      url: 'https://cinema.jayllyz.fr',
+      description: 'Production environment',
+    },
   ],
 }));
 
