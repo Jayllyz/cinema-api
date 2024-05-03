@@ -3,8 +3,7 @@ import { sign } from 'hono/jwt';
 import app from '../src/app.js';
 import { Role } from '../src/lib/token.js';
 
-const numRooms = 10;
-let firstRoomId: number;
+let room_id = 1;
 
 const secret = process.env.SECRET_KEY || 'secret';
 const adminToken = await sign({ id: 1, role: Role.ADMIN }, secret);
@@ -13,55 +12,53 @@ const port = Number(process.env.PORT || 3000);
 const path = `http://localhost:${port}`;
 
 describe('Rooms tests', () => {
-  for (let i = 0; i < numRooms; i++) {
-    test('creates a new room', async () => {
-      const res = await app.request(`${path}/rooms`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${adminToken}`,
-        },
-        body: JSON.stringify({
-          name: `Room ${i}`,
-          description: 'Test room',
-          capacity: 25,
-          type: 'room',
-          open: true,
-          handicap_access: false,
-        }),
-      });
-      expect(res.status).toBe(201);
-      const room = (await res.json()) as Rooms;
-      expect(room).toMatchObject({
-        name: `Room ${i}`,
+  test('creates a new room', async () => {
+    const res = await app.request(`${path}/rooms`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({
+        name: 'Test room',
         description: 'Test room',
         capacity: 25,
         type: 'room',
         open: true,
         handicap_access: false,
-      });
-      if (i === 0) firstRoomId = room.id;
+      }),
     });
+    expect(res.status).toBe(201);
+    const room = (await res.json()) as Rooms;
+    expect(room).toMatchObject({
+      name: 'Test room',
+      description: 'Test room',
+      capacity: 25,
+      type: 'room',
+      open: true,
+      handicap_access: false,
+    });
+    room_id = room.id;
+  });
 
-    test('fails with existing room number', async () => {
-      const res = await app.request(`${path}/rooms`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${adminToken}`,
-        },
-        body: JSON.stringify({
-          name: `Room ${i}`,
-          description: 'Test room',
-          capacity: 20,
-          type: 'room',
-          open: true,
-          handicap_access: false,
-        }),
-      });
-      expect(res.status).toBe(400);
+  test('fails with existing room name', async () => {
+    const res = await app.request(`${path}/rooms`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({
+        name: 'Test room',
+        description: 'Test room',
+        capacity: 20,
+        type: 'room',
+        open: true,
+        handicap_access: false,
+      }),
     });
-  }
+    expect(res.status).toBe(400);
+  });
 
   test('returns a list of rooms', async () => {
     const res = await app.request(`${path}/rooms`, {
@@ -72,22 +69,23 @@ describe('Rooms tests', () => {
     expect(res.status).toBe(200);
     const rooms = (await res.json()) as Rooms[];
     expect(rooms).toBeInstanceOf(Array);
-    expect(rooms.length).toBeGreaterThanOrEqual(numRooms);
+    expect(rooms.length).toBeGreaterThanOrEqual(1);
   });
 
   test('returns a room', async () => {
-    const res = await app.request(`${path}/rooms/${firstRoomId}`, {
+    const res = await app.request(`${path}/rooms/${room_id}`, {
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
     });
     expect(res.status).toBe(200);
     const room = (await res.json()) as Rooms;
-    expect(room).toMatchObject({ name: 'Room 0' });
+    expect(room).toMatchObject({ name: 'Test room' });
   });
 
   test('updates a room', async () => {
-    const res = await app.request(`${path}/rooms/${firstRoomId}`, {
+    const res = await app.request(`${path}/rooms/${room_id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -115,7 +113,7 @@ describe('Rooms tests', () => {
   });
 
   test('fails with non-existing room id', async () => {
-    const wrongRoomId = firstRoomId + numRooms + 10;
+    const wrongRoomId = room_id + 100;
     const res = await app.request(`${path}/rooms/${wrongRoomId}`, {
       method: 'PATCH',
       headers: {
@@ -123,7 +121,7 @@ describe('Rooms tests', () => {
         Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
-        name: `Room ${wrongRoomId}`,
+        name: 'Room 0',
         description: 'Test room 2',
         capacity: 20,
         type: 'room',
@@ -134,26 +132,24 @@ describe('Rooms tests', () => {
     expect(res.status).toBe(404);
   });
 
-  const lastRoomId = firstRoomId + numRooms - 1;
-  for (let i = firstRoomId; i < lastRoomId; i++) {
-    test('deletes a room', async () => {
-      const res = await app.request(`${path}/rooms/${i}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${adminToken}`,
-        },
-      });
-      expect(res.status).toBe(200);
+  test('delete the room', async () => {
+    const res = await app.request(`${path}/rooms/${room_id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
     });
+    expect(res.status).toBe(200);
+    expect(await res.json()).toMatchObject({ message: `Room with id ${room_id} deleted` });
+  });
 
-    test('fails with non-existing room id', async () => {
-      const res = await app.request(`${path}/rooms/${i}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${adminToken}`,
-        },
-      });
-      expect(res.status).toBe(404);
+  test('fails with non-existing room id', async () => {
+    const res = await app.request(`${path}/rooms/${room_id + 100}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
     });
-  }
+    expect(res.status).toBe(404);
+  });
 });
