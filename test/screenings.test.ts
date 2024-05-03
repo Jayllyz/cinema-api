@@ -106,6 +106,74 @@ describe('Screenings', () => {
     createScreeningId = screening.id;
   });
 
+  test('Cannot create a screening with the same room and start_time', async () => {
+    const res = await app.request(`${path}/screenings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({
+        start_time: tomorrow.toISOString(),
+        movie_id: createdMovieId,
+        room_id: createdRoomId,
+        ticket_price: 10,
+      }),
+    });
+    expect(res.status).toBe(400);
+  });
+
+  test('Cannot create a screening with a past start_time', async () => {
+    const res = await app.request(`${path}/screenings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({
+        start_time: today.toISOString(),
+        movie_id: createdMovieId,
+        room_id: createdRoomId,
+        ticket_price: 10,
+      }),
+    });
+    expect(res.status).toBe(400);
+  });
+
+  test('Cannot create a screening with a non-existing movie_id', async () => {
+    const res = await app.request(`${path}/screenings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({
+        start_time: tomorrow.toISOString(),
+        movie_id: 999,
+        room_id: createdRoomId,
+        ticket_price: 10,
+      }),
+    });
+    expect(res.status).toBe(400);
+  });
+
+  test('Cannot create a screening with a non-existing room_id', async () => {
+    const res = await app.request(`${path}/screenings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({
+        start_time: tomorrow.toISOString(),
+        movie_id: createdMovieId,
+        room_id: 999,
+        ticket_price: 10,
+      }),
+    });
+    expect(res.status).toBe(400);
+  });
+
   test('GET /screenings', async () => {
     const res = await app.request(`${path}/rooms`, {
       headers: {

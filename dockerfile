@@ -14,7 +14,7 @@ ENV PORT $PORT
 EXPOSE $PORT
 
 HEALTHCHECK --interval=5s --timeout=1s \
-    CMD wget -qO -t1 http://0.0.0.0:${PORT}/health || exit 1
+    CMD wget -qO- http://0.0.0.0:${PORT}/health || exit 1
 
 # Development
 FROM base as dev

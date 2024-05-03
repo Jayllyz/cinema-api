@@ -21,16 +21,16 @@ model Rooms {
 }
 
 model Users {
-  id            Int       @id @default(autoincrement())
-  first_name    String
-  last_name     String
-  email         String    @unique
-  password      String
-  money         Int       @default(0)
-  role          Int       @default(1)
-  token         String    @default("")
-  tickets       Tickets[]
-  superTickets  SuperTickets[]
+  id           Int            @id @default(autoincrement())
+  first_name   String
+  last_name    String
+  email        String         @unique
+  password     String
+  money        Int            @default(0)
+  role         Int            @default(1)
+  token        String         @default("")
+  tickets      Tickets[]
+  superTickets SuperTickets[]
 
   @@map(name: "USERS")
 }
@@ -59,75 +59,77 @@ model Movies {
 }
 
 model Screenings {
-  id                         Int       @id @default(autoincrement())
+  id                         Int                    @id @default(autoincrement())
   start_time                 DateTime
   end_time                   DateTime
   screening_duration_minutes Int
   movie_id                   Int
-  movie                      Movies    @relation(fields: [movie_id], references: [id])
+  movie                      Movies                 @relation(fields: [movie_id], references: [id])
   room_id                    Int
-  room                       Rooms     @relation(fields: [room_id], references: [id])
+  room                       Rooms                  @relation(fields: [room_id], references: [id])
   tickets                    Tickets[]
   superTicketsSessions       SuperTicketsSessions[]
 
+  @@unique([start_time, room_id])
   @@map(name: "SCREENINGS")
 }
 
 model Employees {
-  id Int @id @default(autoincrement())
-  first_name String
-  last_name String
-  phone_number String
+  id             Int              @id @default(autoincrement())
+  first_name     String
+  last_name      String
+  phone_number   String
   working_shifts Working_shifts[]
 
   @@map(name: "EMPLOYEES")
 }
 
 model Working_shifts {
-  id Int @id @default(autoincrement())
-  start_time DateTime
-  end_time DateTime
-  position String
+  id          Int       @id @default(autoincrement())
+  start_time  DateTime
+  end_time    DateTime
+  position    String
   employee_id Int
-  employee Employees @relation(fields: [employee_id], references: [id])
+  employee    Employees @relation(fields: [employee_id], references: [id])
 
-  @@map(name: "WORKING_SHIFTS") 
+  @@map(name: "WORKING_SHIFTS")
 }
 
 model Tickets {
-  id            Int        @id @default(autoincrement())
-  used          Boolean    @default(false)
-  seat          Int        @unique
-  price         Int
-  user_id       Int?
-  user          Users?     @relation(fields: [user_id], references: [id])
-  screening_id  Int
-  screening     Screenings @relation(fields: [screening_id], references: [id])
-  acquired_at   DateTime?
+  id           Int        @id @default(autoincrement())
+  used         Boolean    @default(false)
+  seat         Int
+  price        Int
+  user_id      Int?
+  user         Users?     @relation(fields: [user_id], references: [id])
+  screening_id Int
+  screening    Screenings @relation(fields: [screening_id], references: [id])
+  acquired_at  DateTime?
 
+  @@unique([screening_id, seat])
   @@map(name: "TICKETS")
 }
 
-model SuperTickets{
-  id          Int                     @id @default(autoincrement())
-  price       Int
-  uses        Int
-  user_id     Int?
-  user        Users?                  @relation(fields: [user_id], references: [id])
-  sessions    SuperTicketsSessions[]
+model SuperTickets {
+  id       Int                    @id @default(autoincrement())
+  price    Int
+  uses     Int
+  user_id  Int?
+  user     Users?                 @relation(fields: [user_id], references: [id])
+  sessions SuperTicketsSessions[]
 
   @@map(name: "SUPER_TICKETS")
 }
 
-model SuperTicketsSessions{
-  used              Boolean       @default(false)
-  seat              Int
-  original_price    Int
-  super_ticket_id   Int
-  super_ticket      SuperTickets  @relation(fields: [super_ticket_id], references: [id])
-  screening_id      Int
-  screening         Screenings    @relation(fields: [screening_id], references: [id])
-  
+model SuperTicketsSessions {
+  used            Boolean      @default(false)
+  seat            Int
+  original_price  Int
+  super_ticket_id Int
+  super_ticket    SuperTickets @relation(fields: [super_ticket_id], references: [id])
+  screening_id    Int
+  screening       Screenings   @relation(fields: [screening_id], references: [id])
+
   @@id([super_ticket_id, screening_id])
   @@map(name: "SUPER_TICKETS_SESSIONS")
 }

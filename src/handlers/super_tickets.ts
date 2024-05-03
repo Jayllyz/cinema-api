@@ -219,8 +219,10 @@ superTickets.openapi(bookSeatSuperTicket, async (c) => {
 
     const takenSeat = await prisma.tickets.findUnique({
       where: {
-        seat,
-        screening_id,
+        screening_id_seat: {
+          screening_id,
+          seat,
+        },
         user_id: null,
       },
     });
@@ -240,8 +242,10 @@ superTickets.openapi(bookSeatSuperTicket, async (c) => {
 
     await prisma.tickets.delete({
       where: {
-        seat,
-        screening_id,
+        screening_id_seat: {
+          screening_id,
+          seat,
+        },
       },
     });
 

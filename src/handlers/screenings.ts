@@ -59,6 +59,10 @@ screenings.openapi(insertScreening, async (c) => {
   const { start_time, movie_id, room_id, ticket_price } = c.req.valid('json');
 
   try {
+    if (new Date(start_time) < new Date()) {
+      return c.json({ error: 'The screening cannot be in the past' }, 400);
+    }
+
     const movie = await prisma.movies.findUnique({
       where: {
         id: movie_id,
@@ -142,6 +146,10 @@ screenings.openapi(updateScreening, async (c) => {
   const { movie_id, start_time, room_id } = c.req.valid('json');
 
   try {
+    if (start_time && new Date(start_time) < new Date()) {
+      return c.json({ error: 'The screening cannot be in the past' }, 400);
+    }
+
     const screening = await prisma.screenings.findUnique({ where: { id } });
     if (!screening) return c.json({ error: `Screening with id ${id} not found` }, 404);
 
