@@ -23,7 +23,7 @@ services:
     env_file:
       - .env
     ports:
-      - '${NODE_PORT}:${NODE_PORT}'
+      - '${PORT}:${PORT}'
     depends_on:
       db:
         condition: service_healthy
