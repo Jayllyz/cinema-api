@@ -204,3 +204,53 @@ export const updateEmployee = createRoute({
   },
   tags: ['employees'],
 });
+
+export const changeEmployeePassword = createRoute({
+  method: 'patch',
+  path: '/employees/password',
+  summary: 'Change employee password',
+  description: 'Change employee password',
+  middleware: authMiddleware,
+  security: [{ Bearer: [] }],
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: z.object({
+            old_password: z.string().min(8),
+            new_password: z.string().min(8),
+          }),
+        },
+      },
+    },
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: z.object({ message: z.string() }),
+        },
+      },
+    },
+    400: {
+      description: 'Bad request',
+      content: {
+        'application/json': {
+          schema: z.object({
+            error: z.string(),
+          }),
+        },
+      },
+    },
+    500: {
+      description: 'Internal server error',
+      content: {
+        'application/json': {
+          schema: z.object({ error: z.string() }),
+        },
+      },
+    },
+  },
+  tags: ['users'],
+});

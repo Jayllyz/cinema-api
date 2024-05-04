@@ -15,25 +15,37 @@ auth.openapi(loginUser, async (c) => {
 
   try {
     const user = await prisma.users.findUnique({ where: { email } });
-    if (!user) return c.json({ error: 'email not found' }, 404);
+    const staff = await prisma.employees.findUnique({ where: { email } });
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!user && !staff) return c.json({ error: 'email not found' }, 404);
+
+    const checkPassword = user?.password || staff?.password;
+    const passwordMatch = bcrypt.compare(password, checkPassword || '');
     if (!passwordMatch) return c.json({ error: 'password does not match' }, 400);
 
     const one_day = 60 * 60 * 24;
+    const one_week = one_day * 7;
+    const time_exp = user ? one_day : one_week;
     const payload = {
-      id: user.id,
-      role: Role.USER,
-      exp: new Date().getTime() + one_day,
+      id: user?.id || staff?.id,
+      role: user ? Role.USER : Role.STAFF,
+      exp: new Date().getTime() + time_exp,
     };
     const secret = process.env.SECRET_KEY || 'secret';
 
     const token = await sign(payload, secret);
 
-    await prisma.users.update({
-      where: { id: user.id },
-      data: { token },
-    });
+    if (user) {
+      await prisma.users.update({
+        where: { id: user?.id },
+        data: { token },
+      });
+    } else {
+      await prisma.employees.update({
+        where: { id: staff?.id },
+        data: { token },
+      });
+    }
 
     return c.json({ token }, 200);
   } catch (error) {
