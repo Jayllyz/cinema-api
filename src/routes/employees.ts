@@ -252,5 +252,5 @@ export const changeEmployeePassword = createRoute({
       },
     },
   },
-  tags: ['users'],
+  tags: ['employees'],
 });

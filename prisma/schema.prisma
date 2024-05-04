@@ -28,7 +28,7 @@ model Users {
   password     String
   money        Int            @default(0)
   role         Int            @default(1)
-  token        String         @default("")
+  token        String?
   tickets      Tickets[]
   superTickets SuperTickets[]
 
@@ -81,7 +81,8 @@ model Employees {
   email          String           @unique
   password       String
   phone_number   String
-  token          String           @default("")
+  token          String?
+  role           Int              @default(2)
   working_shifts Working_shifts[]
 
   @@map(name: "EMPLOYEES")

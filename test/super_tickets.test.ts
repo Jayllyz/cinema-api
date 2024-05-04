@@ -1,11 +1,11 @@
 import type { Categories, Movies, Rooms, Screenings, Tickets, Users } from '@prisma/client';
-import { sign } from 'hono/jwt';
+import { prisma } from '../src/lib/database.js';
+import bcrypt from 'bcryptjs';
 import app from '../src/app.js';
 import { Role } from '../src/lib/token.js';
 
-const secret = process.env.SECRET_KEY || 'secret';
-const adminToken = await sign({ id: 1, role: Role.ADMIN }, secret);
 
+let adminToken: string;
 let trackedMovie: number;
 let trackedCategory: number;
 let trackedRoom: number;
@@ -23,6 +23,30 @@ const port = Number(process.env.PORT || 3000);
 const path = `http://localhost:${port}`;
 
 describe('Super tickets', () => {
+  beforeAll(async () => {
+    await prisma.employees.create({
+      data: {
+        first_name: 'Admin',
+        last_name: 'Admin',
+        email: 'adminstaff@email.com',
+        password: await bcrypt.hash("password", 10),
+        role: Role.ADMIN,
+        phone_number: '1234567890',
+      },
+    });
+  
+    const res = await app.request(`${path}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: 'adminstaff@email.com',
+        password: 'password',
+      }),
+    });
+    const token = await res.json() as { token: string };
+    adminToken = token.token;
+  });
+
   test('Create a Category', async () => {
     const res = await app.request(`${path}/categories`, {
       method: 'POST',
@@ -307,5 +331,9 @@ describe('Super tickets', () => {
       },
     });
     expect(res5.status).toBe(200);
+  });
+
+  afterAll(async () => {
+    await prisma.employees.deleteMany();
   });
 });

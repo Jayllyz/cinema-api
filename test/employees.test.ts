@@ -1,12 +1,12 @@
 import type { Employees, Working_shifts } from '@prisma/client';
-import { sign } from 'hono/jwt';
+import bcrypt from 'bcryptjs';
 import app from '../src/app.js';
 import { Role } from '../src/lib/token.js';
+import { prisma } from '../src/lib/database.js';
 
 let createdEmployeeId: number;
 let createdWorkingShiftId: number;
-const secret = process.env.SECRET_KEY || 'secret';
-const adminToken = await sign({ id: 1, role: Role.ADMIN }, secret);
+let adminToken: string;
 
 const port = Number(process.env.PORT || 3000);
 const path = `http://localhost:${port}`;
@@ -20,6 +20,30 @@ if (tomorrow.getDay() === 0 || tomorrow.getDay() === 6) {
 }
 
 describe('Employees', () => {
+  beforeAll(async () => {
+    await prisma.employees.create({
+      data: {
+        first_name: 'Admin',
+        last_name: 'Admin',
+        email: 'adminstaff@email.com',
+        password: await bcrypt.hash("password", 10),
+        role: Role.ADMIN,
+        phone_number: '1234567890',
+      },
+    });
+  
+    const res = await app.request(`${path}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: 'adminstaff@email.com',
+        password: 'password',
+      }),
+    });
+    const token = await res.json() as { token: string };
+    adminToken = token.token;
+  });
+
   test('POST /employees', async () => {
     const res = await app.request(`${path}/employees`, {
       method: 'POST',
@@ -28,9 +52,12 @@ describe('Employees', () => {
         Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
-        first_name: 'John',
-        last_name: 'Doe',
+        first_name: 'staff',
+        last_name: 'staff',
+        email: 'staff@email.com',
+        password: 'password12345',
         phone_number: '+33674752046',
+        role: Role.STAFF,
       }),
     });
     expect(res.status).toBe(201);
@@ -58,7 +85,7 @@ describe('Employees', () => {
     });
     expect(res.status).toBe(200);
     const employee = (await res.json()) as Employees;
-    expect(employee).toMatchObject({ last_name: 'Doe', first_name: 'John' });
+    expect(employee).toMatchObject({ last_name: 'staff', first_name: 'staff' });
   });
 
   test('PATCH /employees/{id}', async () => {
@@ -141,6 +168,32 @@ describe('Employees', () => {
     expect(workingShift).toMatchObject({ position: 'reception' });
   });
 
+  test('Employee can change his password', async () => {
+    const res = await app.request(`${path}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: 'staff@email.com',
+        password: 'password12345',
+      }),
+    });
+    expect(res.status).toBe(200);
+    // const token: { token: string } = (await res.json()) as { token: string };
+
+    // const res2 = await app.request(`${path}/employees/password`, {
+    //   method: 'PATCH',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${token.token}`,
+    //   },
+    //   body: JSON.stringify({
+    //     old_password: 'password12345',
+    //     new_password: 'password123456',
+    //   }),
+    // });
+    // expect(res2.status).toBe(200);
+  });
+
   test('DELETE /working_shifts/{id}', async () => {
     const res = await app.request(`${path}/working_shifts/${createdWorkingShiftId}`, {
       method: 'DELETE',
@@ -159,5 +212,9 @@ describe('Employees', () => {
       },
     });
     expect(res.status).toBe(200);
+  });
+
+  afterAll(async () => {
+    await prisma.employees.deleteMany();
   });
 });

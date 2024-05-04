@@ -1,5 +1,6 @@
 import type { Categories, Movies } from '@prisma/client';
-import { sign } from 'hono/jwt';
+import { prisma } from '../src/lib/database.js';
+import bcrypt from 'bcryptjs';
 import app from '../src/app.js';
 import { Role } from '../src/lib/token.js';
 import { randomString } from './utils.js';
@@ -7,14 +8,37 @@ import { randomString } from './utils.js';
 let createdMovieId = 1;
 let createdCategoryId = 1;
 const randomMovie = randomString(5);
-
-const secret = process.env.SECRET_KEY || 'secret';
-const adminToken = await sign({ id: 1, role: Role.ADMIN }, secret);
+let adminToken: string;
 
 const port = Number(process.env.PORT || 3000);
 const path = `http://localhost:${port}`;
 
 describe('Movies', () => {
+  beforeAll(async () => {
+    await prisma.employees.create({
+      data: {
+        first_name: 'Admin',
+        last_name: 'Admin',
+        email: 'admin@email.com',
+        password: await bcrypt.hash("password", 10),
+        role: Role.ADMIN,
+        phone_number: '1234567890',
+      },
+    });
+  
+    const res = await app.request(`${path}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: 'admin@email.com',
+        password: 'password',
+      }),
+    });
+    const token = await res.json() as { token: string };
+    adminToken = token.token;
+  });
+
+
   test('POST /categories', async () => {
     const res = await app.request(`${path}/categories`, {
       method: 'POST',
@@ -115,5 +139,9 @@ describe('Movies', () => {
       },
     });
     expect(res.status).toBe(200);
+  });
+
+  afterAll(async () => {
+    await prisma.employees.deleteMany();
   });
 });

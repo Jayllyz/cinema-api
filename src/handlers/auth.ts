@@ -2,7 +2,6 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 import bcrypt from 'bcryptjs';
 import { sign } from 'hono/jwt';
 import { prisma } from '../lib/database.js';
-import { Role } from '../lib/token.js';
 import { zodErrorHook } from '../lib/zodError.js';
 import { loginUser, signupUser } from '../routes/auth.js';
 
@@ -19,22 +18,25 @@ auth.openapi(loginUser, async (c) => {
 
     if (!user && !staff) return c.json({ error: 'email not found' }, 404);
 
-    const checkPassword = user?.password || staff?.password;
-    const passwordMatch = bcrypt.compare(password, checkPassword || '');
-    if (!passwordMatch) return c.json({ error: 'password does not match' }, 400);
+    if (user) {
+      const valid = await bcrypt.compare(password, user.password);
+      if (!valid) return c.json({ error: 'invalid password' }, 401);
+    } else if (staff) {
+      const valid = await bcrypt.compare(password, staff.password);
+      if (!valid) return c.json({ error: 'invalid password' }, 401);
+    }
 
     const one_day = 60 * 60 * 24;
     const one_week = one_day * 7;
     const time_exp = user ? one_day : one_week;
     const payload = {
-      id: user?.id || staff?.id,
-      role: user ? Role.USER : Role.STAFF,
+      id: user ? user?.id : staff?.id,
+      role: user ? user?.role : staff?.role,
       exp: new Date().getTime() + time_exp,
     };
     const secret = process.env.SECRET_KEY || 'secret';
 
     const token = await sign(payload, secret);
-
     if (user) {
       await prisma.users.update({
         where: { id: user?.id },

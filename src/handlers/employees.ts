@@ -54,8 +54,9 @@ employees.openapi(insertEmployee, async (c) => {
 
   const { first_name, last_name, phone_number, email, password } = c.req.valid('json');
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
     const employee = await prisma.employees.create({
-      data: { first_name, last_name, phone_number, email, password },
+      data: { first_name, last_name, phone_number, email, password: hashedPassword },
     });
     return c.json(employee, 201);
   } catch (error) {
@@ -89,15 +90,20 @@ employees.openapi(updateEmployee, async (c) => {
   await checkToken(payload, Role.ADMIN, token);
 
   const { id } = c.req.valid('param');
-  const { first_name, last_name, phone_number, email } = c.req.valid('json');
+  const { first_name, last_name, phone_number, email, role } = c.req.valid('json');
   try {
     const employee = await prisma.employees.findUnique({ where: { id } });
     if (!employee) return c.json({ error: `Employee with id ${id} not found` }, 404);
 
     const res = await prisma.employees.update({
       where: { id: Number(id) },
-      data: { first_name, last_name, phone_number, email },
+      data: { first_name, last_name, phone_number, email, role },
     });
+
+    if (role) {
+      // If role is updated, remove token
+      await prisma.employees.update({ where: { id: Number(id) }, data: { token: null } });
+    }
 
     return c.json(res, 200);
   } catch (error) {
@@ -114,10 +120,10 @@ employees.openapi(changeEmployeePassword, async (c) => {
   const { id } = payload;
   const { old_password, new_password } = c.req.valid('json');
   try {
-    const user = await prisma.employees.findUnique({ where: { id } });
-    if (!user) return c.json({ error: `Employee with id ${id} not found` }, 404);
+    const staff = await prisma.employees.findUnique({ where: { id } });
+    if (!staff) return c.json({ error: `Employee with id ${id} not found` }, 404);
 
-    const passwordMatch = bcrypt.compare(old_password, user.password);
+    const passwordMatch = bcrypt.compare(old_password, staff.password);
     if (!passwordMatch) return c.json({ error: 'Old password does not match' }, 400);
 
     const hashedPassword = await bcrypt.hash(new_password, 10);
