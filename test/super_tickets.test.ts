@@ -1,9 +1,8 @@
 import type { Categories, Movies, Rooms, Screenings, Tickets, Users } from '@prisma/client';
-import { prisma } from '../src/lib/database.js';
 import bcrypt from 'bcryptjs';
 import app from '../src/app.js';
+import { prisma } from '../src/lib/database.js';
 import { Role } from '../src/lib/token.js';
-
 
 let adminToken: string;
 let trackedMovie: number;
@@ -29,12 +28,12 @@ describe('Super tickets', () => {
         first_name: 'Admin',
         last_name: 'Admin',
         email: 'adminstaff@email.com',
-        password: await bcrypt.hash("password", 10),
+        password: await bcrypt.hash('password', 10),
         role: Role.ADMIN,
         phone_number: '1234567890',
       },
     });
-  
+
     const res = await app.request(`${path}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -43,7 +42,7 @@ describe('Super tickets', () => {
         password: 'password',
       }),
     });
-    const token = await res.json() as { token: string };
+    const token = (await res.json()) as { token: string };
     adminToken = token.token;
   });
 
