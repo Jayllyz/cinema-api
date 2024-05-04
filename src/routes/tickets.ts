@@ -1,20 +1,12 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
+import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
 import {
   insertTicketValidator,
   listTicketValidator,
   ticketValidator,
   updateTicketValidator,
 } from '../validators/tickets.js';
-
-const serverErrorSchema = {
-  description: 'Internal server error',
-  content: {
-    'application/json': {
-      schema: z.object({ error: z.string() }),
-    },
-  },
-};
 
 export const getTickets = createRoute({
   method: 'get',
@@ -106,14 +98,7 @@ export const insertTicket = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
     500: serverErrorSchema,
   },
   tags: ['tickets'],
@@ -138,14 +123,8 @@ export const buyTicket = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['tickets'],
@@ -165,14 +144,8 @@ export const refundTicket = createRoute({
     200: {
       description: 'Successful response',
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['tickets'],
@@ -204,14 +177,8 @@ export const updateTicket = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['tickets'],
@@ -236,14 +203,8 @@ export const useTicket = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['tickets'],
@@ -263,6 +224,7 @@ export const deleteTicket = createRoute({
     204: {
       description: 'Successful response',
     },
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['tickets'],

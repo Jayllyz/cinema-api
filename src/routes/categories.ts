@@ -1,6 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
 import { categoryValidator, listCategoriesValidator } from '../validators/categories.js';
+import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
 import { idValidator } from '../validators/rooms.js';
 
 export const getCategories = createRoute({
@@ -19,14 +20,7 @@ export const getCategories = createRoute({
         },
       },
     },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    500: serverErrorSchema,
   },
   tags: ['categories'],
 });
@@ -50,14 +44,8 @@ export const getCategoryById = createRoute({
         },
       },
     },
-    404: {
-      description: 'Category not found',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    404: notFoundSchema,
+    500: serverErrorSchema,
   },
   tags: ['categories'],
 });
@@ -87,22 +75,8 @@ export const insertCategory = createRoute({
         },
       },
     },
-    400: {
-      description: 'Invalid request',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    500: serverErrorSchema,
   },
   tags: ['categories'],
 });
@@ -126,22 +100,8 @@ export const deleteCategory = createRoute({
         },
       },
     },
-    404: {
-      description: 'Category not found',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    404: notFoundSchema,
+    500: serverErrorSchema,
   },
   tags: ['categories'],
 });

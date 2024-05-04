@@ -1,5 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
+import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
 import {
   MovieValidator,
   insertMovieValidator,
@@ -34,14 +35,7 @@ export const getMovies = createRoute({
         },
       },
     },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    500: serverErrorSchema,
   },
   tags: ['movies'],
 });
@@ -65,14 +59,8 @@ export const getMovieById = createRoute({
         },
       },
     },
-    404: {
-      description: 'Movie not found',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    404: notFoundSchema,
+    500: serverErrorSchema,
   },
   tags: ['movies'],
 });
@@ -102,14 +90,8 @@ export const insertMovie = createRoute({
         },
       },
     },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    500: serverErrorSchema,
   },
   tags: ['movies'],
 });
@@ -140,22 +122,9 @@ export const updateMovie = createRoute({
         },
       },
     },
-    404: {
-      description: 'Movie not found',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    404: notFoundSchema,
+    500: serverErrorSchema,
   },
   tags: ['movies'],
 });
@@ -179,22 +148,8 @@ export const deleteMovie = createRoute({
         },
       },
     },
-    404: {
-      description: 'Movie not found',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    404: notFoundSchema,
+    500: serverErrorSchema,
   },
   tags: ['movies'],
 });

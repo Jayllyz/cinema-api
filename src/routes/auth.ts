@@ -1,5 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import { loginValidator, signupValidator } from '../validators/auth.js';
+import { badRequestSchema, serverErrorSchema } from '../validators/general.js';
 import { userValidator } from '../validators/users.js';
 
 export const loginUser = createRoute({
@@ -27,24 +28,8 @@ export const loginUser = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({
-            error: z.string(),
-          }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    500: serverErrorSchema,
   },
   tags: ['auth'],
 });
@@ -72,24 +57,8 @@ export const signupUser = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({
-            error: z.string(),
-          }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    500: serverErrorSchema,
   },
   tags: ['auth'],
 });

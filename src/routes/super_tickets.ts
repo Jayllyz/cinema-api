@@ -1,20 +1,12 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
+import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
 import {
   insertSuperTicketValidator,
   listSuperTicketValidator,
   superTicketValidator,
   updateSuperTicketValidator,
 } from '../validators/super_tickets.js';
-
-const serverErrorSchema = {
-  description: 'Internal server error',
-  content: {
-    'application/json': {
-      schema: z.object({ error: z.string() }),
-    },
-  },
-};
 
 export const getSuperTickets = createRoute({
   method: 'get',
@@ -86,14 +78,7 @@ export const insertSuperTicket = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
     500: serverErrorSchema,
   },
   tags: ['super_tickets'],
@@ -118,14 +103,7 @@ export const buySuperTicket = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
     500: serverErrorSchema,
   },
   tags: ['super_tickets'],
@@ -162,14 +140,7 @@ export const bookSeatSuperTicket = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
     500: serverErrorSchema,
   },
   tags: ['super_tickets'],
@@ -201,14 +172,7 @@ export const updateSuperTicket = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
     500: serverErrorSchema,
   },
   tags: ['super_tickets'],
@@ -238,14 +202,7 @@ export const useSuperTicket = createRoute({
     200: {
       description: 'Successful response',
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
     500: serverErrorSchema,
   },
   tags: ['super_tickets'],
@@ -301,14 +258,7 @@ export const cancelBookingSuperTicket = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
     500: serverErrorSchema,
   },
   tags: ['super_tickets'],
