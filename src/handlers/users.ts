@@ -197,7 +197,7 @@ users.openapi(changeUserPassword, async (c) => {
     const user = await prisma.users.findUnique({ where: { id } });
     if (!user) return c.json({ error: `User with id ${id} not found` }, 404);
 
-    const passwordMatch = bcrypt.compare(old_password, user.password);
+    const passwordMatch = await bcrypt.compare(old_password, user.password);
     if (!passwordMatch) return c.json({ error: 'Old password does not match' }, 400);
 
     const hashedPassword = await bcrypt.hash(new_password, 10);

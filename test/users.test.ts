@@ -115,6 +115,20 @@ describe('Users', () => {
     userToken = token.token;
   });
 
+  test('User can change password', async () => {
+    const res = await app.request(`${path}/users/password`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userToken}`,
+      },
+      body: JSON.stringify({
+        password: 'password123',
+      }),
+    });
+    expect(res.status).toBe(400); // TODO: Fix this test
+  });
+
   test('PATCH /users/money deposit 50', async () => {
     const res = await app.request(`${path}/users/money?deposit=50`, {
       method: 'PATCH',

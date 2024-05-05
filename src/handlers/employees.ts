@@ -121,9 +121,9 @@ employees.openapi(changeEmployeePassword, async (c) => {
   const { old_password, new_password } = c.req.valid('json');
   try {
     const staff = await prisma.employees.findUnique({ where: { id } });
-    if (!staff) return c.json({ error: `Employee with id ${id} not found` }, 404);
+    if (!staff) return c.json({ error: `Employee with id ${payload.id} not found` }, 404);
 
-    const passwordMatch = bcrypt.compare(old_password, staff.password);
+    const passwordMatch = await bcrypt.compare(old_password, staff.password);
     if (!passwordMatch) return c.json({ error: 'Old password does not match' }, 400);
 
     const hashedPassword = await bcrypt.hash(new_password, 10);

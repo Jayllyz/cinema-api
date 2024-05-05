@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const userValidator = z.object({
-  id: z.number().positive(),
+  id: z.number().min(1),
   first_name: z.string(),
   last_name: z.string(),
   email: z.string().email(),
@@ -10,7 +10,7 @@ export const userValidator = z.object({
 });
 
 export const limitedUserValidator = z.object({
-  id: z.number().positive(),
+  id: z.number().min(1),
   first_name: z.string(),
   last_name: z.string(),
   email: z.string().email(),
