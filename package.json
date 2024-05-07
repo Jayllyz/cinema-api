@@ -28,7 +28,7 @@
     "zod-validation-error": "^3.2.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.7.2",
+    "@biomejs/biome": "1.7.3",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.12.8",
     "@types/swagger-ui-dist": "^3.30.4",
