@@ -3,7 +3,15 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '../lib/database.js';
 import { type PayloadValidator, Role, checkToken } from '../lib/token.js';
 import { zodErrorHook } from '../lib/zodError.js';
-import { deleteUser, getUserById, getUsers, insertUser, updateUser, updateUserMoney } from '../routes/users.js';
+import {
+  changeUserPassword,
+  deleteUser,
+  getUserById,
+  getUsers,
+  insertUser,
+  updateUser,
+  updateUserMoney,
+} from '../routes/users.js';
 
 export const users = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -172,6 +180,31 @@ users.openapi(updateUser, async (c) => {
       data: { first_name, last_name, email, money },
     });
     return c.json(user, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({ error }, 500);
+  }
+});
+
+users.openapi(changeUserPassword, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.USER, token);
+
+  const { id } = payload;
+  const { old_password, new_password } = c.req.valid('json');
+  try {
+    const user = await prisma.users.findUnique({ where: { id } });
+    if (!user) return c.json({ error: `User with id ${id} not found` }, 404);
+
+    const passwordMatch = await bcrypt.compare(old_password, user.password);
+    if (!passwordMatch) return c.json({ error: 'Old password does not match' }, 400);
+
+    const hashedPassword = await bcrypt.hash(new_password, 10);
+
+    await prisma.users.update({ where: { id }, data: { password: hashedPassword } });
+
+    return c.json({ message: 'Password updated' }, 200);
   } catch (error) {
     console.error(error);
     return c.json({ error }, 500);

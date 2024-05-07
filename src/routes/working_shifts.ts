@@ -1,5 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
+import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
 import {
   insertWorkingShiftsValidator,
   listworkingShiftsValidator,
@@ -32,22 +33,8 @@ export const insertWorkingShift = createRoute({
         },
       },
     },
-    400: {
-      description: 'Invalid body',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    500: serverErrorSchema,
   },
   tags: ['working_shifts'],
 });
@@ -68,14 +55,7 @@ export const getWorkingShifts = createRoute({
         },
       },
     },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    500: serverErrorSchema,
   },
   tags: ['working_shifts'],
 });
@@ -99,22 +79,8 @@ export const getWorkingShiftById = createRoute({
         },
       },
     },
-    404: {
-      description: 'Working shift not found',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    404: notFoundSchema,
+    500: serverErrorSchema,
   },
   tags: ['working_shifts'],
 });
@@ -138,22 +104,8 @@ export const deleteWorkingShift = createRoute({
         },
       },
     },
-    404: {
-      description: 'Working shift not found',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    404: notFoundSchema,
+    500: serverErrorSchema,
   },
   tags: ['working_shifts'],
 });
@@ -184,22 +136,8 @@ export const updateWorkingShift = createRoute({
         },
       },
     },
-    400: {
-      description: 'Invalid body',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    500: serverErrorSchema,
   },
   tags: ['working_shifts'],
 });

@@ -7,6 +7,7 @@ import {
   listEmployeesValidator,
   updateEmployeeValidator,
 } from '../validators/employees.js';
+import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
 
 export const insertEmployee = createRoute({
   method: 'post',
@@ -33,22 +34,8 @@ export const insertEmployee = createRoute({
         },
       },
     },
-    400: {
-      description: 'Invalid body',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    500: serverErrorSchema,
   },
   tags: ['employees'],
 });
@@ -69,14 +56,7 @@ export const getEmployees = createRoute({
         },
       },
     },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    500: serverErrorSchema,
   },
   tags: ['employees'],
 });
@@ -100,22 +80,8 @@ export const getEmployeeById = createRoute({
         },
       },
     },
-    404: {
-      description: 'Employee not found',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    404: notFoundSchema,
+    500: serverErrorSchema,
   },
   tags: ['employees'],
 });
@@ -139,22 +105,8 @@ export const deleteEmployee = createRoute({
         },
       },
     },
-    404: {
-      description: 'Employee not found',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    404: notFoundSchema,
+    500: serverErrorSchema,
   },
   tags: ['employees'],
 });
@@ -185,22 +137,42 @@ export const updateEmployee = createRoute({
         },
       },
     },
-    400: {
-      description: 'Invalid body',
+    400: badRequestSchema,
+    500: serverErrorSchema,
+  },
+  tags: ['employees'],
+});
+
+export const changeEmployeePassword = createRoute({
+  method: 'patch',
+  path: '/employees/password',
+  summary: 'Change employee password',
+  description: 'Change employee password',
+  middleware: authMiddleware,
+  security: [{ Bearer: [] }],
+  request: {
+    body: {
       content: {
         'application/json': {
-          schema: z.object({ error: z.string() }),
+          schema: z.object({
+            old_password: z.string().min(8),
+            new_password: z.string().min(8),
+          }),
         },
       },
     },
-    500: {
-      description: 'Internal server error',
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
       content: {
         'application/json': {
-          schema: z.object({ error: z.string() }),
+          schema: z.object({ message: z.string() }),
         },
       },
     },
+    400: notFoundSchema,
+    500: serverErrorSchema,
   },
   tags: ['employees'],
 });

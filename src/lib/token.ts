@@ -34,5 +34,16 @@ export async function checkToken(
     throw new HTTPException(403, { message: 'Permission denied', cause: 'Invalid permissions' });
   }
 
-  // else TODO: for staff, admin, superadmin roles
+  if (payload.role >= Role.STAFF) {
+    const staff = await prisma.employees.findUnique({
+      where: { id: payload.id, token },
+      select: { role: true },
+    });
+
+    if (!staff) throw new HTTPException(401, { message: 'Unauthorized', cause: 'Invalid token' });
+
+    if (staff.role >= authorization) return;
+
+    throw new HTTPException(403, { message: 'Permission denied', cause: 'Invalid permissions' });
+  }
 }

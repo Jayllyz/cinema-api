@@ -1,5 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
+import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
 import {
   insertScreeningValidator,
   listScreeningValidator,
@@ -7,15 +8,6 @@ import {
   screeningValidator,
   updateScreeningValidator,
 } from '../validators/screenings.js';
-
-const serverErrorSchema = {
-  description: 'Internal server error',
-  content: {
-    'application/json': {
-      schema: z.object({ error: z.string() }),
-    },
-  },
-};
 
 export const getScreenings = createRoute({
   method: 'get',
@@ -62,14 +54,7 @@ export const insertScreening = createRoute({
         },
       },
     },
-    400: {
-      description: 'Invalid body',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
     500: serverErrorSchema,
   },
   tags: ['screenings'],
@@ -101,14 +86,8 @@ export const updateScreening = createRoute({
         },
       },
     },
-    400: {
-      description: 'Invalid body',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['screenings'],
@@ -133,14 +112,7 @@ export const getScreeningById = createRoute({
         },
       },
     },
-    404: {
-      description: 'Room not found',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['screenings'],
@@ -165,14 +137,7 @@ export const deleteScreening = createRoute({
         },
       },
     },
-    404: {
-      description: 'Screening not found',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['screenings'],

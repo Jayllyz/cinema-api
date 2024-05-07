@@ -1,5 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
+import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
 import {
   idValidator,
   insertUserValidator,
@@ -26,14 +27,7 @@ export const getUsers = createRoute({
         },
       },
     },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    500: serverErrorSchema,
   },
   tags: ['users'],
 });
@@ -57,14 +51,8 @@ export const getUserById = createRoute({
         },
       },
     },
-    404: {
-      description: 'User not found',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    404: notFoundSchema,
+    500: serverErrorSchema,
   },
   tags: ['users'],
 });
@@ -95,24 +83,8 @@ export const insertUser = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({
-            error: z.string(),
-          }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    500: serverErrorSchema,
   },
   tags: ['users'],
 });
@@ -144,24 +116,8 @@ export const updateUser = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({
-            error: z.string(),
-          }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    500: serverErrorSchema,
   },
   tags: ['users'],
 });
@@ -185,24 +141,8 @@ export const updateUserMoney = createRoute({
         },
       },
     },
-    400: {
-      description: 'Bad request',
-      content: {
-        'application/json': {
-          schema: z.object({
-            error: z.string(),
-          }),
-        },
-      },
-    },
-    500: {
-      description: 'Internal server error',
-      content: {
-        'application/json': {
-          schema: z.object({ error: z.string() }),
-        },
-      },
-    },
+    400: badRequestSchema,
+    500: serverErrorSchema,
   },
   tags: ['users'],
 });
@@ -227,22 +167,42 @@ export const deleteUser = createRoute({
         },
       },
     },
-    404: {
-      description: 'User not found',
+    404: notFoundSchema,
+    500: serverErrorSchema,
+  },
+  tags: ['users'],
+});
+
+export const changeUserPassword = createRoute({
+  method: 'patch',
+  path: '/users/password',
+  summary: 'Change user password',
+  description: 'Change user password',
+  middleware: authMiddleware,
+  security: [{ Bearer: [] }],
+  request: {
+    body: {
       content: {
         'application/json': {
-          schema: z.object({ error: z.string() }),
+          schema: z.object({
+            old_password: z.string().min(8),
+            new_password: z.string().min(8),
+          }),
         },
       },
     },
-    500: {
-      description: 'Internal server error',
+  },
+  responses: {
+    200: {
+      description: 'Successful response',
       content: {
         'application/json': {
-          schema: z.object({ error: z.string() }),
+          schema: z.object({ message: z.string() }),
         },
       },
     },
+    400: badRequestSchema,
+    500: serverErrorSchema,
   },
   tags: ['users'],
 });
