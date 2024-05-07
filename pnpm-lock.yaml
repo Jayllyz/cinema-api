@@ -13,10 +13,10 @@ importers:
         version: 1.11.1
       '@hono/swagger-ui':
         specifier: ^0.2.2
-        version: 0.2.2(hono@4.3.0)
+        version: 0.2.2(hono@4.3.2)
       '@hono/zod-openapi':
         specifier: ^0.11.0
-        version: 0.11.0(hono@4.3.0)(zod@3.23.6)
+        version: 0.11.0(hono@4.3.2)(zod@3.23.6)
       '@prisma/client':
         specifier: ^5.13.0
         version: 5.13.0(prisma@5.13.0)
@@ -24,8 +24,8 @@ importers:
         specifier: ^2.4.3
         version: 2.4.3
       hono:
-        specifier: ^4.3.0
-        version: 4.3.0
+        specifier: ^4.3.2
+        version: 4.3.2
       zod:
         specifier: ^3.23.6
         version: 3.23.6
@@ -540,8 +540,8 @@ packages:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
 
-  hono@4.3.0:
-    resolution: {integrity: sha512-rf9142VLQNMVBj+BjVLISgDWDxnJGUIuX39dvqcdySwr2gTsPfsqW1twWDUjfwQNWm9hEn40MpDu9RFGUN+e8A==}
+  hono@4.3.2:
+    resolution: {integrity: sha512-wiZcF5N06tc232U11DnqW6hP8DNoypjsrxslKXfvOqOAkTdh7K1HLZJH/92Mf+urxUTGi96f1w4xx/1Qozoqiw==}
     engines: {node: '>=16.0.0'}
 
   human-signals@5.0.0:
@@ -977,20 +977,20 @@ snapshots:
 
   '@hono/node-server@1.11.1': {}
 
-  '@hono/swagger-ui@0.2.2(hono@4.3.0)':
+  '@hono/swagger-ui@0.2.2(hono@4.3.2)':
     dependencies:
-      hono: 4.3.0
+      hono: 4.3.2
 
-  '@hono/zod-openapi@0.11.0(hono@4.3.0)(zod@3.23.6)':
+  '@hono/zod-openapi@0.11.0(hono@4.3.2)(zod@3.23.6)':
     dependencies:
       '@asteasolutions/zod-to-openapi': 7.0.0(zod@3.23.6)
-      '@hono/zod-validator': 0.2.1(hono@4.3.0)(zod@3.23.6)
-      hono: 4.3.0
+      '@hono/zod-validator': 0.2.1(hono@4.3.2)(zod@3.23.6)
+      hono: 4.3.2
       zod: 3.23.6
 
-  '@hono/zod-validator@0.2.1(hono@4.3.0)(zod@3.23.6)':
+  '@hono/zod-validator@0.2.1(hono@4.3.2)(zod@3.23.6)':
     dependencies:
-      hono: 4.3.0
+      hono: 4.3.2
       zod: 3.23.6
 
   '@jest/schemas@29.6.3':
@@ -1252,7 +1252,7 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  hono@4.3.0: {}
+  hono@4.3.2: {}
 
   human-signals@5.0.0: {}
 
