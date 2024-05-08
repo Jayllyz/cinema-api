@@ -7,7 +7,7 @@ import {
   listEmployeesValidator,
   updateEmployeeValidator,
 } from '../validators/employees.js';
-import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
+import { badRequestSchema, notFoundSchema, queryAllSchema, serverErrorSchema } from '../validators/general.js';
 
 export const insertEmployee = createRoute({
   method: 'post',
@@ -47,6 +47,9 @@ export const getEmployees = createRoute({
   description: 'Get all employee',
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
+  request: {
+    query: queryAllSchema,
+  },
   responses: {
     200: {
       description: 'Successful response',

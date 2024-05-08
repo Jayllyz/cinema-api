@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
 import { categoryValidator, listCategoriesValidator } from '../validators/categories.js';
-import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
+import { badRequestSchema, notFoundSchema, queryAllSchema, serverErrorSchema } from '../validators/general.js';
 import { idValidator } from '../validators/rooms.js';
 
 export const getCategories = createRoute({
@@ -11,6 +11,9 @@ export const getCategories = createRoute({
   middleware: authMiddleware,
   description: 'Get all categories',
   security: [{ Bearer: [] }],
+  request: {
+    query: queryAllSchema,
+  },
   responses: {
     200: {
       description: 'Successful response',

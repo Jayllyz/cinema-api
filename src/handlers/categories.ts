@@ -12,9 +12,17 @@ categories.openapi(getCategories, async (c) => {
   const payload: PayloadValidator = c.get('jwtPayload');
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.USER, token);
+  const { skip, take, search, all } = c.req.valid('query');
+
+  const where = search ? { name: { contains: search } } : {};
 
   try {
-    const categories = await prisma.categories.findMany();
+    if (all) {
+      const categories = await prisma.categories.findMany({ where, orderBy: { id: 'asc' } });
+      return c.json(categories, 200);
+    }
+
+    const categories = await prisma.categories.findMany({ where, skip, take, orderBy: { id: 'asc' } });
     return c.json(categories, 200);
   } catch (error) {
     console.error(error);
