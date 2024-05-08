@@ -13,7 +13,7 @@ rooms.openapi(getRooms, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.STAFF, token);
   const { skip, take, search, all } = c.req.valid('query');
-  
+
   const where = search ? { name: { contains: search } } : {};
 
   try {
@@ -21,7 +21,7 @@ rooms.openapi(getRooms, async (c) => {
       const rooms = await prisma.rooms.findMany({ where, orderBy: { id: 'asc' } });
       return c.json(rooms, 200);
     }
-    
+
     const rooms = await prisma.rooms.findMany({ where, skip, take, orderBy: { id: 'asc' } });
     return c.json(rooms, 200);
   } catch (error) {

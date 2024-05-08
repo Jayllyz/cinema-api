@@ -21,7 +21,7 @@ employees.openapi(getEmployees, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.STAFF, token);
   const { skip, take, search, all } = c.req.valid('query');
-  
+
   const where = search ? { email: { contains: search } } : {};
 
   try {
@@ -29,7 +29,7 @@ employees.openapi(getEmployees, async (c) => {
       const employees = await prisma.employees.findMany({ where, orderBy: { id: 'asc' } });
       return c.json(employees, 200);
     }
-    
+
     const employees = await prisma.employees.findMany({ where, skip, take, orderBy: { id: 'asc' } });
     return c.json(employees, 200);
   } catch (error) {

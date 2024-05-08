@@ -23,7 +23,7 @@ users.openapi(getUsers, async (c) => {
   const payload: PayloadValidator = c.get('jwtPayload');
   await checkToken(payload, Role.STAFF, token);
   const { skip, take, search, all } = c.req.valid('query');
-  
+
   const where = search ? { email: { contains: search } } : {};
 
   try {
@@ -31,7 +31,7 @@ users.openapi(getUsers, async (c) => {
       const users = await prisma.users.findMany({ where, orderBy: { id: 'asc' } });
       return c.json(users, 200);
     }
-    
+
     const users = await prisma.users.findMany({ where, skip, take, orderBy: { id: 'asc' } });
     return c.json(users, 200);
   } catch (error) {
