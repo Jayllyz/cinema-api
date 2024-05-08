@@ -22,18 +22,17 @@ users.openapi(getUsers, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   const payload: PayloadValidator = c.get('jwtPayload');
   await checkToken(payload, Role.STAFF, token);
+  const { skip, take, search, all } = c.req.valid('query');
+  
+  const where = search ? { email: { contains: search } } : {};
 
   try {
-    const users = await prisma.users.findMany({
-      select: {
-        id: true,
-        first_name: true,
-        last_name: true,
-        email: true,
-        money: true,
-        role: true,
-      },
-    });
+    if (all) {
+      const users = await prisma.users.findMany({ where, orderBy: { id: 'asc' } });
+      return c.json(users, 200);
+    }
+    
+    const users = await prisma.users.findMany({ where, skip, take, orderBy: { id: 'asc' } });
     return c.json(users, 200);
   } catch (error) {
     console.error(error);

@@ -13,8 +13,8 @@ movies.openapi(getMovies, async (c) => {
   const payload: PayloadValidator = c.get('jwtPayload');
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.USER, token);
-
   const { title, author, lt, gt, status, category_id } = c.req.valid('query');
+
   try {
     const movies = await prisma.movies.findMany({
       where: {

@@ -13,10 +13,10 @@ importers:
         version: 1.11.1
       '@hono/swagger-ui':
         specifier: ^0.2.2
-        version: 0.2.2(hono@4.3.2)
+        version: 0.2.2(hono@4.3.3)
       '@hono/zod-openapi':
         specifier: ^0.11.0
-        version: 0.11.0(hono@4.3.2)(zod@3.23.6)
+        version: 0.11.0(hono@4.3.3)(zod@3.23.7)
       '@prisma/client':
         specifier: ^5.13.0
         version: 5.13.0(prisma@5.13.0)
@@ -24,14 +24,14 @@ importers:
         specifier: ^2.4.3
         version: 2.4.3
       hono:
-        specifier: ^4.3.2
-        version: 4.3.2
+        specifier: ^4.3.3
+        version: 4.3.3
       zod:
-        specifier: ^3.23.6
-        version: 3.23.6
+        specifier: ^3.23.7
+        version: 3.23.7
       zod-validation-error:
         specifier: ^3.2.0
-        version: 3.2.0(zod@3.23.6)
+        version: 3.2.0(zod@3.23.7)
     devDependencies:
       '@biomejs/biome':
         specifier: 1.7.3
@@ -40,8 +40,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       '@types/node':
-        specifier: ^20.12.10
-        version: 20.12.10
+        specifier: ^20.12.11
+        version: 20.12.11
       '@types/swagger-ui-dist':
         specifier: ^3.30.4
         version: 3.30.4
@@ -59,7 +59,7 @@ importers:
         version: 5.4.5
       vitest:
         specifier: ^1.6.0
-        version: 1.6.0(@types/node@20.12.10)
+        version: 1.6.0(@types/node@20.12.11)
 
 packages:
 
@@ -71,6 +71,7 @@ packages:
   '@biomejs/biome@1.7.3':
     resolution: {integrity: sha512-ogFQI+fpXftr+tiahA6bIXwZ7CSikygASdqMtH07J2cUzrpjyTMVc9Y97v23c7/tL1xCZhM+W9k4hYIBm7Q6cQ==}
     engines: {node: '>=14.21.3'}
+    hasBin: true
 
   '@biomejs/cli-darwin-arm64@1.7.3':
     resolution: {integrity: sha512-eDvLQWmGRqrPIRY7AIrkPHkQ3visEItJKkPYSHCscSDdGvKzYjmBJwG1Gu8+QC5ed6R7eiU63LEC0APFBobmfQ==}
@@ -412,8 +413,8 @@ packages:
   '@types/estree@1.0.5':
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
 
-  '@types/node@20.12.10':
-    resolution: {integrity: sha512-Eem5pH9pmWBHoGAT8Dr5fdc5rYA+4NAovdM4EktRPVAAiJhmWWfQrA0cFhAbOsQdSfIHjAud6YdkbL69+zSKjw==}
+  '@types/node@20.12.11':
+    resolution: {integrity: sha512-vDg9PZ/zi+Nqp6boSOT7plNuthRugEKixDv5sFTIpkE89MmNtEArAShI4mxuX2+UrLEe9pxC1vm2cjm9YlWbJw==}
 
   '@types/swagger-ui-dist@3.30.4':
     resolution: {integrity: sha512-FeOBc7uj4/lAIh4jkBzorvmNoUU9JgSccyDIRo0E9MJw9KQfSxlwpHCyKGnU9kfV5N5dEdfpY8wm7to3nSwTmA==}
@@ -440,6 +441,7 @@ packages:
   acorn@8.11.3:
     resolution: {integrity: sha512-Y9rRfJG5jcKOE0CLisYbojUjIrIEE7AGMzA/Sm4BslANhbS+cDMpgBdcPT91oJ7OuJ9hYJBx59RjbhxVnrF8Xg==}
     engines: {node: '>=0.4.0'}
+    hasBin: true
 
   ansi-styles@5.2.0:
     resolution: {integrity: sha512-Cxwpt2SfTzTtXcfOlzGEee8O+c+MmUgGrNiBcXnuWxuFJHe6a5Hz7qwhwe5OgaSYI0IJvkLqWX1ASG+cJOkEiA==}
@@ -499,6 +501,7 @@ packages:
   esbuild@0.20.2:
     resolution: {integrity: sha512-WdOOppmUNU+IbZ0PaDiTst80zjnrOkyJNHoKupIcVyU8Lvla3Ugx94VzkQ32Ijqd7UhHJy75gNWDMUekcrSJ6g==}
     engines: {node: '>=12'}
+    hasBin: true
 
   estree-walker@3.0.3:
     resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
@@ -537,8 +540,8 @@ packages:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
 
-  hono@4.3.2:
-    resolution: {integrity: sha512-wiZcF5N06tc232U11DnqW6hP8DNoypjsrxslKXfvOqOAkTdh7K1HLZJH/92Mf+urxUTGi96f1w4xx/1Qozoqiw==}
+  hono@4.3.3:
+    resolution: {integrity: sha512-LDa1n/aLYK4CsZQyjQpFiaQgxiXCZp0WfcfliinQOH1Lqt4mIOvyw4qjmHihpKXsuXhkQHfHU2Erysp6oEdnVA==}
     engines: {node: '>=16.0.0'}
 
   human-signals@5.0.0:
@@ -608,6 +611,7 @@ packages:
   nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
 
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -663,6 +667,7 @@ packages:
   prisma@5.13.0:
     resolution: {integrity: sha512-kGtcJaElNRAdAGsCNykFSZ7dBKpL14Cbs+VaQ8cECxQlRPDjBlMHNFYeYt0SKovAVy2Y65JXQwB3A5+zIQwnTg==}
     engines: {node: '>=16.13'}
+    hasBin: true
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -680,6 +685,7 @@ packages:
   rollup@4.17.2:
     resolution: {integrity: sha512-/9ClTJPByC0U4zNLowV1tMBe8yMEAxewtR3cUNX5BoEpGH3dQEWpJLr6CLp0fPdYRF/fzVOgvDb1zXuakwF5kQ==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
+    hasBin: true
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -746,6 +752,7 @@ packages:
   tsx@4.9.3:
     resolution: {integrity: sha512-czVbetlILiyJZI5zGlj2kw9vFiSeyra9liPD4nG+Thh4pKTi0AmMEQ8zdV/L2xbIVKrIqif4sUNrsMAOksx9Zg==}
     engines: {node: '>=18.0.0'}
+    hasBin: true
 
   type-coverage-core@2.28.1:
     resolution: {integrity: sha512-NniLJtLiDg0+dhrf/9ACGwi3OAhIfvd20f1CB0yxIUBMECwmJp7e7me3lM8djkrDBJtqSY+uXA6PRs+yv3HTnA==}
@@ -754,6 +761,7 @@ packages:
 
   type-coverage@2.28.2:
     resolution: {integrity: sha512-mTANnzAeuH7ldrg0fzPnhh+aCCSVAO7V7hlBoVg4XxuUtQyD3ogir/R7Z6Q7W0H1JREtDIY4I91SGHAgEPi6Bw==}
+    hasBin: true
 
   type-detect@4.0.8:
     resolution: {integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==}
@@ -762,6 +770,7 @@ packages:
   typescript@5.4.5:
     resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
+    hasBin: true
 
   ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
@@ -772,10 +781,12 @@ packages:
   vite-node@1.6.0:
     resolution: {integrity: sha512-de6HJgzC+TFzOu0NTC4RAIsyf/DY/ibWDYQUcuEA84EMHhcefTUGkjFHKKEJhQN4A+6I0u++kr3l36ZF2d7XRw==}
     engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
 
   vite@5.2.11:
     resolution: {integrity: sha512-HndV31LWW05i1BLPMUCE1B9E9GFbOu1MbenhS58FuK6owSO5qHm7GiCotrNY1YE5rMeQSFBGmT5ZaLEjFizgiQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
     peerDependencies:
       '@types/node': ^18.0.0 || >=20.0.0
       less: '*'
@@ -803,6 +814,7 @@ packages:
   vitest@1.6.0:
     resolution: {integrity: sha512-H5r/dN06swuFnzNFhq/dnz37bPXnq8xB2xB5JOVk8K09rUtoeNN+LHWkoQ0A/i3hvbUKKcCei9KpbxqHMLhLLA==}
     engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
     peerDependencies:
       '@edge-runtime/vm': '*'
       '@types/node': ^18.0.0 || >=20.0.0
@@ -827,14 +839,17 @@ packages:
   which@2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
     engines: {node: '>= 8'}
+    hasBin: true
 
   why-is-node-running@2.2.2:
     resolution: {integrity: sha512-6tSwToZxTOcotxHeA+qGCq1mVzKR3CwcJGmVcY+QE8SHy6TnpFnh8PAvPNHYr7EcuVeG0QSMxtYCuO1ta/G/oA==}
     engines: {node: '>=8'}
+    hasBin: true
 
   yaml@2.4.2:
     resolution: {integrity: sha512-B3VqDZ+JAg1nZpaEmWtTXUlBneoGx6CPM9b0TENK6aoSu5t73dItudwdgmi6tHlIZZId4dZ9skcAQ2UbcyAeVA==}
     engines: {node: '>= 14'}
+    hasBin: true
 
   yocto-queue@1.0.0:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
@@ -846,15 +861,15 @@ packages:
     peerDependencies:
       zod: ^3.18.0
 
-  zod@3.23.6:
-    resolution: {integrity: sha512-RTHJlZhsRbuA8Hmp/iNL7jnfc4nZishjsanDAfEY1QpDQZCahUp3xDzl+zfweE9BklxMUcgBgS1b7Lvie/ZVwA==}
+  zod@3.23.7:
+    resolution: {integrity: sha512-NBeIoqbtOiUMomACV/y+V3Qfs9+Okr18vR5c/5pHClPpufWOrsx8TENboDPe265lFdfewX2yBtNTLPvnmCxwog==}
 
 snapshots:
 
-  '@asteasolutions/zod-to-openapi@7.0.0(zod@3.23.6)':
+  '@asteasolutions/zod-to-openapi@7.0.0(zod@3.23.7)':
     dependencies:
       openapi3-ts: 4.3.1
-      zod: 3.23.6
+      zod: 3.23.7
 
   '@biomejs/biome@1.7.3':
     optionalDependencies:
@@ -962,21 +977,21 @@ snapshots:
 
   '@hono/node-server@1.11.1': {}
 
-  '@hono/swagger-ui@0.2.2(hono@4.3.2)':
+  '@hono/swagger-ui@0.2.2(hono@4.3.3)':
     dependencies:
-      hono: 4.3.2
+      hono: 4.3.3
 
-  '@hono/zod-openapi@0.11.0(hono@4.3.2)(zod@3.23.6)':
+  '@hono/zod-openapi@0.11.0(hono@4.3.3)(zod@3.23.7)':
     dependencies:
-      '@asteasolutions/zod-to-openapi': 7.0.0(zod@3.23.6)
-      '@hono/zod-validator': 0.2.1(hono@4.3.2)(zod@3.23.6)
-      hono: 4.3.2
-      zod: 3.23.6
+      '@asteasolutions/zod-to-openapi': 7.0.0(zod@3.23.7)
+      '@hono/zod-validator': 0.2.1(hono@4.3.3)(zod@3.23.7)
+      hono: 4.3.3
+      zod: 3.23.7
 
-  '@hono/zod-validator@0.2.1(hono@4.3.2)(zod@3.23.6)':
+  '@hono/zod-validator@0.2.1(hono@4.3.3)(zod@3.23.7)':
     dependencies:
-      hono: 4.3.2
-      zod: 3.23.6
+      hono: 4.3.3
+      zod: 3.23.7
 
   '@jest/schemas@29.6.3':
     dependencies:
@@ -1075,7 +1090,7 @@ snapshots:
 
   '@types/estree@1.0.5': {}
 
-  '@types/node@20.12.10':
+  '@types/node@20.12.11':
     dependencies:
       undici-types: 5.26.5
 
@@ -1237,7 +1252,7 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  hono@4.3.2: {}
+  hono@4.3.3: {}
 
   human-signals@5.0.0: {}
 
@@ -1454,13 +1469,13 @@ snapshots:
 
   undici-types@5.26.5: {}
 
-  vite-node@1.6.0(@types/node@20.12.10):
+  vite-node@1.6.0(@types/node@20.12.11):
     dependencies:
       cac: 6.7.14
       debug: 4.3.4
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.2.11(@types/node@20.12.10)
+      vite: 5.2.11(@types/node@20.12.11)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -1471,16 +1486,16 @@ snapshots:
       - supports-color
       - terser
 
-  vite@5.2.11(@types/node@20.12.10):
+  vite@5.2.11(@types/node@20.12.11):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.17.2
     optionalDependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       fsevents: 2.3.3
 
-  vitest@1.6.0(@types/node@20.12.10):
+  vitest@1.6.0(@types/node@20.12.11):
     dependencies:
       '@vitest/expect': 1.6.0
       '@vitest/runner': 1.6.0
@@ -1499,11 +1514,11 @@ snapshots:
       strip-literal: 2.1.0
       tinybench: 2.8.0
       tinypool: 0.8.4
-      vite: 5.2.11(@types/node@20.12.10)
-      vite-node: 1.6.0(@types/node@20.12.10)
+      vite: 5.2.11(@types/node@20.12.11)
+      vite-node: 1.6.0(@types/node@20.12.11)
       why-is-node-running: 2.2.2
     optionalDependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     transitivePeerDependencies:
       - less
       - lightningcss
@@ -1526,8 +1541,8 @@ snapshots:
 
   yocto-queue@1.0.0: {}
 
-  zod-validation-error@3.2.0(zod@3.23.6):
+  zod-validation-error@3.2.0(zod@3.23.7):
     dependencies:
-      zod: 3.23.6
+      zod: 3.23.7
 
-  zod@3.23.6: {}
+  zod@3.23.7: {}
