@@ -1,6 +1,12 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
-import { badRequestSchema, notFoundSchema, queryAllSchema, serverErrorSchema } from '../validators/general.js';
+import {
+  badRequestSchema,
+  idParamValidator,
+  notFoundSchema,
+  queryAllSchema,
+  serverErrorSchema,
+} from '../validators/general.js';
 import {
   idValidator,
   insertUserValidator,
@@ -178,18 +184,18 @@ export const deleteUser = createRoute({
 
 export const changeUserPassword = createRoute({
   method: 'patch',
-  path: '/users/password',
+  path: '/users/{id}/password',
   summary: 'Change user password',
   description: 'Change user password',
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
+    params: idParamValidator,
     body: {
       content: {
         'application/json': {
           schema: z.object({
-            old_password: z.string().min(8),
-            new_password: z.string().min(8),
+            password: z.string().min(8),
           }),
         },
       },

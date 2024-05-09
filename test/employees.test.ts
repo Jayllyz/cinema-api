@@ -184,7 +184,7 @@ describe('Employees', () => {
   });
 
   test('Employee can change password', async () => {
-    const res = await app.request(`${path}/employees/password`, {
+    const res = await app.request(`${path}/employees/${createdEmployeeId}/password`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -192,10 +192,9 @@ describe('Employees', () => {
       },
       body: JSON.stringify({
         password: 'password12345',
-        new_password: 'password123456',
       }),
     });
-    expect(res.status).toBe(400); // TODO: Fix this test
+    expect(res.status).toBe(200);
   });
 
   test('DELETE /working_shifts/{id}', async () => {
