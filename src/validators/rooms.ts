@@ -27,13 +27,15 @@ export const RoomValidator = z.object({
   type: z.string(),
   open: z.boolean(),
   handicap_access: z.boolean(),
-  images: z.array(
-    z.object({
-      id: z.number().min(1),
-      url: z.string(),
-      alt: z.string(),
-    }),
-  ),
+  images: z
+    .array(
+      z.object({
+        id: z.number().min(1),
+        url: z.string(),
+        alt: z.string(),
+      }),
+    )
+    .optional(),
 });
 
 export const listRoomsValidator = z.array(RoomValidator);
