@@ -55,7 +55,7 @@ model Movies {
   category_id  Int
   category     Categories   @relation(fields: [category_id], references: [id])
   screenings   Screenings[]
-  covers       Images[]
+  images       Images[]
 
   @@map(name: "MOVIES")
 }

@@ -1,8 +1,8 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
 import { badRequestSchema, notFoundSchema, queryAllSchema, serverErrorSchema } from '../validators/general.js';
+import { idParamValidator } from '../validators/general.js';
 import { images } from '../validators/images.js';
-import { idValidator } from '../validators/rooms.js';
 
 export const listImages = createRoute({
   method: 'get',
@@ -33,7 +33,7 @@ export const getImage = createRoute({
   summary: 'Get an image',
   description: 'Get an image',
   request: {
-    params: idValidator,
+    params: idParamValidator,
   },
   responses: {
     200: {
@@ -89,7 +89,7 @@ export const updateImage = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: idValidator,
+    params: idParamValidator,
     body: {
       content: {
         'application/json': {
@@ -125,7 +125,7 @@ export const deleteImage = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: idValidator,
+    params: idParamValidator,
   },
   responses: {
     200: {

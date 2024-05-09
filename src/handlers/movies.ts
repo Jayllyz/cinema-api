@@ -33,6 +33,13 @@ movies.openapi(getMovies, async (c) => {
         duration: true,
         status: true,
         category: true,
+        images: {
+          select: {
+            id: true,
+            url: true,
+            alt: true,
+          },
+        },
       },
     });
     return c.json(movies, 200);
@@ -60,6 +67,13 @@ movies.openapi(getMovieById, async (c) => {
         duration: true,
         status: true,
         category: true,
+        images: {
+          select: {
+            id: true,
+            url: true,
+            alt: true,
+          },
+        },
       },
     });
     if (!movie) return c.json({ error: `Movie with id ${id} not found` }, 404);
@@ -95,6 +109,13 @@ movies.openapi(insertMovie, async (c) => {
         duration: true,
         status: true,
         category: true,
+        images: {
+          select: {
+            id: true,
+            url: true,
+            alt: true,
+          },
+        },
       },
     });
     return c.json(movie, 201);
@@ -148,6 +169,13 @@ movies.openapi(updateMovie, async (c) => {
         duration: true,
         status: true,
         category: true,
+        images: {
+          select: {
+            id: true,
+            url: true,
+            alt: true,
+          },
+        },
       },
     });
     return c.json(movie, 200);

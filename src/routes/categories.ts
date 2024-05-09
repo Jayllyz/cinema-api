@@ -2,7 +2,7 @@ import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
 import { categoryValidator, listCategoriesValidator } from '../validators/categories.js';
 import { badRequestSchema, notFoundSchema, queryAllSchema, serverErrorSchema } from '../validators/general.js';
-import { idValidator } from '../validators/rooms.js';
+import { idParamValidator } from '../validators/general.js';
 
 export const getCategories = createRoute({
   method: 'get',
@@ -36,7 +36,7 @@ export const getCategoryById = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: idValidator,
+    params: idParamValidator,
   },
   responses: {
     200: {
@@ -92,7 +92,7 @@ export const deleteCategory = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: idValidator,
+    params: idParamValidator,
   },
   responses: {
     200: {

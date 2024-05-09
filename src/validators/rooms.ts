@@ -1,16 +1,5 @@
 import { z } from 'zod';
-
-export const idValidator = z.object({
-  id: z.coerce
-    .number()
-    .min(1)
-    .openapi({
-      param: {
-        name: 'id',
-        in: 'path',
-      },
-    }),
-});
+import { images } from './images.js';
 
 export const insertRoomValidator = z.object({
   name: z.string(),
@@ -38,6 +27,13 @@ export const RoomValidator = z.object({
   type: z.string(),
   open: z.boolean(),
   handicap_access: z.boolean(),
+  images: z.array(
+    z.object({
+      id: z.number().min(1),
+      url: z.string(),
+      alt: z.string(),
+    }),
+  ),
 });
 
 export const listRoomsValidator = z.array(RoomValidator);

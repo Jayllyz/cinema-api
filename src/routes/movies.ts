@@ -1,13 +1,13 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
 import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
+import { idParamValidator } from '../validators/general.js';
 import {
   MovieValidator,
   insertMovieValidator,
   listMoviesValidator,
   updateMovieValidator,
 } from '../validators/movies.js';
-import { idValidator } from '../validators/rooms.js';
 
 export const getMovies = createRoute({
   method: 'get',
@@ -48,7 +48,7 @@ export const getMovieById = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: idValidator,
+    params: idParamValidator,
   },
   responses: {
     200: {
@@ -104,7 +104,7 @@ export const updateMovie = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: idValidator,
+    params: idParamValidator,
     body: {
       content: {
         'application/json': {
@@ -137,7 +137,7 @@ export const deleteMovie = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: idValidator,
+    params: idParamValidator,
   },
   responses: {
     200: {
