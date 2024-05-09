@@ -23,7 +23,7 @@
     "@hono/zod-openapi": "^0.11.0",
     "@prisma/client": "^5.13.0",
     "bcryptjs": "^2.4.3",
-    "hono": "^4.3.3",
+    "hono": "^4.3.4",
     "zod": "^3.23.8",
     "zod-validation-error": "^3.2.0"
   },

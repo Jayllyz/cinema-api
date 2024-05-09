@@ -67,25 +67,6 @@ rooms.openapi(insertRoom, async (c) => {
   }
 });
 
-rooms.openapi(deleteRoom, async (c) => {
-  const payload: PayloadValidator = c.get('jwtPayload');
-  const token = c.req.header('authorization')?.split(' ')[1];
-  await checkToken(payload, Role.ADMIN, token);
-
-  const { id } = c.req.valid('param');
-  try {
-    const room = await prisma.rooms.findUnique({ where: { id } });
-    if (!room) return c.json({ error: `Room with id ${id} not found` }, 404);
-
-    await prisma.rooms.delete({ where: { id } });
-
-    return c.json({ message: `Room with id ${id} deleted` }, 200);
-  } catch (error) {
-    console.error(error);
-    return c.json({ error }, 500);
-  }
-});
-
 rooms.openapi(updateRoom, async (c) => {
   const payload: PayloadValidator = c.get('jwtPayload');
   const token = c.req.header('authorization')?.split(' ')[1];
@@ -103,6 +84,25 @@ rooms.openapi(updateRoom, async (c) => {
     });
 
     return c.json(res, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({ error }, 500);
+  }
+});
+
+rooms.openapi(deleteRoom, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
+  const { id } = c.req.valid('param');
+  try {
+    const room = await prisma.rooms.findUnique({ where: { id } });
+    if (!room) return c.json({ error: `Room with id ${id} not found` }, 404);
+
+    await prisma.rooms.delete({ where: { id } });
+
+    return c.json({ message: `Room with id ${id} deleted` }, 200);
   } catch (error) {
     console.error(error);
     return c.json({ error }, 500);

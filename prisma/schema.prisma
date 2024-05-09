@@ -16,6 +16,7 @@ model Rooms {
   open            Boolean
   handicap_access Boolean
   screenings      Screenings[]
+  images          Images[]
 
   @@map(name: "ROOMS")
 }
@@ -54,6 +55,7 @@ model Movies {
   category_id  Int
   category     Categories   @relation(fields: [category_id], references: [id])
   screenings   Screenings[]
+  covers       Images[]
 
   @@map(name: "MOVIES")
 }
@@ -136,4 +138,16 @@ model SuperTicketsSessions {
 
   @@id([super_ticket_id, screening_id])
   @@map(name: "SUPER_TICKETS_SESSIONS")
+}
+
+model Images {
+  id      Int     @id @default(autoincrement())
+  alt     String
+  url     String
+  movieId Int?
+  roomId  Int?
+  movie   Movies? @relation(fields: [movieId], references: [id])
+  room    Rooms?  @relation(fields: [roomId], references: [id])
+
+  @@map(name: "IMAGES")
 }
