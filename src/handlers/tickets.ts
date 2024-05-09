@@ -37,23 +37,8 @@ const ticketSelectOptions = {
         start_time: true,
         end_time: true,
         screening_duration_minutes: true,
-        movie: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            author: true,
-            release_date: true,
-            duration: true,
-            status: true,
-            category: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-        room: true,
+        movie: { include: { category: true, images: true } },
+        room: { include: { images: true } },
       },
     },
   },
@@ -91,6 +76,7 @@ tickets.openapi(getTickets, async (c) => {
 
     const tickets = await prisma.tickets.findMany({
       where: whereCondition,
+      orderBy: { id: 'asc' },
       ...ticketSelectOptions,
     });
 

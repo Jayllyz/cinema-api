@@ -73,25 +73,6 @@ employees.openapi(insertEmployee, async (c) => {
   }
 });
 
-employees.openapi(deleteEmployee, async (c) => {
-  const payload: PayloadValidator = c.get('jwtPayload');
-  const token = c.req.header('authorization')?.split(' ')[1];
-  await checkToken(payload, Role.ADMIN, token);
-
-  const { id } = c.req.valid('param');
-  try {
-    const employees = await prisma.employees.findUnique({ where: { id } });
-    if (!employees) return c.json({ error: `Employee with id ${id} not found` }, 404);
-
-    await prisma.employees.delete({ where: { id: Number(id) } });
-
-    return c.json({ message: `Employee with id ${id} deleted` }, 200);
-  } catch (error) {
-    console.error(error);
-    return c.json({ error }, 500);
-  }
-});
-
 employees.openapi(updateEmployee, async (c) => {
   const payload: PayloadValidator = c.get('jwtPayload');
   const token = c.req.header('authorization')?.split(' ')[1];
@@ -119,6 +100,26 @@ employees.openapi(updateEmployee, async (c) => {
     return c.json({ error }, 500);
   }
 });
+
+employees.openapi(deleteEmployee, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
+  const { id } = c.req.valid('param');
+  try {
+    const employees = await prisma.employees.findUnique({ where: { id } });
+    if (!employees) return c.json({ error: `Employee with id ${id} not found` }, 404);
+
+    await prisma.employees.delete({ where: { id: Number(id) } });
+
+    return c.json({ message: `Employee with id ${id} deleted` }, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({ error }, 500);
+  }
+});
+
 
 employees.openapi(changeEmployeePassword, async (c) => {
   const payload: PayloadValidator = c.get('jwtPayload');

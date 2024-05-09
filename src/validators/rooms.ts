@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { images } from './images.js';
 
 export const insertRoomValidator = z.object({
   name: z.string(),

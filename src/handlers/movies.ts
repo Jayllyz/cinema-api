@@ -24,23 +24,8 @@ movies.openapi(getMovies, async (c) => {
         status: { equals: status },
         category_id,
       },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        author: true,
-        release_date: true,
-        duration: true,
-        status: true,
-        category: true,
-        images: {
-          select: {
-            id: true,
-            url: true,
-            alt: true,
-          },
-        },
-      },
+      include: { category: true, images: true },
+      orderBy: { release_date: 'asc' },
     });
     return c.json(movies, 200);
   } catch (error) {
@@ -58,23 +43,7 @@ movies.openapi(getMovieById, async (c) => {
   try {
     const movie = await prisma.movies.findUnique({
       where: { id },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        author: true,
-        release_date: true,
-        duration: true,
-        status: true,
-        category: true,
-        images: {
-          select: {
-            id: true,
-            url: true,
-            alt: true,
-          },
-        },
-      },
+      include: { category: true, images: true },
     });
     if (!movie) return c.json({ error: `Movie with id ${id} not found` }, 404);
 
@@ -125,25 +94,6 @@ movies.openapi(insertMovie, async (c) => {
   }
 });
 
-movies.openapi(deleteMovie, async (c) => {
-  const payload: PayloadValidator = c.get('jwtPayload');
-  const token = c.req.header('authorization')?.split(' ')[1];
-  await checkToken(payload, Role.ADMIN, token);
-
-  const { id } = c.req.valid('param');
-  try {
-    const movie = await prisma.movies.findUnique({ where: { id } });
-    if (!movie) return c.json({ error: `Movie with id ${id} not found` }, 404);
-
-    await refundTicketsMovie(id);
-    await prisma.movies.delete({ where: { id } });
-    return c.json({ message: 'Movie deleted' }, 200);
-  } catch (error) {
-    console.error(error);
-    return c.json({ error }, 500);
-  }
-});
-
 movies.openapi(updateMovie, async (c) => {
   const payload: PayloadValidator = c.get('jwtPayload');
   const token = c.req.header('authorization')?.split(' ')[1];
@@ -160,25 +110,28 @@ movies.openapi(updateMovie, async (c) => {
     const movie = await prisma.movies.update({
       where: { id },
       data: { title, description, duration, status, category_id, author, release_date },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        author: true,
-        release_date: true,
-        duration: true,
-        status: true,
-        category: true,
-        images: {
-          select: {
-            id: true,
-            url: true,
-            alt: true,
-          },
-        },
-      },
+      include: { category: true, images: true },
     });
     return c.json(movie, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({ error }, 500);
+  }
+});
+
+movies.openapi(deleteMovie, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.ADMIN, token);
+
+  const { id } = c.req.valid('param');
+  try {
+    const movie = await prisma.movies.findUnique({ where: { id } });
+    if (!movie) return c.json({ error: `Movie with id ${id} not found` }, 404);
+
+    await refundTicketsMovie(id);
+    await prisma.movies.delete({ where: { id } });
+    return c.json({ message: 'Movie deleted' }, 200);
   } catch (error) {
     console.error(error);
     return c.json({ error }, 500);

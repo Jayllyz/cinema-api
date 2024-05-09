@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { categoryValidator } from './categories.js';
-import { images } from './images.js';
 
 export const MovieValidator = z.object({
   id: z.number().min(1),
