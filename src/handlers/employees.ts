@@ -120,7 +120,6 @@ employees.openapi(deleteEmployee, async (c) => {
   }
 });
 
-
 employees.openapi(changeEmployeePassword, async (c) => {
   const payload: PayloadValidator = c.get('jwtPayload');
   const token = c.req.header('authorization')?.split(' ')[1];
