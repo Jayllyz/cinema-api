@@ -7,7 +7,13 @@ import {
   listEmployeesValidator,
   updateEmployeeValidator,
 } from '../validators/employees.js';
-import { badRequestSchema, notFoundSchema, queryAllSchema, serverErrorSchema } from '../validators/general.js';
+import {
+  badRequestSchema,
+  idParamValidator,
+  notFoundSchema,
+  queryAllSchema,
+  serverErrorSchema,
+} from '../validators/general.js';
 
 export const insertEmployee = createRoute({
   method: 'post',
@@ -148,18 +154,18 @@ export const updateEmployee = createRoute({
 
 export const changeEmployeePassword = createRoute({
   method: 'patch',
-  path: '/employees/password',
+  path: '/employees/{id}/password',
   summary: 'Change employee password',
   description: 'Change employee password',
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
+    params: idParamValidator,
     body: {
       content: {
         'application/json': {
           schema: z.object({
-            old_password: z.string().min(8),
-            new_password: z.string().min(8),
+            password: z.string().min(8),
           }),
         },
       },

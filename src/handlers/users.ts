@@ -190,16 +190,15 @@ users.openapi(changeUserPassword, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.USER, token);
 
-  const { id } = payload;
-  const { old_password, new_password } = c.req.valid('json');
+  const { id } = c.req.valid('param');
+  if (payload.id !== id) return c.json({ error: 'You can only change your password' }, 403);
+  const { password } = c.req.valid('json');
+
   try {
     const user = await prisma.users.findUnique({ where: { id } });
     if (!user) return c.json({ error: `User with id ${id} not found` }, 404);
 
-    const passwordMatch = await bcrypt.compare(old_password, user.password);
-    if (!passwordMatch) return c.json({ error: 'Old password does not match' }, 400);
-
-    const hashedPassword = await bcrypt.hash(new_password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await prisma.users.update({ where: { id }, data: { password: hashedPassword } });
 

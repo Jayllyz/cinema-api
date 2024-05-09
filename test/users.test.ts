@@ -116,7 +116,7 @@ describe('Users', () => {
   });
 
   test('User can change password', async () => {
-    const res = await app.request(`${path}/users/password`, {
+    const res = await app.request(`${path}/users/${toDelete}/password`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -126,7 +126,7 @@ describe('Users', () => {
         password: 'password123',
       }),
     });
-    expect(res.status).toBe(400); // TODO: Fix this test
+    expect(res.status).toBe(200);
   });
 
   test('PATCH /users/money deposit 50', async () => {
