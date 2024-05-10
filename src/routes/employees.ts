@@ -2,7 +2,6 @@ import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
 import {
   employeeResponseSchema,
-  employeeValidator,
   insertEmployeeValidator,
   listEmployeesValidator,
   updateEmployeeValidator,
@@ -85,7 +84,7 @@ export const getEmployeeById = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: employeeValidator,
+          schema: employeeResponseSchema,
         },
       },
     },
@@ -142,7 +141,7 @@ export const updateEmployee = createRoute({
       description: 'Employee updated',
       content: {
         'application/json': {
-          schema: employeeValidator,
+          schema: employeeResponseSchema,
         },
       },
     },

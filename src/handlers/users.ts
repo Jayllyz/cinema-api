@@ -28,7 +28,11 @@ users.openapi(getUsers, async (c) => {
 
   try {
     if (all) {
-      const users = await prisma.users.findMany({ where, orderBy: { id: 'asc' } });
+      const users = await prisma.users.findMany({
+        select: { id: true, first_name: true, last_name: true, email: true, money: true, role: true },
+        where,
+        orderBy: { id: 'asc' },
+      });
       return c.json(users, 200);
     }
 

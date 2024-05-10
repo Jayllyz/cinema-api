@@ -11,7 +11,6 @@ import {
   insertScreening,
   updateScreening,
 } from '../routes/screenings.js';
-import { categories } from './categories.js';
 
 export const screenings = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -109,11 +108,12 @@ screenings.openapi(insertScreening, async (c) => {
     const roomExist = await prisma.rooms.findUnique({
       where: {
         id: room_id,
+        open: true,
       },
     });
 
     if (!roomExist) {
-      return c.json({ error: `room with id ${room_id} not found` }, 400);
+      return c.json({ error: `Room with id ${room_id} not found or is closed` }, 400);
     }
 
     const screeningAtSameTime = await getOverlapingScreenings(room_id, new Date(start_time), end_time);

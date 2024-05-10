@@ -26,11 +26,21 @@ employees.openapi(getEmployees, async (c) => {
 
   try {
     if (all) {
-      const employees = await prisma.employees.findMany({ where, orderBy: { id: 'asc' } });
+      const employees = await prisma.employees.findMany({
+        select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
+        where,
+        orderBy: { id: 'asc' },
+      });
       return c.json(employees, 200);
     }
 
-    const employees = await prisma.employees.findMany({ where, skip, take, orderBy: { id: 'asc' } });
+    const employees = await prisma.employees.findMany({
+      select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
+      where,
+      skip,
+      take,
+      orderBy: { id: 'asc' },
+    });
     return c.json(employees, 200);
   } catch (error) {
     console.error(error);
@@ -45,7 +55,10 @@ employees.openapi(getEmployeeById, async (c) => {
 
   const { id } = c.req.valid('param');
   try {
-    const employee = await prisma.employees.findUnique({ where: { id } });
+    const employee = await prisma.employees.findUnique({
+      select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
+      where: { id },
+    });
     if (!employee) return c.json({ error: `Employee with id ${id} not found` }, 404);
 
     return c.json(employee, 200);
@@ -71,6 +84,7 @@ employees.openapi(insertEmployee, async (c) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const employee = await prisma.employees.create({
       data: { first_name, last_name, phone_number, email, password: hashedPassword },
+      select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
     });
     return c.json(employee, 201);
   } catch (error) {
@@ -93,6 +107,7 @@ employees.openapi(updateEmployee, async (c) => {
     const res = await prisma.employees.update({
       where: { id: Number(id) },
       data: { first_name, last_name, phone_number, email, role },
+      select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
     });
 
     if (role) {

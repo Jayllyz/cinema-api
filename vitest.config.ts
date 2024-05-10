@@ -6,6 +6,5 @@ export default defineConfig({
     globals: true,
     maxWorkers: 1,
     minWorkers: 1,
-    dangerouslyIgnoreUnhandledErrors: true,
   },
 });
