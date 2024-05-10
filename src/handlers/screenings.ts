@@ -11,6 +11,7 @@ import {
   insertScreening,
   updateScreening,
 } from '../routes/screenings.js';
+import { categories } from './categories.js';
 
 export const screenings = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -28,7 +29,7 @@ screenings.openapi(getScreenings, async (c) => {
         start_time: true,
         end_time: true,
         screening_duration_minutes: true,
-        movie: { include: { category: true, images: true } },
+        movie: { include: { CategoriesMovies: { include: { category: true } }, images: true } },
         room: { include: { images: true } },
       },
       orderBy: { start_time: 'asc' },
@@ -55,7 +56,7 @@ screenings.openapi(getScreeningById, async (c) => {
         start_time: true,
         end_time: true,
         screening_duration_minutes: true,
-        movie: { include: { category: true, images: true } },
+        movie: { include: { CategoriesMovies: { include: { category: true } }, images: true } },
         room: { include: { images: true } },
       },
     });

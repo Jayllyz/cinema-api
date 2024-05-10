@@ -23,7 +23,7 @@ export const getMovies = createRoute({
       lt: z.date().optional(),
       gt: z.date().optional(),
       status: z.string().optional(),
-      category_id: z.number().positive().optional(),
+      category: z.coerce.number().positive().optional(),
     }),
   },
   responses: {

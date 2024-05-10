@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { categories } from '../handlers/categories.js';
 import { categoryValidator } from './categories.js';
 
 export const MovieValidator = z.object({
@@ -9,7 +10,6 @@ export const MovieValidator = z.object({
   release_date: z.string().date(),
   duration: z.number().positive(),
   status: z.string(),
-  category: categoryValidator,
   images: z
     .array(
       z.object({
@@ -28,7 +28,7 @@ export const insertMovieValidator = z.object({
   release_date: z.coerce.date(),
   duration: z.number().positive(),
   status: z.string(),
-  category_id: z.number().positive(),
+  categories: z.array(z.number().min(1)).optional(),
 });
 
 export const updateMovieValidator = z.object({
@@ -38,7 +38,7 @@ export const updateMovieValidator = z.object({
   description: z.string().optional(),
   duration: z.number().positive().optional(),
   status: z.string().optional(),
-  category_id: z.number().min(1).optional(),
+  categories: z.array(z.number().min(1)).optional(),
 });
 
 export const listMoviesValidator = z.array(MovieValidator);

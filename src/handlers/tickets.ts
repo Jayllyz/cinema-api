@@ -37,7 +37,7 @@ const ticketSelectOptions = {
         start_time: true,
         end_time: true,
         screening_duration_minutes: true,
-        movie: { include: { category: true, images: true } },
+        movie: { include: { CategoriesMovies: { include: { category: true } }, images: true } },
         room: { include: { images: true } },
       },
     },
@@ -60,8 +60,10 @@ tickets.openapi(getTickets, async (c) => {
       screening_id,
       screening: {
         movie: {
-          category: {
-            name: category,
+          CategoriesMovies: {
+            some: {
+              category_id: category,
+            },
           },
         },
         room: {
