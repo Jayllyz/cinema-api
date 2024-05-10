@@ -216,15 +216,12 @@ describe('Tickets', () => {
   });
 
   test('Add money to user', async () => {
-    const res = await app.request(`${path}/users/${trackedUser}`, {
+    const res = await app.request(`${path}/users/money?deposit=100`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`,
+        Authorization: `Bearer ${userToken}`,
       },
-      body: JSON.stringify({
-        money: 100,
-      }),
     });
     expect(res.status).toBe(200);
     const user: Users = (await res.json()) as Users;

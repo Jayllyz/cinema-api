@@ -169,14 +169,14 @@ users.openapi(updateUser, async (c) => {
   await checkToken(payload, Role.ADMIN, token);
 
   const { id } = c.req.valid('param');
-  const { first_name, last_name, email, money } = c.req.valid('json');
+  const { first_name, last_name, email } = c.req.valid('json');
   try {
     const userExists = await prisma.users.findUnique({ where: { id } });
     if (!userExists) return c.json({ error: `User with id ${id} not found` }, 404);
 
     const user = await prisma.users.update({
       where: { id },
-      data: { first_name, last_name, email, money },
+      data: { first_name, last_name, email },
     });
     return c.json(user, 200);
   } catch (error) {

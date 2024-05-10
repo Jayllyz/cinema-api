@@ -13,7 +13,7 @@ const port = Number(process.env.PORT || 3000);
 const path = `http://localhost:${port}`;
 
 let toDelete: number;
-let trackedMoney: number;
+let trackedMoney = 0;
 
 describe('Users', () => {
   beforeAll(async () => {
@@ -92,12 +92,10 @@ describe('Users', () => {
       },
       body: JSON.stringify({
         first_name: 'modified',
-        money: 100,
       }),
     });
     expect(res.status).toBe(200);
     const user = (await res.json()) as Users;
-    trackedMoney = user.money;
     expect(user).toMatchObject({ first_name: 'modified' });
   });
 

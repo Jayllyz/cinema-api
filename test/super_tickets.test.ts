@@ -160,15 +160,12 @@ describe('Super tickets', () => {
   });
 
   test('Add money to user', async () => {
-    const res = await app.request(`${path}/users/${trackedUser}`, {
+    const res = await app.request(`${path}/users/money?deposit=50`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${adminToken}`,
+        Authorization: `Bearer ${userToken}`,
       },
-      body: JSON.stringify({
-        money: 50,
-      }),
     });
     expect(res.status).toBe(200);
     const user: Users = (await res.json()) as Users;
@@ -202,7 +199,7 @@ describe('Super tickets', () => {
     expect(res.status).toBe(200);
     const tickets: Tickets[] = (await res.json()) as Tickets[];
     expect(tickets).toBeInstanceOf(Array);
-    expect(tickets.length).toBeGreaterThanOrEqual(1);
+    expect(tickets.length).equal(1);
   });
 
   test('GET /super_tickets/{id}', async () => {
