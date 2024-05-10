@@ -60,7 +60,6 @@ users.openapi(getUserById, async (c) => {
         email: true,
         money: true,
         role: true,
-        password: false,
       },
     });
 
