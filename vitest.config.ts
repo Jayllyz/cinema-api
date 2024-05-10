@@ -5,6 +5,6 @@ export default defineConfig({
   test: {
     globals: true,
     maxWorkers: 1,
-    minWorkers: 1
+    minWorkers: 1,
   },
 });
