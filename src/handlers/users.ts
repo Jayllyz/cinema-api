@@ -79,6 +79,9 @@ users.openapi(insertUser, async (c) => {
     const emailUsed = await prisma.users.findUnique({ where: { email } });
     if (emailUsed) return c.json({ error: 'email already used' }, 400);
 
+    const employeeFound = await prisma.employees.findUnique({ where: { email } });
+    if (employeeFound) return c.json({ error: 'email already used' }, 400);
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.users.create({
