@@ -6,8 +6,8 @@ import { userValidator } from '../validators/users.js';
 export const loginUser = createRoute({
   method: 'post',
   path: '/login',
-  summary: 'Login a user',
-  description: 'Login a user',
+  summary: 'Login route',
+  description: 'Login as employee or user',
   request: {
     body: {
       content: {

@@ -28,12 +28,12 @@ movies.openapi(getMovies, async (c) => {
       orderBy: { release_date: 'asc' },
     });
 
-    const format = movies.map(({ CategoriesMovies, ...movie }) => {
+    const data = movies.map(({ CategoriesMovies, ...movie }) => {
       const categories = CategoriesMovies.map((category) => category.category);
       return { ...movie, categories: categories };
     });
 
-    return c.json(format, 200);
+    return c.json(data, 200);
   } catch (error) {
     console.error(error);
     return c.json({ error }, 500);

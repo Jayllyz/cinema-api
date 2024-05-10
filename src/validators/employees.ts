@@ -2,6 +2,7 @@ import { z } from 'zod';
 const phoneE164regex = /^\+[1-9]\d{1,14}$/;
 
 export const employeeResponseSchema = z.object({
+  id: z.number().min(1),
   first_name: z.string().max(50),
   last_name: z.string().max(50),
   email: z.string().email(),
@@ -39,4 +40,4 @@ export const employeeValidator = z.object({
   phone_number: z.string().regex(phoneE164regex, 'The phone number need to be in international format (e164)'),
 });
 
-export const listEmployeesValidator = z.array(employeeValidator);
+export const listEmployeesValidator = z.array(employeeResponseSchema);

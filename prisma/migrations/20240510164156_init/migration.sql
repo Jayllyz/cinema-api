@@ -211,28 +211,52 @@ ALTER TABLE "_CategoriesToMovies" ADD CONSTRAINT "_CategoriesToMovies_A_fkey" FO
 -- AddForeignKey
 ALTER TABLE "_CategoriesToMovies" ADD CONSTRAINT "_CategoriesToMovies_B_fkey" FOREIGN KEY ("B") REFERENCES "MOVIES"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
-
-INSERT INTO "CATEGORIES" ("id", "name") VALUES (1, 'Action');
-INSERT INTO "CATEGORIES" ("id", "name") VALUES (2, 'Adventure');
-INSERT INTO "CATEGORIES" ("id", "name") VALUES (3, 'Comedy');
+INSERT INTO "CATEGORIES" ("id", "name") VALUES (1, 'Drama');
+INSERT INTO "CATEGORIES" ("id", "name") VALUES (2, 'Crime');
+INSERT INTO "CATEGORIES" ("id", "name") VALUES (3, 'Thriller');
+INSERT INTO "CATEGORIES" ("id", "name") VALUES (4, 'Action');
+INSERT INTO "CATEGORIES" ("id", "name") VALUES (5, 'Adventure');
+INSERT INTO "CATEGORIES" ("id", "name") VALUES (6, 'Comedy');
 
 INSERT INTO "ROOMS" ("id", "name", "description", "capacity", "type", "open", "handicap_access") VALUES (1, 'Room 1', 'Room 1 description', 20, 'Normal', true, false);
-INSERT INTO "ROOMS" ("id", "name", "description", "capacity", "type", "open", "handicap_access") VALUES (2, 'Room 2', 'Room 2 description', 20, 'Normal', true, false);
-INSERT INTO "ROOMS" ("id", "name", "description", "capacity", "type", "open", "handicap_access") VALUES (3, 'Room 3', 'Room 3 description', 25, 'Normal', true, false);
+INSERT INTO "ROOMS" ("id", "name", "description", "capacity", "type", "open", "handicap_access") VALUES (2, 'Room 2', 'Room 2 description', 25, 'Normal', true, false);
+INSERT INTO "ROOMS" ("id", "name", "description", "capacity", "type", "open", "handicap_access") VALUES (3, 'Room 3', 'Room 3 description', 30, 'Normal', true, true);
+INSERT INTO "ROOMS" ("id", "name", "description", "capacity", "type", "open", "handicap_access") VALUES (4, 'Room 4', 'Room 4 description', 15, 'Normal', true, false);
+INSERT INTO "ROOMS" ("id", "name", "description", "capacity", "type", "open", "handicap_access") VALUES (5, 'Room 5', 'Room 5 description', 22, 'Normal', true, true);
 
-INSERT INTO "MOVIES" ("id", "title", "author", "release_date", "description", "status", "duration") VALUES (1, 'Movie 1', 'Author 1', '2024-05-10', 'Movie 1 description', 'Now playing', 120);
-INSERT INTO "MOVIES" ("id", "title", "author", "release_date", "description", "status", "duration") VALUES (2, 'Movie 2', 'Author 2', '2024-05-10', 'Movie 2 description', 'Now playing', 120);
-INSERT INTO "MOVIES" ("id", "title", "author", "release_date", "description", "status", "duration") VALUES (3, 'Movie 3', 'Author 3', '2024-05-10', 'Movie 3 description', 'Now playing', 120);
+INSERT INTO "MOVIES" ("id", "title", "author", "release_date", "description", "status", "duration") VALUES (1, 'Les Évadés', 'Frank Darabont', '1994-09-23', 'En 1947, Andy Dufresne, un jeune banquier, est condamné à la perpétuité pour le meurtre de sa femme et de son amant. Il est incarcéré à la prison d''État de Shawshank, où il se lie d''amitié avec Red, un ancien détenu. Ensemble, ils vont découvrir que l''espoir est un bien précieux qui ne s''éteint jamais.', 'Now playing', 142);
+INSERT INTO "MOVIES" ("id", "title", "author", "release_date", "description", "status", "duration") VALUES (2, 'Le Parrain', 'Francis Ford Coppola', '1972-03-14', 'En 1945, à New York, les Corleone sont l''une des cinq familles de la mafia. Don Vito Corleone, parrain de cette famille, marie sa fille à un bookmaker. Sollozzo, parrain de la famille Tattaglia, propose à Don Vito une association dans le trafic de drogue, mais celui-ci refuse.', 'Now playing', 175);
+INSERT INTO "MOVIES" ("id", "title", "author", "release_date", "description", "status", "duration") VALUES (3, 'The Dark Knight : Le Chevalier noir', 'Christopher Nolan', '2008-07-16', 'Dans ce nouveau volet, Batman augmente les mises dans sa guerre contre le crime. Avec l''appui du lieutenant de police Jim Gordon et du procureur de Gotham, Harvey Dent, Batman vise à éradiquer le crime organisé qui pullule dans la ville. Leur association est très efficace, mais elle sera bientôt bouleversée par le chaos déclenché par un criminel extraordinaire que les citoyens de Gotham connaissent sous le nom de Joker.', 'Now playing', 152);
+INSERT INTO "MOVIES" ("id", "title", "author", "release_date", "description", "status", "duration") VALUES (4, 'Pulp Fiction', 'Quentin Tarantino', '1994-09-10', 'L''histoire de plusieurs truands et de personnages marginaux dans un univers violent et déjanté. Le film est découpé en plusieurs séquences qui se chevauchent et qui mettent en scène des dialogues percutants et des scènes d''action spectaculaires.', 'Now playing', 154);
+INSERT INTO "MOVIES" ("id", "title", "author", "release_date", "description", "status", "duration") VALUES (5, 'Inception', 'Christopher Nolan', '2010-07-15', 'Dom Cobb est un voleur expérimenté, le meilleur dans l''art périlleux de l''extraction : sa spécialité consiste à s''approprier les secrets les plus précieux d''un individu, enfouis au plus profond de son subconscient, pendant qu''il rêve et que son esprit est particulièrement vulnérable. Très recherché pour ses talents dans l''univers trouble de l''espionnage industriel, Cobb est aussi devenu un fugitif traqué dans le monde entier qui a perdu tout ce qui lui est cher.', 'Now playing', 148);
+INSERT INTO "MOVIES" ("id", "title", "author", "release_date", "description", "status", "duration") VALUES (6, 'Le Silence des agneaux', 'Jonathan Demme', '1991-02-14', 'Clarice Starling, une jeune et brillante stagiaire du FBI, est chargée d''interviewer le dangereux tueur en série Hannibal Lecter, emprisonné depuis plusieurs années, afin de résoudre une affaire de meurtres en série.', 'Now playing', 118);
+INSERT INTO "MOVIES" ("id", "title", "author", "release_date", "description", "status", "duration") VALUES (7, 'Forrest Gump', 'Robert Zemeckis', '1994-07-06', 'Forrest Gump est un homme simple d''esprit mais au grand cœur. Il a grandi dans l''Alabama et a vécu de nombreuses aventures, des années 1950 à la fin du XXe siècle. Il a rencontré des personnalités célèbres, a assisté à des événements historiques importants et a connu l''amour, la tristesse, la guerre et la paix.', 'Now playing', 142);
+INSERT INTO "MOVIES" ("id", "title", "author", "release_date", "description", "status", "duration") VALUES (8, 'Le Seigneur des anneaux : La Communauté de l''anneau', 'Peter Jackson', '2001-12-19', 'Dans un monde imaginaire appelé la Terre du Milieu, le jeune hobbit Frodon Sacquet hérite d''un anneau magique. Cet anneau est en réalité un instrument de pouvoir absolu qui permettrait à Sauron, le Seigneur des ténèbres, de régner sur la Terre du Milieu et de réduire en esclavage tous ses peuples. Pour empêcher cela, Frodon et ses amis doivent entreprendre un long et périlleux voyage pour détruire l''anneau en le jetant dans les flammes de la Montagne du Destin.', 'Now playing', 178);
+INSERT INTO "MOVIES" ("id", "title", "author", "release_date", "description", "status", "duration") VALUES (9, 'La Liste de Schindler', 'Steven Spielberg', '1993-12-15', 'Pendant la Seconde Guerre mondiale, Oskar Schindler, un industriel allemand, sauve la vie de plus de mille Juifs en les employant dans son usine. Il profite de la situation pour s''enrichir, mais finit par prendre conscience de l''horreur du génocide et décide de tout mettre en œuvre pour sauver le plus grand nombre de vies possible.', 'Now playing', 195);
+INSERT INTO "MOVIES" ("id", "title", "author", "release_date", "description", "status", "duration") VALUES (10, 'Star Wars, épisode V : L''Empire contre-attaque', 'Irvin Kershner', '1980-05-17', 'Après la destruction de l''Étoile Noire, l''Empire contre-attaque en envoyant des troupes sur la planète glacée de Hoth. Les rebelles doivent fuir et se disperser. Luke Skywalker part sur la planète Dagobah pour suivre l''enseignement du maître Jedi Yoda, tandis que Han Solo et la princesse Leia sont poursuivis par les troupes impériales à travers la galaxie.', 'Now playing', 124);
 
-INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (1, 1);
-INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (2, 1);
-INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (3, 1);
-INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (1, 2);
-INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (2, 2);
-INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (3, 2);
-INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (1, 3);
-INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (2, 3);
-INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (3, 3);
+
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (1, 1); -- Drame, Les Évadés
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (2, 1); -- Policier, Les Évadés
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (1, 2); -- Drame, Le Parrain
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (2, 2); -- Policier, Le Parrain
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (2, 3); -- Policier, The Dark Knight : Le Chevalier noir
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (4, 3); -- Action, The Dark Knight : Le Chevalier noir
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (1, 4); -- Drame, Pulp Fiction
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (2, 4); -- Policier, Pulp Fiction
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (3, 5); -- Science-fiction, Inception
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (4, 5); -- Action, Inception
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (2, 6); -- Policier, Le Silence des agneaux
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (3, 6); -- Thriller, Le Silence des agneaux
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (1, 7); -- Drame, Forrest Gump
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (6, 7); -- Comédie, Forrest Gump
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (5, 8); -- Aventure, Le Seigneur des anneaux : La Communauté de l''anneau
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (6, 8); -- Fantastique, Le Seigneur des anneaux : La Communauté de l''anneau
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (1, 9); -- Drame, La Liste de Schindler
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (2, 9); -- Historique, La Liste de Schindler
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (4, 10); -- Science-fiction, Star Wars, épisode V : L''Empire contre-attaque
+INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (5, 10); -- Aventure, Star Wars, épisode V : L''Empire contre-attaque
+
 
 
 INSERT INTO "USERS" ("id", "first_name", "last_name", "email", "password", "money", "role", "token") VALUES (1, 'john', 'doe', 'john@email.com', '$2a$10$Gmr.sPnCt.XhoiDPC/guq.mjvc0uX5bhmG.PH/Gm8Nmk6WD9AKUKO', 0, 1, NULL);
