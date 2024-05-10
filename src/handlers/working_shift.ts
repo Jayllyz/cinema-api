@@ -31,6 +31,7 @@ workingShift.openapi(getWorkingShifts, async (c) => {
   try {
     const working_shift = await prisma.working_shifts.findMany({
       select: selectShiftWithEmployee,
+      orderBy: { start_time: 'asc' },
     });
     return c.json(working_shift, 200);
   } catch (error) {

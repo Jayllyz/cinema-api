@@ -13,10 +13,10 @@ importers:
         version: 1.11.1
       '@hono/swagger-ui':
         specifier: ^0.2.2
-        version: 0.2.2(hono@4.3.3)
+        version: 0.2.2(hono@4.3.4)
       '@hono/zod-openapi':
         specifier: ^0.11.0
-        version: 0.11.0(hono@4.3.3)(zod@3.23.8)
+        version: 0.11.0(hono@4.3.4)(zod@3.23.8)
       '@prisma/client':
         specifier: ^5.13.0
         version: 5.13.0(prisma@5.13.0)
@@ -24,14 +24,14 @@ importers:
         specifier: ^2.4.3
         version: 2.4.3
       hono:
-        specifier: ^4.3.3
-        version: 4.3.3
+        specifier: ^4.3.4
+        version: 4.3.4
       zod:
         specifier: ^3.23.8
         version: 3.23.8
       zod-validation-error:
-        specifier: ^3.2.0
-        version: 3.2.0(zod@3.23.8)
+        specifier: ^3.3.0
+        version: 3.3.0(zod@3.23.8)
     devDependencies:
       '@biomejs/biome':
         specifier: 1.7.3
@@ -533,15 +533,15 @@ packages:
     resolution: {integrity: sha512-VaUJspBffn/LMCJVoMvSAdmscJyS1auj5Zulnn5UoYcY531UWmdwhRWkcGKnGU93m5HSXP9LP2usOryrBtQowA==}
     engines: {node: '>=16'}
 
-  get-tsconfig@4.7.4:
-    resolution: {integrity: sha512-ofbkKj+0pjXjhejr007J/fLf+sW+8H7K5GCm+msC8q3IpvgjobpyPqSRFemNyIMxklC0zeJpi7VDFna19FacvQ==}
+  get-tsconfig@4.7.5:
+    resolution: {integrity: sha512-ZCuZCnlqNzjb4QprAzXKdpp/gh6KTxSJuw3IBsPnV/7fV4NxC9ckB+vPTt8w7fJA0TaSD7c55BR47JD6MEDyDw==}
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
 
-  hono@4.3.3:
-    resolution: {integrity: sha512-LDa1n/aLYK4CsZQyjQpFiaQgxiXCZp0WfcfliinQOH1Lqt4mIOvyw4qjmHihpKXsuXhkQHfHU2Erysp6oEdnVA==}
+  hono@4.3.4:
+    resolution: {integrity: sha512-oh+PBwW8yElj3bUlY2dTXhuPt1MCZp6Nb04tejLwY+GXdphQH6uCpUP0dY5iLvFY5wM8fNHrMx1QeMKbhnzw9w==}
     engines: {node: '>=16.0.0'}
 
   human-signals@5.0.0:
@@ -653,8 +653,8 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  pkg-types@1.1.0:
-    resolution: {integrity: sha512-/RpmvKdxKf8uILTtoOhAgf30wYbP2Qw+L9p3Rvshx1JZVX+XQNZQFjlbmGHEGIm4CkVPlSn+NXmIM8+9oWQaSA==}
+  pkg-types@1.1.1:
+    resolution: {integrity: sha512-ko14TjmDuQJ14zsotODv7dBlwxKhUKQEhuhmbqo1uCi9BB0Z2alo/wAXg6q1dTR5TyuqYyWhjtfe/Tsh+X28jQ==}
 
   postcss@8.4.38:
     resolution: {integrity: sha512-Wglpdk03BSfXkHoQa3b/oulrotAkwrlLDRSOb9D0bN86FdRyE9lppSp33aHNPgBa0JKCoB+drFLZkQoRRYae5A==}
@@ -855,8 +855,8 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
 
-  zod-validation-error@3.2.0:
-    resolution: {integrity: sha512-cYlPR6zuyrgmu2wRTdumEAJGuwI7eHVHGT+VyneAQxmRAKtGRL1/7pjz4wfLhz4J05f5qoSZc3rGacswgyTjjw==}
+  zod-validation-error@3.3.0:
+    resolution: {integrity: sha512-Syib9oumw1NTqEv4LT0e6U83Td9aVRk9iTXPUQr1otyV1PuXQKOvOwhMNqZIq5hluzHP2pMgnOmHEo7kPdI2mw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       zod: ^3.18.0
@@ -977,20 +977,20 @@ snapshots:
 
   '@hono/node-server@1.11.1': {}
 
-  '@hono/swagger-ui@0.2.2(hono@4.3.3)':
+  '@hono/swagger-ui@0.2.2(hono@4.3.4)':
     dependencies:
-      hono: 4.3.3
+      hono: 4.3.4
 
-  '@hono/zod-openapi@0.11.0(hono@4.3.3)(zod@3.23.8)':
+  '@hono/zod-openapi@0.11.0(hono@4.3.4)(zod@3.23.8)':
     dependencies:
       '@asteasolutions/zod-to-openapi': 7.0.0(zod@3.23.8)
-      '@hono/zod-validator': 0.2.1(hono@4.3.3)(zod@3.23.8)
-      hono: 4.3.3
+      '@hono/zod-validator': 0.2.1(hono@4.3.4)(zod@3.23.8)
+      hono: 4.3.4
       zod: 3.23.8
 
-  '@hono/zod-validator@0.2.1(hono@4.3.3)(zod@3.23.8)':
+  '@hono/zod-validator@0.2.1(hono@4.3.4)(zod@3.23.8)':
     dependencies:
-      hono: 4.3.3
+      hono: 4.3.4
       zod: 3.23.8
 
   '@jest/schemas@29.6.3':
@@ -1244,7 +1244,7 @@ snapshots:
 
   get-stream@8.0.1: {}
 
-  get-tsconfig@4.7.4:
+  get-tsconfig@4.7.5:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
@@ -1252,7 +1252,7 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  hono@4.3.3: {}
+  hono@4.3.4: {}
 
   human-signals@5.0.0: {}
 
@@ -1273,7 +1273,7 @@ snapshots:
   local-pkg@0.5.0:
     dependencies:
       mlly: 1.7.0
-      pkg-types: 1.1.0
+      pkg-types: 1.1.1
 
   loupe@2.3.7:
     dependencies:
@@ -1304,7 +1304,7 @@ snapshots:
     dependencies:
       acorn: 8.11.3
       pathe: 1.1.2
-      pkg-types: 1.1.0
+      pkg-types: 1.1.1
       ufo: 1.5.3
 
   ms@2.1.2: {}
@@ -1341,7 +1341,7 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  pkg-types@1.1.0:
+  pkg-types@1.1.1:
     dependencies:
       confbox: 0.1.7
       mlly: 1.7.0
@@ -1441,7 +1441,7 @@ snapshots:
   tsx@4.9.3:
     dependencies:
       esbuild: 0.20.2
-      get-tsconfig: 4.7.4
+      get-tsconfig: 4.7.5
     optionalDependencies:
       fsevents: 2.3.3
 
@@ -1541,7 +1541,7 @@ snapshots:
 
   yocto-queue@1.0.0: {}
 
-  zod-validation-error@3.2.0(zod@3.23.8):
+  zod-validation-error@3.3.0(zod@3.23.8):
     dependencies:
       zod: 3.23.8
 

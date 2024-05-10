@@ -28,23 +28,40 @@ screenings.openapi(getScreenings, async (c) => {
         start_time: true,
         end_time: true,
         screening_duration_minutes: true,
-        movie: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            author: true,
-            release_date: true,
-            duration: true,
-            status: true,
-            category: true,
-          },
-        },
-        room: true,
+        movie: { include: { category: true, images: true } },
+        room: { include: { images: true } },
       },
+      orderBy: { start_time: 'asc' },
     });
 
     return c.json(screenings, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({ error }, 500);
+  }
+});
+
+screenings.openapi(getScreeningById, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.USER, token);
+
+  const { id } = c.req.valid('param');
+  try {
+    const screening = await prisma.screenings.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        start_time: true,
+        end_time: true,
+        screening_duration_minutes: true,
+        movie: { include: { category: true, images: true } },
+        room: { include: { images: true } },
+      },
+    });
+    if (!screening) return c.json({ error: `Screening with id ${id} not found` }, 404);
+
+    return c.json(screening, 200);
   } catch (error) {
     console.error(error);
     return c.json({ error }, 500);
@@ -244,44 +261,6 @@ screenings.openapi(deleteScreening, async (c) => {
     await prisma.screenings.delete({ where: { id: Number(id) } });
 
     return c.json({ message: `screening with id ${id} deleted` }, 200);
-  } catch (error) {
-    console.error(error);
-    return c.json({ error }, 500);
-  }
-});
-
-screenings.openapi(getScreeningById, async (c) => {
-  const payload: PayloadValidator = c.get('jwtPayload');
-  const token = c.req.header('authorization')?.split(' ')[1];
-  await checkToken(payload, Role.USER, token);
-
-  const { id } = c.req.valid('param');
-  try {
-    const screening = await prisma.screenings.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        start_time: true,
-        end_time: true,
-        screening_duration_minutes: true,
-        movie: {
-          select: {
-            id: true,
-            title: true,
-            description: true,
-            author: true,
-            release_date: true,
-            duration: true,
-            status: true,
-            category: true,
-          },
-        },
-        room: true,
-      },
-    });
-    if (!screening) return c.json({ error: `Screening with id ${id} not found` }, 404);
-
-    return c.json(screening, 200);
   } catch (error) {
     console.error(error);
     return c.json({ error }, 500);

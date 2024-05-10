@@ -1,6 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
 import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
+import { idParamValidator } from '../validators/general.js';
 import {
   insertScreeningValidator,
   listScreeningValidator,
@@ -68,7 +69,7 @@ export const updateScreening = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
     body: {
       content: {
         'application/json': {
@@ -101,7 +102,7 @@ export const getScreeningById = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
   },
   responses: {
     200: {
@@ -126,7 +127,7 @@ export const deleteScreening = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
   },
   responses: {
     200: {

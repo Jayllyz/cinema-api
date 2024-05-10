@@ -10,6 +10,15 @@ export const MovieValidator = z.object({
   duration: z.number().positive(),
   status: z.string(),
   category: categoryValidator,
+  images: z
+    .array(
+      z.object({
+        id: z.number().min(1),
+        url: z.string(),
+        alt: z.string(),
+      }),
+    )
+    .optional(),
 });
 
 export const insertMovieValidator = z.object({
