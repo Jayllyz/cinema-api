@@ -62,6 +62,12 @@ employees.openapi(insertEmployee, async (c) => {
 
   const { first_name, last_name, phone_number, email, password } = c.req.valid('json');
   try {
+    const userExist = await prisma.users.findUnique({ where: { email } });
+    if (userExist) return c.json({ error: 'email already used' }, 400);
+
+    const employeeFound = await prisma.employees.findUnique({ where: { email } });
+    if (employeeFound) return c.json({ error: 'email already used' }, 400);
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const employee = await prisma.employees.create({
       data: { first_name, last_name, phone_number, email, password: hashedPassword },
