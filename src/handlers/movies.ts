@@ -13,7 +13,7 @@ movies.openapi(getMovies, async (c) => {
   const payload: PayloadValidator = c.get('jwtPayload');
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.USER, token);
-  const { title, author, lt, gt, status, category_id } = c.req.valid('query');
+  const { title, author, lt, gt, status, category } = c.req.valid('query');
 
   try {
     const movies = await prisma.movies.findMany({
@@ -22,12 +22,18 @@ movies.openapi(getMovies, async (c) => {
         author: { contains: author },
         release_date: { gte: gt, lte: lt },
         status: { equals: status },
-        category_id,
+        CategoriesMovies: { some: { category_id: category } },
       },
-      include: { category: true, images: true },
+      include: { images: true, CategoriesMovies: { include: { category: true } } },
       orderBy: { release_date: 'asc' },
     });
-    return c.json(movies, 200);
+
+    const format = movies.map(({ CategoriesMovies, ...movie }) => {
+      const categories = CategoriesMovies.map((category) => category.category);
+      return { ...movie, categories: categories };
+    });
+
+    return c.json(format, 200);
   } catch (error) {
     console.error(error);
     return c.json({ error }, 500);
@@ -43,11 +49,17 @@ movies.openapi(getMovieById, async (c) => {
   try {
     const movie = await prisma.movies.findUnique({
       where: { id },
-      include: { category: true, images: true },
+      include: { images: true, CategoriesMovies: { include: { category: true } } },
     });
     if (!movie) return c.json({ error: `Movie with id ${id} not found` }, 404);
 
-    return c.json(movie, 200);
+    const format = {
+      ...movie,
+      categories: movie.CategoriesMovies.map((category) => category.category),
+      CategoriesMovies: undefined,
+    };
+
+    return c.json(format, 200);
   } catch (error) {
     console.error(error);
     return c.json({ error }, 500);
@@ -59,35 +71,31 @@ movies.openapi(insertMovie, async (c) => {
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.ADMIN, token);
 
-  const { title, author, description, release_date, duration, status, category_id } = c.req.valid('json');
+  const { title, author, description, release_date, duration, status, categories } = c.req.valid('json');
   try {
-    const category = await prisma.categories.findUnique({ where: { id: category_id } });
-    if (!category) return c.json({ error: `Category with id ${category_id} not found` }, 404);
-
     const movieExists = await prisma.movies.findUnique({ where: { title } });
     if (movieExists) return c.json({ error: `Movie with title ${title} already exists` }, 400);
 
+    if (categories) {
+      for (const id of categories) {
+        const category = await prisma.categories.findUnique({ where: { id } });
+        if (!category) return c.json({ error: `Category with id ${id} not found` }, 404);
+      }
+    }
+
     const movie = await prisma.movies.create({
-      data: { title, description, author, release_date, duration, status, category_id },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        author: true,
-        release_date: true,
-        duration: true,
-        status: true,
-        category: true,
-        images: {
-          select: {
-            id: true,
-            url: true,
-            alt: true,
-          },
-        },
-      },
+      data: { title, description, author, release_date, duration, status },
     });
-    return c.json(movie, 201);
+
+    if (categories) {
+      for (const id of categories) {
+        await prisma.categoriesMovies.create({ data: { movie_id: movie.id, category_id: id } });
+      }
+    }
+
+    const data = { ...movie, categories };
+
+    return c.json(data, 201);
   } catch (error) {
     console.error(error);
     return c.json({ error }, 500);
@@ -100,19 +108,31 @@ movies.openapi(updateMovie, async (c) => {
   await checkToken(payload, Role.ADMIN, token);
 
   const { id } = c.req.valid('param');
-  const { title, description, duration, status, category_id, author, release_date } = c.req.valid('json');
+  const { title, description, duration, status, categories, author, release_date } = c.req.valid('json');
   try {
-    if (category_id) {
-      const category = await prisma.categories.findUnique({ where: { id: category_id } });
-      if (!category) return c.json({ error: `Category with id ${category_id} not found` }, 404);
+    if (categories) {
+      for (const id of categories) {
+        const category = await prisma.categories.findUnique({ where: { id } });
+        if (!category) return c.json({ error: `Category with id ${id} not found` }, 404);
+      }
     }
 
     const movie = await prisma.movies.update({
       where: { id },
-      data: { title, description, duration, status, category_id, author, release_date },
-      include: { category: true, images: true },
+      data: { title, description, duration, status, author, release_date },
+      include: { images: true },
     });
-    return c.json(movie, 200);
+
+    if (categories) {
+      await prisma.categoriesMovies.deleteMany({ where: { movie_id: id } });
+      for (const id of categories) {
+        await prisma.categoriesMovies.create({ data: { movie_id: movie.id, category_id: id } });
+      }
+    }
+
+    const data = { ...movie, categories: categories };
+
+    return c.json(data, 200);
   } catch (error) {
     console.error(error);
     return c.json({ error }, 500);

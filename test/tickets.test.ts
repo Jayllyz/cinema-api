@@ -79,7 +79,7 @@ describe('Tickets', () => {
         description: 'A movie',
         duration: 120,
         status: 'available',
-        category_id: trackedCategory,
+        categories: [trackedCategory],
       }),
     });
     expect(res.status).toBe(201);

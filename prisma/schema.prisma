@@ -37,27 +37,38 @@ model Users {
 }
 
 model Categories {
-  id     Int      @id @default(autoincrement())
-  name   String   @unique
-  movies Movies[]
+  id               Int                @id @default(autoincrement())
+  name             String             @unique
+  movies           Movies[]
+  CategoriesMovies CategoriesMovies[]
 
   @@map(name: "CATEGORIES")
 }
 
 model Movies {
-  id           Int          @id @default(autoincrement())
-  title        String       @unique
-  author       String
-  release_date DateTime     @db.Date
-  description  String
-  status       String
-  duration     Int
-  category_id  Int
-  category     Categories   @relation(fields: [category_id], references: [id])
-  screenings   Screenings[]
-  images       Images[]
+  id               Int                @id @default(autoincrement())
+  title            String             @unique
+  author           String
+  release_date     DateTime           @db.Date
+  description      String
+  status           String
+  duration         Int
+  screenings       Screenings[]
+  images           Images[]
+  categories       Categories[]
+  CategoriesMovies CategoriesMovies[]
 
   @@map(name: "MOVIES")
+}
+
+model CategoriesMovies {
+  category_id Int
+  movie_id    Int
+  category    Categories @relation(fields: [category_id], references: [id])
+  movie       Movies     @relation(fields: [movie_id], references: [id], onDelete: Cascade)
+
+  @@id([category_id, movie_id])
+  @@map(name: "CATEGORIES_MOVIES")
 }
 
 model Screenings {

@@ -1,6 +1,7 @@
 import type { Categories, Movies } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import app from '../src/app.js';
+import { categories } from '../src/handlers/categories.js';
 import { prisma } from '../src/lib/database.js';
 import { Role } from '../src/lib/token.js';
 import { randomString } from './utils.js';
@@ -68,7 +69,7 @@ describe('Movies', () => {
         description: 'A movie',
         duration: 120,
         status: 'available',
-        category_id: createdCategoryId,
+        categories: [createdCategoryId],
       }),
     });
     expect(res.status).toBe(201);
