@@ -33,7 +33,6 @@ export const updateUserValidator = z.object({
   first_name: z.string().min(2).max(30).optional(),
   last_name: z.string().min(2).max(30).optional(),
   email: z.string().email().optional(),
-  money: z.number().min(0).optional(),
 });
 
 export const updateUserMoneyValidator = z.object({
