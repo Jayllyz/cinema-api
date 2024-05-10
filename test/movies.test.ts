@@ -38,7 +38,7 @@ describe('Movies', () => {
     adminToken = token.token;
   });
 
-  test('POST /categories', async () => {
+  test('Create a category', async () => {
     const res = await app.request(`${path}/categories`, {
       method: 'POST',
       headers: {
@@ -75,6 +75,23 @@ describe('Movies', () => {
     const movie = (await res.json()) as Movies;
     expect(movie).toMatchObject({ title: randomMovie });
     createdMovieId = movie.id;
+  });
+
+  test('Create an image', async () => {
+    const res = await app.request(`${path}/images`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({
+        alt: 'Movie cover',
+        url: 'https://example.com/cover.jpg',
+        movieId: createdMovieId,
+        roomId: null,
+      }),
+    });
+    expect(res.status).toBe(201);
   });
 
   test('GET /movies', async () => {

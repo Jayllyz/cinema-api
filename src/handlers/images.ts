@@ -42,7 +42,6 @@ img.openapi(getImage, async (c) => {
     if (!image) return c.json({ error: 'Image not found' }, 404);
     return c.json(image, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });

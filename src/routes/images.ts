@@ -9,6 +9,8 @@ export const listImages = createRoute({
   path: '/images',
   summary: 'List images',
   description: 'List images',
+  middleware: authMiddleware,
+  security: [{ Bearer: [] }],
   request: {
     query: queryAllSchema,
   },
@@ -32,6 +34,8 @@ export const getImage = createRoute({
   path: '/images/{id}',
   summary: 'Get an image',
   description: 'Get an image',
+  middleware: authMiddleware,
+  security: [{ Bearer: [] }],
   request: {
     params: idParamValidator,
   },
