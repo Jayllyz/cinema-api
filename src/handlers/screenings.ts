@@ -91,7 +91,7 @@ screenings.openapi(insertScreening, async (c) => {
     });
 
     if (!movie) {
-      return c.json({ error: `movie with id ${movie_id} not found or not available` }, 400);
+      return c.json({ error: `movie with id ${movie_id} not found or not available` }, 404);
     }
 
     const screening_duration_minutes = movie.duration + 30;
@@ -114,7 +114,7 @@ screenings.openapi(insertScreening, async (c) => {
     });
 
     if (!roomExist) {
-      return c.json({ error: `Room with id ${room_id} not found or is closed` }, 400);
+      return c.json({ error: `Room with id ${room_id} not found or is closed` }, 404);
     }
 
     const screeningAtSameTime = await getOverlapingScreenings(room_id, new Date(start_time), end_time);

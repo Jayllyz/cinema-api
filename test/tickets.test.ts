@@ -70,7 +70,7 @@ describe('Tickets', () => {
         release_date: '2021-01-01',
         description: 'A movie',
         duration: 120,
-        status: 'available',
+        status: 'projection',
         categories: [trackedCategory],
       }),
     });
