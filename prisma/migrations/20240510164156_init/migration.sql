@@ -261,4 +261,4 @@ INSERT INTO "CATEGORIES_MOVIES" ("category_id", "movie_id") VALUES (5, 10); -- A
 
 INSERT INTO "USERS" ("first_name", "last_name", "email", "password", "money", "role", "token") VALUES ('john', 'doe', 'john@email.com', '$2a$10$Gmr.sPnCt.XhoiDPC/guq.mjvc0uX5bhmG.PH/Gm8Nmk6WD9AKUKO', 0, 1, NULL);
 
-INSERT INTO "EMPLOYEES" ("first_name", "last_name", "email", "password", "phone_number", "token", "role") VALUES ('jane', 'doe', 'jane@email.com', '$2a$10$Gmr.sPnCt.XhoiDPC/guq.mjvc0uX5bhmG.PH/Gm8Nmk6WD9AKUKO', '123456789', NULL, 2);
+INSERT INTO "EMPLOYEES" ("first_name", "last_name", "email", "password", "phone_number", "token", "role") VALUES ('jane', 'doe', 'jane@email.com', '$2a$10$Gmr.sPnCt.XhoiDPC/guq.mjvc0uX5bhmG.PH/Gm8Nmk6WD9AKUKO', '123456789', NULL, 3);

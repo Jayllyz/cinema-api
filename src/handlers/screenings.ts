@@ -83,6 +83,7 @@ screenings.openapi(insertScreening, async (c) => {
     const movie = await prisma.movies.findUnique({
       where: {
         id: movie_id,
+        status: 'projection'
       },
       select: {
         duration: true,
@@ -90,7 +91,7 @@ screenings.openapi(insertScreening, async (c) => {
     });
 
     if (!movie) {
-      return c.json({ error: `movie with id ${movie_id} not found` }, 400);
+      return c.json({ error: `movie with id ${movie_id} not found or not available` }, 400);
     }
 
     const screening_duration_minutes = movie.duration + 30;
@@ -176,20 +177,22 @@ screenings.openapi(updateScreening, async (c) => {
     const movie = await prisma.movies.findUnique({
       where: {
         id: screening.movie_id,
+        status: 'projection'
       },
     });
 
-    if (!movie) return c.json({ error: `Movie with id ${movie_id} not found` }, 404);
+    if (!movie) return c.json({ error: `Movie with id ${movie_id} not found or not available` }, 404);
 
     if (room_id) screening.room_id = room_id;
 
     const room = await prisma.rooms.findUnique({
       where: {
         id: screening.room_id,
+        open: true,
       },
     });
 
-    if (!room) return c.json({ error: `Room with id ${room_id} not found` }, 404);
+    if (!room) return c.json({ error: `Room with id ${room_id} not found or is closed` }, 404);
 
     if (start_time) screening.start_time = new Date(start_time);
 
