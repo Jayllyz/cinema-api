@@ -83,7 +83,7 @@ screenings.openapi(insertScreening, async (c) => {
     const movie = await prisma.movies.findUnique({
       where: {
         id: movie_id,
-        status: 'projection'
+        status: 'projection',
       },
       select: {
         duration: true,
@@ -177,7 +177,7 @@ screenings.openapi(updateScreening, async (c) => {
     const movie = await prisma.movies.findUnique({
       where: {
         id: screening.movie_id,
-        status: 'projection'
+        status: 'projection',
       },
     });
 

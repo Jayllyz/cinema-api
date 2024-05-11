@@ -84,7 +84,7 @@ describe('Movies', () => {
     });
     const image = (await res.json()) as Images;
     expect(res.status).toBe(201);
-    createdImageId= image.id;
+    createdImageId = image.id;
   });
 
   test('GET /movies', async () => {
@@ -159,7 +159,7 @@ describe('Movies', () => {
     });
     expect(res.status).toBe(200);
   });
-  
+
   afterAll(async () => {
     await prisma.employees.deleteMany();
   });
