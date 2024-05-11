@@ -167,6 +167,9 @@ CREATE UNIQUE INDEX "TICKETS_screening_id_seat_key" ON "TICKETS"("screening_id",
 CREATE UNIQUE INDEX "_CategoriesToMovies_AB_unique" ON "_CategoriesToMovies"("A", "B");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "IMAGES_url_key" ON "IMAGES"("url");
+
+-- CreateIndex
 CREATE INDEX "_CategoriesToMovies_B_index" ON "_CategoriesToMovies"("B");
 
 -- AddForeignKey

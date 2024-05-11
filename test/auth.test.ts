@@ -5,6 +5,7 @@ import { prisma } from '../src/lib/database.js';
 import { Role } from '../src/lib/token.js';
 
 let trackedUser: number;
+let userToken: string;
 let adminToken: string;
 
 const port = Number(process.env.PORT || 3000);
@@ -65,6 +66,7 @@ describe('Auth tests', () => {
     expect(res.status).toBe(200);
     const token: { token: string } = (await res.json()) as { token: string };
     expect(token).toHaveProperty('token');
+    userToken = token.token;
   });
 
   test('POST /auth/login user with wrong password', async () => {
@@ -78,6 +80,17 @@ describe('Auth tests', () => {
     });
 
     expect(res.status).toBe(401);
+  });
+
+  test('Logout user', async () => {
+    const res = await app.request(`${path}/auth/logout`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    expect(res.status).toBe(200);
   });
 
   test('Clean up', async () => {
