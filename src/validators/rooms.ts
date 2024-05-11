@@ -10,8 +10,8 @@ export const insertRoomValidator = z.object({
 });
 
 export const updateRoomValidator = z.object({
-  name: z.string(),
-  description: z.string(),
+  name: z.string().optional(),
+  description: z.string().optional(),
   capacity: z.number().min(15).max(30).optional(),
   type: z.string().optional(),
   open: z.boolean().optional(),

@@ -1,8 +1,8 @@
 import type { Categories, Movies, Rooms, Screenings, Tickets, Users } from '@prisma/client';
-import bcrypt from 'bcryptjs';
 import app from '../src/app.js';
 import { prisma } from '../src/lib/database.js';
 import { Role } from '../src/lib/token.js';
+import { createStaff } from './utils.js';
 
 let adminToken: string;
 
@@ -26,25 +26,17 @@ const path = `http://localhost:${port}`;
 
 describe('Tickets', () => {
   beforeAll(async () => {
-    await prisma.employees.create({
-      data: {
-        first_name: 'Admin',
-        last_name: 'Admin',
-        email: 'adminstaff@email.com',
-        password: await bcrypt.hash('password', 10),
-        role: Role.ADMIN,
-        phone_number: '1234567890',
-      },
-    });
+    await createStaff('tickets', 'tickets@email.com', 'password', Role.ADMIN);
 
     const res = await app.request(`${path}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: 'adminstaff@email.com',
+        email: 'tickets@email.com',
         password: 'password',
       }),
     });
+    expect(res.status).toBe(200);
     const token = (await res.json()) as { token: string };
     adminToken = token.token;
   });

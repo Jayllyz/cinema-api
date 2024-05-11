@@ -1,12 +1,10 @@
 import type { Categories } from '@prisma/client';
-import bcrypt from 'bcryptjs';
 import app from '../src/app.js';
 import { prisma } from '../src/lib/database.js';
 import { Role } from '../src/lib/token.js';
-import { randomString } from './utils.js';
+import { createStaff } from './utils.js';
 
-let createdCategoryId = 1;
-const randomCategory = randomString(5);
+let createdCategoryId: number;
 let adminToken: string;
 
 const port = Number(process.env.PORT || 3000);
@@ -14,16 +12,7 @@ const path = `http://localhost:${port}`;
 
 describe('Categories', () => {
   beforeAll(async () => {
-    await prisma.employees.create({
-      data: {
-        first_name: 'Admin',
-        last_name: 'Admin',
-        email: 'admin@email.com',
-        password: await bcrypt.hash('password', 10),
-        role: Role.ADMIN,
-        phone_number: '1234567890',
-      },
-    });
+    await createStaff('Admin', 'admin@email.com', 'password', Role.ADMIN);
 
     const res = await app.request(`${path}/auth/login`, {
       method: 'POST',
@@ -33,6 +22,7 @@ describe('Categories', () => {
         password: 'password',
       }),
     });
+    expect(res.status).toBe(200);
     const token = (await res.json()) as { token: string };
     adminToken = token.token;
   });
@@ -45,12 +35,38 @@ describe('Categories', () => {
         Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
-        name: randomCategory,
+        name: 'Random Category Name',
       }),
     });
     expect(res.status).toBe(201);
     const category: Categories = (await res.json()) as Categories;
     createdCategoryId = category.id;
+  });
+
+  test('Should not create a category with an empty name', async () => {
+    const res = await app.request(`${path}/categories`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({}),
+    });
+    expect(res.status).toBe(400);
+  });
+
+  test('Should not create the same category twice', async () => {
+    const res = await app.request(`${path}/categories`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({
+        name: 'Random Category Name',
+      }),
+    });
+    expect(res.status).toBe(400);
   });
 
   test('GET /categories', async () => {
@@ -72,7 +88,7 @@ describe('Categories', () => {
     });
     expect(res.status).toBe(200);
     const category: Categories = (await res.json()) as Categories;
-    expect(category).toMatchObject({ name: randomCategory });
+    expect(category).toMatchObject({ name: 'Random Category Name' });
   });
 
   test('DELETE /categories/{id}', async () => {

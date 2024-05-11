@@ -64,7 +64,7 @@ model Movies {
 model CategoriesMovies {
   category_id Int
   movie_id    Int
-  category    Categories @relation(fields: [category_id], references: [id])
+  category    Categories @relation(fields: [category_id], references: [id], onDelete: Cascade)
   movie       Movies     @relation(fields: [movie_id], references: [id], onDelete: Cascade)
 
   @@id([category_id, movie_id])
@@ -154,7 +154,7 @@ model SuperTicketsSessions {
 model Images {
   id      Int     @id @default(autoincrement())
   alt     String
-  url     String
+  url     String  @unique
   movieId Int?
   roomId  Int?
   movie   Movies? @relation(fields: [movieId], references: [id])
