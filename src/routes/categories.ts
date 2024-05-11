@@ -1,8 +1,13 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
 import { categoryValidator, listCategoriesValidator } from '../validators/categories.js';
-import { badRequestSchema, notFoundSchema, queryAllSchema, serverErrorSchema } from '../validators/general.js';
-import { idParamValidator } from '../validators/general.js';
+import {
+  badRequestSchema,
+  idParamValidator,
+  notFoundSchema,
+  queryAllSchema,
+  serverErrorSchema,
+} from '../validators/general.js';
 
 export const getCategories = createRoute({
   method: 'get',

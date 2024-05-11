@@ -7,9 +7,9 @@ export async function createStaff(name: string, email: string, password: string,
     data: {
       first_name: name,
       last_name: name,
-      email: email,
+      email,
       password: await bcrypt.hash('password', 10),
-      role: role,
+      role,
       phone_number: '1234567890',
     },
   });

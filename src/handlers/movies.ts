@@ -30,7 +30,7 @@ movies.openapi(getMovies, async (c) => {
 
     const data = movies.map(({ CategoriesMovies, ...movie }) => {
       const categories = CategoriesMovies.map((category) => category.category);
-      return { ...movie, categories: categories };
+      return { ...movie, categories };
     });
 
     return c.json(data, 200);
@@ -130,7 +130,7 @@ movies.openapi(updateMovie, async (c) => {
       }
     }
 
-    const data = { ...movie, categories: categories };
+    const data = { ...movie, categories };
 
     return c.json(data, 200);
   } catch (error) {

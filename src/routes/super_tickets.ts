@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
-import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
+import { badRequestSchema, idParamValidator, notFoundSchema, serverErrorSchema } from '../validators/general.js';
 import {
   insertSuperTicketValidator,
   listSuperTicketValidator,
@@ -37,7 +37,7 @@ export const getSuperTicketById = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
   },
   responses: {
     200: {
@@ -93,7 +93,7 @@ export const buySuperTicket = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
   },
   responses: {
     200: {
@@ -119,7 +119,7 @@ export const bookSeatSuperTicket = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
     body: {
       content: {
         'application/json': {
@@ -157,7 +157,7 @@ export const updateSuperTicket = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
     body: {
       content: {
         'application/json': {
@@ -190,7 +190,7 @@ export const useSuperTicket = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
     body: {
       content: {
         'application/json': {
@@ -221,7 +221,7 @@ export const deleteSuperTicket = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
   },
   responses: {
     200: {
@@ -241,7 +241,7 @@ export const cancelBookingSuperTicket = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
     body: {
       content: {
         'application/json': {

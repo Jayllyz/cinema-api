@@ -1,7 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
-import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
-import { idParamValidator } from '../validators/general.js';
+import { badRequestSchema, idParamValidator, notFoundSchema, serverErrorSchema } from '../validators/general.js';
 import {
   MovieValidator,
   insertMovieValidator,
