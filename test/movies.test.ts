@@ -1,10 +1,11 @@
-import type { Categories, Movies } from '@prisma/client';
+import type { Categories, Images, Movies } from '@prisma/client';
 import app from '../src/app.js';
 import { prisma } from '../src/lib/database.js';
 import { Role } from '../src/lib/token.js';
 import { createStaff } from './utils.js';
 
 let createdMovieId = 1;
+let createdImageId = 1;
 let createdCategoryId = 1;
 let adminToken: string;
 
@@ -57,7 +58,7 @@ describe('Movies', () => {
         release_date: '2021-01-01',
         description: 'A movie',
         duration: 120,
-        status: 'available',
+        status: 'projection',
         categories: [createdCategoryId],
       }),
     });
@@ -81,7 +82,9 @@ describe('Movies', () => {
         roomId: null,
       }),
     });
+    const image = (await res.json()) as Images;
     expect(res.status).toBe(201);
+    createdImageId = image.id;
   });
 
   test('GET /movies', async () => {
@@ -118,13 +121,23 @@ describe('Movies', () => {
       body: JSON.stringify({
         title: updatedMovie,
         duration: 130,
-        status: 'unavailable',
+        status: 'closed',
         category_id: createdCategoryId,
       }),
     });
     expect(res.status).toBe(200);
     const movie = (await res.json()) as Movies;
-    expect(movie).toMatchObject({ title: updatedMovie, status: 'unavailable' });
+    expect(movie).toMatchObject({ title: updatedMovie, status: 'closed' });
+  });
+
+  test('DELETE /images/{id}', async () => {
+    const res = await app.request(`${path}/images/${createdImageId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+    });
+    expect(res.status).toBe(200);
   });
 
   test('DELETE /movies/{id}', async () => {

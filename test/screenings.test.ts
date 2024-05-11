@@ -67,7 +67,7 @@ describe('Screenings', () => {
         release_date: '2021-01-01',
         description: 'A movie',
         duration: 120,
-        status: 'available',
+        status: 'projection',
         category_id: createdCategoryId,
       }),
     });
@@ -167,7 +167,7 @@ describe('Screenings', () => {
         ticket_price: 10,
       }),
     });
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(404);
   });
 
   test('Cannot create a screening with a non-existing room_id', async () => {
@@ -184,10 +184,10 @@ describe('Screenings', () => {
         ticket_price: 10,
       }),
     });
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(404);
   });
 
-  test('Cannot create a screeming if the room is not open', async () => {
+  test('Cannot create a screening if the room is not open', async () => {
     const res = await app.request(`${path}/rooms/${createdRoomId}`, {
       method: 'PATCH',
       headers: {
@@ -213,7 +213,20 @@ describe('Screenings', () => {
         ticket_price: 10,
       }),
     });
-    expect(res2.status).toBe(400);
+
+    expect(res2.status).toBe(404);
+
+    const res3 = await app.request(`${path}/rooms/${createdRoomId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({
+        open: true,
+      }),
+    });
+    expect(res3.status).toBe(200);
   });
 
   test('GET /screenings', async () => {
