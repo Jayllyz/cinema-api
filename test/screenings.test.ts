@@ -199,7 +199,7 @@ describe('Screenings', () => {
       }),
     });
     expect(res.status).toBe(200);
-    
+
     const res2 = await app.request(`${path}/screenings`, {
       method: 'POST',
       headers: {

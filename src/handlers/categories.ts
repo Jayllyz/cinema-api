@@ -58,7 +58,7 @@ categories.openapi(insertCategory, async (c) => {
     if (exist) return c.json({ error: 'Category name already exists' }, 400);
 
     const category = await prisma.categories.create({ data: { name } });
- 
+
     return c.json(category, 201);
   } catch (error) {
     console.error(error);

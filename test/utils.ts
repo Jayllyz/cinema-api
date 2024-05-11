@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
-import { prisma } from "../src/lib/database.js";
-import { Role } from "../src/lib/token.js";
+import { prisma } from '../src/lib/database.js';
+import { Role } from '../src/lib/token.js';
 
 export async function createStaff(name: string, email: string, password: string, role: Role = Role.ADMIN) {
   return await prisma.employees.create({
