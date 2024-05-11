@@ -7,7 +7,7 @@ export const MovieValidator = z.object({
   author: z.string(),
   release_date: z.string().date(),
   duration: z.number().positive(),
-  status: z.string(),
+  status: z.string().toLowerCase(),
   images: z
     .array(
       z.object({
@@ -25,7 +25,7 @@ export const insertMovieValidator = z.object({
   author: z.string(),
   release_date: z.coerce.date(),
   duration: z.number().positive(),
-  status: z.string(),
+  status: z.enum(['projection', 'closed']),
   categories: z.array(z.number().min(1)).optional(),
 });
 
@@ -35,7 +35,7 @@ export const updateMovieValidator = z.object({
   release_date: z.coerce.date().optional(),
   description: z.string().optional(),
   duration: z.number().positive().optional(),
-  status: z.string().optional(),
+  status: z.enum(['projection', 'closed']).optional(),
   categories: z.array(z.number().min(1)).optional(),
 });
 

@@ -22,7 +22,7 @@ export const getMovies = createRoute({
       author: z.string().optional(),
       lt: z.date().optional(),
       gt: z.date().optional(),
-      status: z.string().optional(),
+      status: z.enum(['projection', 'closed']).optional(),
       category: z.coerce.number().positive().optional(),
     }),
   },
