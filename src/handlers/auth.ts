@@ -2,8 +2,9 @@ import { OpenAPIHono } from '@hono/zod-openapi';
 import bcrypt from 'bcryptjs';
 import { sign } from 'hono/jwt';
 import { prisma } from '../lib/database.js';
+import { type PayloadValidator, Role, checkToken } from '../lib/token.js';
 import { zodErrorHook } from '../lib/zodError.js';
-import { loginUser, signupUser } from '../routes/auth.js';
+import { loginUser, logout, signupUser } from '../routes/auth.js';
 
 export const auth = new OpenAPIHono({
   defaultHook: zodErrorHook,
@@ -75,6 +76,31 @@ auth.openapi(signupUser, async (c) => {
     });
 
     return c.json(user, 201);
+  } catch (error) {
+    console.error(error);
+    return c.json({ error }, 500);
+  }
+});
+
+auth.openapi(logout, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.USER, token);
+
+  try {
+    if (payload.role === Role.USER) {
+      await prisma.users.update({
+        where: { id: payload.id },
+        data: { token: null },
+      });
+    } else {
+      await prisma.employees.update({
+        where: { id: payload.id },
+        data: { token: null },
+      });
+    }
+
+    return c.json({ message: 'logout successfully' }, 200);
   } catch (error) {
     console.error(error);
     return c.json({ error }, 500);

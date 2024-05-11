@@ -1,7 +1,12 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
-import { badRequestSchema, notFoundSchema, queryAllSchema, serverErrorSchema } from '../validators/general.js';
-import { idParamValidator } from '../validators/general.js';
+import {
+  badRequestSchema,
+  idParamValidator,
+  notFoundSchema,
+  queryAllSchema,
+  serverErrorSchema,
+} from '../validators/general.js';
 import { RoomValidator, insertRoomValidator, listRoomsValidator, updateRoomValidator } from '../validators/rooms.js';
 
 export const getRooms = createRoute({

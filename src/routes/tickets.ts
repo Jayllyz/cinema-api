@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
-import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
+import { badRequestSchema, idParamValidator, notFoundSchema, serverErrorSchema } from '../validators/general.js';
 import {
   insertTicketValidator,
   listTicketValidator,
@@ -49,7 +49,7 @@ export const getTicketById = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
   },
   responses: {
     200: {
@@ -112,7 +112,7 @@ export const buyTicket = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
   },
   responses: {
     201: {
@@ -138,7 +138,7 @@ export const refundTicket = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
   },
   responses: {
     200: {
@@ -159,7 +159,7 @@ export const updateTicket = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
     body: {
       content: {
         'application/json': {
@@ -192,7 +192,7 @@ export const useTicket = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
   },
   responses: {
     200: {
@@ -218,7 +218,7 @@ export const deleteTicket = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
   },
   responses: {
     204: {

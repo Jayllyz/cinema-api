@@ -77,7 +77,7 @@ export const getEmployeeById = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
   },
   responses: {
     200: {
@@ -102,7 +102,7 @@ export const deleteEmployee = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
   },
   responses: {
     200: {
@@ -127,7 +127,7 @@ export const updateEmployee = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: z.object({ id: z.coerce.number().min(1) }),
+    params: idParamValidator,
     body: {
       content: {
         'application/json': {
