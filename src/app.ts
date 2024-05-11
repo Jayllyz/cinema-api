@@ -113,7 +113,7 @@ app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
 
 app.get('/ui', swaggerUI({ url: '/doc' }));
 
-console.log(`Server is running on port ${port}`);
+console.log(`Server is running on port ${port}, see /doc for the documentation`);
 
 serve({
   fetch: app.fetch,

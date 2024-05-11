@@ -23,6 +23,9 @@ This project implements all the necessary endpoints for a cinema, including:
 
 ## Development setup 💻
 
+> [!NOTE]
+> Requirements: Docker, pnpm (v9.1.0)
+
 ```sh
 git clone https://github.com/Jayllyz/cinema-api.git
 
@@ -31,7 +34,11 @@ cd cinema-api
 cp .env.example .env
 
 docker compose up
+
+pnpm prisma:init
 ```
+
+You can access the Swagger documentation at `/doc` and the Swagger UI at `/ui`.
 
 ## License 📄
 
