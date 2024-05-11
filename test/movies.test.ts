@@ -1,13 +1,11 @@
 import type { Categories, Movies } from '@prisma/client';
-import bcrypt from 'bcryptjs';
 import app from '../src/app.js';
 import { prisma } from '../src/lib/database.js';
 import { Role } from '../src/lib/token.js';
-import { randomString } from './utils.js';
+import { createStaff } from './utils.js';
 
 let createdMovieId = 1;
 let createdCategoryId = 1;
-const randomMovie = randomString(5);
 let adminToken: string;
 
 const port = Number(process.env.PORT || 3000);
@@ -15,25 +13,17 @@ const path = `http://localhost:${port}`;
 
 describe('Movies', () => {
   beforeAll(async () => {
-    await prisma.employees.create({
-      data: {
-        first_name: 'Admin',
-        last_name: 'Admin',
-        email: 'admin@email.com',
-        password: await bcrypt.hash('password', 10),
-        role: Role.ADMIN,
-        phone_number: '1234567890',
-      },
-    });
+    await createStaff('movies', 'movies@email.com', 'password', Role.ADMIN);
 
     const res = await app.request(`${path}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: 'admin@email.com',
+        email: 'movies@email.com',
         password: 'password',
       }),
     });
+    expect(res.status).toBe(200);
     const token = (await res.json()) as { token: string };
     adminToken = token.token;
   });
@@ -62,7 +52,7 @@ describe('Movies', () => {
         Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
-        title: randomMovie,
+        title: 'Random Movie Name',
         author: 'John Doe',
         release_date: '2021-01-01',
         description: 'A movie',
@@ -73,7 +63,7 @@ describe('Movies', () => {
     });
     expect(res.status).toBe(201);
     const movie = (await res.json()) as Movies;
-    expect(movie).toMatchObject({ title: randomMovie });
+    expect(movie).toMatchObject({ title: 'Random Movie Name' });
     createdMovieId = movie.id;
   });
 
@@ -114,11 +104,11 @@ describe('Movies', () => {
     });
     expect(res.status).toBe(200);
     const movie = (await res.json()) as Movies;
-    expect(movie).toMatchObject({ title: randomMovie });
+    expect(movie).toMatchObject({ title: 'Random Movie Name' });
   });
 
   test('PATCH /movies/{id}', async () => {
-    const updatedMovie = randomString(5);
+    const updatedMovie = 'Updated Movie Name';
     const res = await app.request(`${path}/movies/${createdMovieId}`, {
       method: 'PATCH',
       headers: {

@@ -10,7 +10,7 @@ let adminToken: string;
 const port = Number(process.env.PORT || 3000);
 const path = `http://localhost:${port}`;
 
-describe('Auth', async () => {
+describe('Auth tests', () => {
   beforeAll(async () => {
     await prisma.employees.create({
       data: {
@@ -31,6 +31,7 @@ describe('Auth', async () => {
         password: 'password',
       }),
     });
+    expect(res.status).toBe(200);
     const token = (await res.json()) as { token: string };
     adminToken = token.token;
   });

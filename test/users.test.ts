@@ -3,9 +3,7 @@ import bcrypt from 'bcryptjs';
 import app from '../src/app.js';
 import { prisma } from '../src/lib/database.js';
 import { Role } from '../src/lib/token.js';
-import { randomString } from './utils.js';
 
-const randomUser = randomString(10);
 let adminToken: string;
 let userToken: string;
 
@@ -48,8 +46,8 @@ describe('Users', () => {
         Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
-        first_name: randomUser,
-        last_name: randomUser,
+        first_name: 'user test',
+        last_name: 'user test',
         email: 'random@gmail.com',
         password: 'password',
       }),
@@ -57,7 +55,7 @@ describe('Users', () => {
     expect(res.status).toBe(201);
     const user = (await res.json()) as Users;
     toDelete = user.id;
-    expect(user).toMatchObject({ first_name: randomUser });
+    expect(user).toMatchObject({ first_name: 'user test' });
   });
 
   test('GET /users', async () => {

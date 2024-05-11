@@ -63,6 +63,9 @@ img.openapi(createImage, async (c) => {
       if (!room) return c.json({ error: 'Room not found' }, 404);
     }
 
+    const exists = await prisma.images.findFirst({ where: { url } });
+    if (exists) return c.json({ error: 'Image already exists' }, 400);
+
     const image = await prisma.images.create({
       data: { alt, url, movieId: movieId ? movieId : null, roomId: roomId ? roomId : null },
     });

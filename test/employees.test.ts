@@ -1,8 +1,8 @@
 import type { Employees, Working_shifts } from '@prisma/client';
-import bcrypt from 'bcryptjs';
 import app from '../src/app.js';
 import { prisma } from '../src/lib/database.js';
 import { Role } from '../src/lib/token.js';
+import { createStaff } from './utils.js';
 
 let createdEmployeeId: number;
 let createdWorkingShiftId: number;
@@ -22,16 +22,7 @@ if (tomorrow.getDay() === 0 || tomorrow.getDay() === 6) {
 
 describe('Employees', () => {
   beforeAll(async () => {
-    await prisma.employees.create({
-      data: {
-        first_name: 'Admin',
-        last_name: 'Admin',
-        email: 'adminstaff@email.com',
-        password: await bcrypt.hash('password', 10),
-        role: Role.ADMIN,
-        phone_number: '1234567890',
-      },
-    });
+    await createStaff('Admin', 'adminstaff@email.com', 'password', Role.ADMIN);
 
     const res = await app.request(`${path}/auth/login`, {
       method: 'POST',
@@ -41,6 +32,7 @@ describe('Employees', () => {
         password: 'password',
       }),
     });
+    expect(res.status).toBe(200);
     const token = (await res.json()) as { token: string };
     adminToken = token.token;
   });

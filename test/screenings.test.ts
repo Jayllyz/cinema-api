@@ -1,15 +1,13 @@
 import type { Categories, Movies, Rooms, Screenings } from '@prisma/client';
-import bcrypt from 'bcryptjs';
 import app from '../src/app.js';
 import { prisma } from '../src/lib/database.js';
 import { Role } from '../src/lib/token.js';
-import { randomString } from './utils.js';
+import { createStaff } from './utils.js';
 
 let createScreeningId = 1;
 let createdRoomId = 1;
 let createdMovieId = 1;
 let createdCategoryId = 1;
-const randomMovie = randomString(5);
 let adminToken: string;
 
 const port = Number(process.env.PORT || 3000);
@@ -25,25 +23,17 @@ if (tomorrow.getDay() === 0 || tomorrow.getDay() === 6) {
 
 describe('Screenings', () => {
   beforeAll(async () => {
-    await prisma.employees.create({
-      data: {
-        first_name: 'Admin',
-        last_name: 'Admin',
-        email: 'admin@email.com',
-        password: await bcrypt.hash('password', 10),
-        role: Role.ADMIN,
-        phone_number: '1234567890',
-      },
-    });
+    await createStaff('Screenings', 'screenings@email.com', 'password', Role.ADMIN);
 
     const res = await app.request(`${path}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: 'admin@email.com',
+        email: 'screenings@email.com',
         password: 'password',
       }),
     });
+    expect(res.status).toBe(200);
     const token = (await res.json()) as { token: string };
     adminToken = token.token;
   });
@@ -56,7 +46,7 @@ describe('Screenings', () => {
         Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
-        name: randomString(5),
+        name: 'Screenings Category',
       }),
     });
     expect(res.status).toBe(201);
@@ -72,7 +62,7 @@ describe('Screenings', () => {
         Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
-        title: randomMovie,
+        title: 'Screenings Movie',
         author: 'John Doe',
         release_date: '2021-01-01',
         description: 'A movie',
@@ -83,7 +73,7 @@ describe('Screenings', () => {
     });
     expect(res.status).toBe(201);
     const movie = (await res.json()) as Movies;
-    expect(movie).toMatchObject({ title: randomMovie });
+    expect(movie).toMatchObject({ title: 'Screenings Movie' });
     createdMovieId = movie.id;
   });
 
@@ -197,6 +187,35 @@ describe('Screenings', () => {
     expect(res.status).toBe(400);
   });
 
+  test('Cannot create a screeming if the room is not open', async () => {
+    const res = await app.request(`${path}/rooms/${createdRoomId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({
+        open: false,
+      }),
+    });
+    expect(res.status).toBe(200);
+    
+    const res2 = await app.request(`${path}/screenings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${adminToken}`,
+      },
+      body: JSON.stringify({
+        start_time: tomorrow.toISOString(),
+        movie_id: createdMovieId,
+        room_id: createdRoomId,
+        ticket_price: 10,
+      }),
+    });
+    expect(res2.status).toBe(400);
+  });
+
   test('GET /screenings', async () => {
     const res = await app.request(`${path}/rooms`, {
       headers: {
@@ -267,5 +286,9 @@ describe('Screenings', () => {
       },
     });
     expect(res.status).toBe(200);
+  });
+
+  afterAll(async () => {
+    await prisma.employees.deleteMany();
   });
 });
