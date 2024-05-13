@@ -169,7 +169,6 @@ describe('Rooms tests', () => {
   });
 
   afterAll(async () => {
-    await prisma.rooms.deleteMany();
     await prisma.employees.deleteMany();
   });
 });

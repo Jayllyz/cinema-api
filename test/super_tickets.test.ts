@@ -15,7 +15,15 @@ let trackedUser: number;
 let userToken: string;
 
 const mondayOfNextWeek = new Date();
-mondayOfNextWeek.setDate(mondayOfNextWeek.getDate() + ((1 + 7 - mondayOfNextWeek.getDay()) % 7));
+let daysToAdd = 1;
+
+if (mondayOfNextWeek.getDay() === 1) {
+  daysToAdd = 7;
+} else {
+  daysToAdd = (1 + 7 - mondayOfNextWeek.getDay()) % 7;
+}
+
+mondayOfNextWeek.setDate(mondayOfNextWeek.getDate() + daysToAdd);
 mondayOfNextWeek.setHours(12, 0, 0, 0);
 
 const port = Number(process.env.PORT || 3000);
