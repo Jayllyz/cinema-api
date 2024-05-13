@@ -66,6 +66,28 @@ export const getUserById = createRoute({
   tags: ['users'],
 });
 
+export const getMe = createRoute({
+  method: 'get',
+  path: '/users/me',
+  summary: 'Get my info',
+  description: 'Get my informations',
+  middleware: authMiddleware,
+  security: [{ Bearer: [] }],
+  responses: {
+    200: {
+      description: 'Successful response',
+      content: {
+        'application/json': {
+          schema: userValidator,
+        },
+      },
+    },
+    404: notFoundSchema,
+    500: serverErrorSchema,
+  },
+  tags: ['users'],
+});
+
 // POST ROUTES
 export const insertUser = createRoute({
   method: 'post',

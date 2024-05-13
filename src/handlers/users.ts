@@ -6,11 +6,12 @@ import { zodErrorHook } from '../lib/zodError.js';
 import {
   changeUserPassword,
   deleteUser,
+  getMe,
   getUserById,
   getUsers,
   insertUser,
   updateUser,
-  updateUserMoney,
+  updateUserMoney
 } from '../routes/users.js';
 
 export const users = new OpenAPIHono({
@@ -64,6 +65,33 @@ users.openapi(getUserById, async (c) => {
     });
 
     if (!user) return c.json({ error: `User with id ${id} not found` }, 404);
+
+    return c.json(user, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({ error }, 500);
+  }
+});
+
+users.openapi(getMe, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.USER, token);
+
+  try {
+    const user = await prisma.users.findUnique({
+      where: { id: payload.id },
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+        money: true,
+        role: true,
+      },
+    });
+
+    if (!user) return c.json({ error: `User with id ${payload.id} not found` }, 404);
 
     return c.json(user, 200);
   } catch (error) {
