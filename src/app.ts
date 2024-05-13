@@ -47,6 +47,7 @@ app.use(async (c, next) => {
       !baseUrl.startsWith('/tickets/use/') &&
       !baseUrl.startsWith('/tickets/refund') &&
       !baseUrl.startsWith('/super_tickets/buy/') &&
+      !baseUrl.startsWith('/users/money') &&
       (!contentType || !contentType.includes('application/json'))
     ) {
       return c.json({ error: 'A json body is required' }, 400);
