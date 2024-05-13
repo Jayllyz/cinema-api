@@ -24,7 +24,7 @@ This project implements all the necessary endpoints for a cinema, including:
 ## Development setup 💻
 
 > [!NOTE]
-> Requirements: Docker, pnpm (v9.1.0)
+> Requirements: Docker, pnpm (v9.1.1)
 
 ```sh
 git clone https://github.com/Jayllyz/cinema-api.git

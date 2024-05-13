@@ -37,24 +37,6 @@ app.onError((err, c) => {
   return c.json({ error: 'Internal server error' }, 500);
 });
 
-app.use(async (c, next) => {
-  if (c.req.method === 'POST' || c.req.method === 'PUT' || c.req.method === 'PATCH') {
-    const contentType = c.req.header('content-type');
-    const baseUrl = c.req.url.split(`http://localhost:${port}`)[1] || '';
-
-    if (
-      !baseUrl.startsWith('/tickets/buy/') &&
-      !baseUrl.startsWith('/tickets/use/') &&
-      !baseUrl.startsWith('/tickets/refund') &&
-      !baseUrl.startsWith('/super_tickets/buy/') &&
-      (!contentType || !contentType.includes('application/json'))
-    ) {
-      return c.json({ error: 'A json body is required' }, 400);
-    }
-  }
-  return next();
-});
-
 const healthCheck = createRoute({
   method: 'get',
   path: '/health',
