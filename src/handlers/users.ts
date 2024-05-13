@@ -11,7 +11,7 @@ import {
   getUsers,
   insertUser,
   updateUser,
-  updateUserMoney
+  updateUserMoney,
 } from '../routes/users.js';
 
 export const users = new OpenAPIHono({
