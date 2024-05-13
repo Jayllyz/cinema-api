@@ -82,6 +82,19 @@ describe('Auth tests', () => {
     expect(res.status).toBe(401);
   });
 
+  test('GET /users/me', async () => {
+    const res = await app.request(`${path}/users/me`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    expect(res.status).toBe(200);
+    const user: Users = (await res.json()) as Users;
+    expect(user).toMatchObject({ first_name: 'John' });
+  });
+
   test('Logout user', async () => {
     const res = await app.request(`${path}/auth/logout`, {
       method: 'POST',
