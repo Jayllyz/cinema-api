@@ -1,6 +1,12 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
-import { badRequestSchema, idParamValidator, notFoundSchema, serverErrorSchema } from '../validators/general.js';
+import {
+  badRequestSchema,
+  idParamValidator,
+  notFoundSchema,
+  queryAllSchema,
+  serverErrorSchema,
+} from '../validators/general.js';
 import {
   insertScreeningValidator,
   listScreeningValidator,
@@ -13,8 +19,12 @@ export const getScreenings = createRoute({
   method: 'get',
   path: '/screenings',
   summary: 'Get all screenings',
-  description: 'Get all screenings',
+  description: 'Get all screenings, optionally filtered by movie id',
+  middleware: authMiddleware,
   security: [{ Bearer: [] }],
+  request: {
+    query: queryAllSchema,
+  },
   responses: {
     200: {
       description: 'Successful response',

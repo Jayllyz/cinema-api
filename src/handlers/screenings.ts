@@ -20,8 +20,27 @@ screenings.openapi(getScreenings, async (c) => {
   const payload: PayloadValidator = c.get('jwtPayload');
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.USER, token);
+  const { skip, take, search, all } = c.req.valid('query');
 
+  const where = search ? { movie: { id: { equals: Number(search) } } } : {};
   try {
+    if (all) {
+      const screenings = await prisma.screenings.findMany({
+        select: {
+          id: true,
+          start_time: true,
+          end_time: true,
+          screening_duration_minutes: true,
+          movie: { include: { CategoriesMovies: { include: { category: true } }, images: true } },
+          room: { include: { images: true } },
+        },
+        where,
+        orderBy: { start_time: 'asc' },
+      });
+
+      return c.json(screenings, 200);
+    }
+
     const screenings = await prisma.screenings.findMany({
       select: {
         id: true,
@@ -31,8 +50,12 @@ screenings.openapi(getScreenings, async (c) => {
         movie: { include: { CategoriesMovies: { include: { category: true } }, images: true } },
         room: { include: { images: true } },
       },
+      skip,
+      take,
+      where,
       orderBy: { start_time: 'asc' },
     });
+    console.log(screenings);
 
     return c.json(screenings, 200);
   } catch (error) {
