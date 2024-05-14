@@ -40,7 +40,6 @@ users.openapi(getUsers, async (c) => {
     const users = await prisma.users.findMany({ where, skip, take, orderBy: { id: 'asc' } });
     return c.json(users, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -67,7 +66,6 @@ users.openapi(getMe, async (c) => {
 
     return c.json(user, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -90,7 +88,6 @@ users.openapi(changeUserPassword, async (c) => {
 
     return c.json({ message: 'Password updated' }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -118,7 +115,6 @@ users.openapi(getUserById, async (c) => {
 
     return c.json(user, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -144,7 +140,6 @@ users.openapi(insertUser, async (c) => {
     });
     return c.json(user, 201);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -216,7 +211,6 @@ users.openapi(updateUserMoney, async (c) => {
 
     return c.json(user, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error: 'An error occurred while updating the user money value' }, 500);
   }
 });
@@ -238,7 +232,6 @@ users.openapi(updateUser, async (c) => {
     });
     return c.json(user, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -258,7 +251,6 @@ users.openapi(deleteUser, async (c) => {
 
     return c.json({ message: `User with id ${id} deleted` }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });

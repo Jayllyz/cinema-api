@@ -34,7 +34,6 @@ rooms.openapi(getRooms, async (c) => {
     });
     return c.json(rooms, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -51,7 +50,6 @@ rooms.openapi(getRoomById, async (c) => {
 
     return c.json(room, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -72,7 +70,6 @@ rooms.openapi(insertRoom, async (c) => {
     });
     return c.json(room, 201);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -96,7 +93,6 @@ rooms.openapi(updateRoom, async (c) => {
 
     return c.json(res, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -115,7 +111,6 @@ rooms.openapi(deleteRoom, async (c) => {
 
     return c.json({ message: `Room with id ${id} deleted` }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });

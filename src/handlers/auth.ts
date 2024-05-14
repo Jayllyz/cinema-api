@@ -52,7 +52,6 @@ auth.openapi(loginUser, async (c) => {
 
     return c.json({ token }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -77,7 +76,6 @@ auth.openapi(signupUser, async (c) => {
 
     return c.json(user, 201);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -102,7 +100,6 @@ auth.openapi(logout, async (c) => {
 
     return c.json({ message: 'logout successfully' }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });

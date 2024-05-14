@@ -55,11 +55,9 @@ screenings.openapi(getScreenings, async (c) => {
       where,
       orderBy: { start_time: 'asc' },
     });
-    console.log(screenings);
 
     return c.json(screenings, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -86,7 +84,6 @@ screenings.openapi(getScreeningById, async (c) => {
 
     return c.json(screening, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -174,7 +171,6 @@ screenings.openapi(insertScreening, async (c) => {
 
     return c.json(screening, 201);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -268,7 +264,6 @@ screenings.openapi(updateScreening, async (c) => {
 
     return c.json(res, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -289,7 +284,6 @@ screenings.openapi(deleteScreening, async (c) => {
 
     return c.json({ message: `screening with id ${id} deleted` }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });

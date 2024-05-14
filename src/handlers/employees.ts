@@ -43,7 +43,6 @@ employees.openapi(getEmployees, async (c) => {
     });
     return c.json(employees, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -90,7 +89,6 @@ employees.openapi(insertEmployee, async (c) => {
     });
     return c.json(employee, 201);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -110,7 +108,6 @@ employees.openapi(getEmployeeById, async (c) => {
 
     return c.json(employee, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -139,7 +136,6 @@ employees.openapi(updateEmployee, async (c) => {
 
     return c.json(res, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -158,7 +154,6 @@ employees.openapi(deleteEmployee, async (c) => {
 
     return c.json({ message: `Employee with id ${id} deleted` }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
