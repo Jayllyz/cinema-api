@@ -86,7 +86,7 @@ describe('Auth tests', () => {
     const res = await app.request(`${path}/users/me`, {
       method: 'post',
       headers: {
-        Authorization: `Bearer ${userToken}`
+        Authorization: `Bearer ${userToken}`,
       },
     });
     expect(res.status).toBe(200);
