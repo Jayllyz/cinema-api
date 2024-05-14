@@ -84,7 +84,6 @@ tickets.openapi(getTickets, async (c) => {
 
     return c.json(tickets, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -110,7 +109,6 @@ tickets.openapi(getTicketById, async (c) => {
 
     return c.json(ticket, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -162,7 +160,6 @@ tickets.openapi(insertTicket, async (c) => {
 
     return c.json(ticket, 201);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -231,7 +228,6 @@ tickets.openapi(buyTicket, async (c) => {
 
     return c.json(updatedTicket, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -286,7 +282,6 @@ tickets.openapi(refundTicket, async (c) => {
 
     return c.json({ message: 'Refund successful' }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -339,7 +334,6 @@ tickets.openapi(updateTicket, async (c) => {
 
     return c.json(updatedTicket, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -383,7 +377,6 @@ tickets.openapi(useTicket, async (c) => {
 
     return c.json(updatedTicket, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -416,7 +409,6 @@ tickets.openapi(deleteTicket, async (c) => {
 
     return c.json({ message: 'Ticket deleted' }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });

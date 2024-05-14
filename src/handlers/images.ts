@@ -25,7 +25,6 @@ img.openapi(listImages, async (c) => {
     const images = await prisma.images.findMany({ where, skip, take, orderBy: { id: 'asc' } });
     return c.json(images, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -71,7 +70,6 @@ img.openapi(createImage, async (c) => {
     });
     return c.json(image, 201);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -100,7 +98,6 @@ img.openapi(updateImage, async (c) => {
     });
     return c.json(image, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -119,7 +116,6 @@ img.openapi(deleteImage, async (c) => {
     await prisma.images.delete({ where: { id } });
     return c.json({ message: 'Image deleted' }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });

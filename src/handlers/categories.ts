@@ -25,7 +25,6 @@ categories.openapi(getCategories, async (c) => {
     const categories = await prisma.categories.findMany({ where, skip, take, orderBy: { id: 'asc' } });
     return c.json(categories, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -42,7 +41,6 @@ categories.openapi(getCategoryById, async (c) => {
 
     return c.json(category, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -61,7 +59,6 @@ categories.openapi(insertCategory, async (c) => {
 
     return c.json(category, 201);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -79,7 +76,6 @@ categories.openapi(deleteCategory, async (c) => {
     await prisma.categories.delete({ where: { id } });
     return c.json({ message: 'Category deleted successfully' }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });

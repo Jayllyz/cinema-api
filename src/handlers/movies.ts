@@ -35,7 +35,6 @@ movies.openapi(getMovies, async (c) => {
 
     return c.json(data, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -61,7 +60,6 @@ movies.openapi(getMovieById, async (c) => {
 
     return c.json(format, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -97,7 +95,6 @@ movies.openapi(insertMovie, async (c) => {
 
     return c.json(data, 201);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -134,7 +131,6 @@ movies.openapi(updateMovie, async (c) => {
 
     return c.json(data, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -153,7 +149,6 @@ movies.openapi(deleteMovie, async (c) => {
     await prisma.movies.delete({ where: { id } });
     return c.json({ message: 'Movie deleted' }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });

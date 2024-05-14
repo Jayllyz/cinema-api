@@ -44,7 +44,6 @@ superTickets.openapi(getSuperTickets, async (c) => {
     const superTickets = await prisma.superTickets.findMany(superTicketSelectOptions);
     return c.json(superTickets);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -70,7 +69,6 @@ superTickets.openapi(getSuperTicketById, async (c) => {
 
     return c.json(superTicket);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -94,7 +92,6 @@ superTickets.openapi(insertSuperTicket, async (c) => {
 
     return c.json(superTicket, 201);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -134,7 +131,6 @@ superTickets.openapi(buySuperTicket, async (c) => {
 
     return c.json(updatedSuperTicket, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -174,7 +170,6 @@ superTickets.openapi(updateSuperTicket, async (c) => {
 
     return c.json(updatedSuperTicket, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -265,7 +260,6 @@ superTickets.openapi(bookSeatSuperTicket, async (c) => {
 
     return c.json(updatedSuperTicket, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -332,7 +326,6 @@ superTickets.openapi(useSuperTicket, async (c) => {
 
     return c.json({ message: 'Super ticket used' }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -371,7 +364,6 @@ superTickets.openapi(deleteSuperTicket, async (c) => {
 
     return c.json({ message: 'Super ticket deleted' }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -458,7 +450,6 @@ superTickets.openapi(cancelBookingSuperTicket, async (c) => {
 
     return c.json(updatedSuperTicket, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });

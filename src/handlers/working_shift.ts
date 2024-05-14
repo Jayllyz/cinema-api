@@ -35,7 +35,6 @@ workingShift.openapi(getWorkingShifts, async (c) => {
     });
     return c.json(working_shift, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -55,7 +54,6 @@ workingShift.openapi(getWorkingShiftById, async (c) => {
 
     return c.json(workingShift, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -91,7 +89,6 @@ workingShift.openapi(insertWorkingShift, async (c) => {
     });
     return c.json(workingShift, 201);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -110,7 +107,6 @@ workingShift.openapi(deleteWorkingShift, async (c) => {
 
     return c.json({ message: `Working shift with id ${id} deleted` }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -167,7 +163,6 @@ workingShift.openapi(updateWorkingShift, async (c) => {
 
     return c.json(res, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
