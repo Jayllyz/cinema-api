@@ -66,7 +66,7 @@ export const getUserById = createRoute({
 });
 
 export const getMe = createRoute({
-  method: 'post',
+  method: 'get',
   path: '/users/me',
   summary: 'Get my info',
   description: 'Get my informations',
