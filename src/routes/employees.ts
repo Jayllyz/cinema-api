@@ -153,13 +153,12 @@ export const updateEmployee = createRoute({
 
 export const changeEmployeePassword = createRoute({
   method: 'patch',
-  path: '/employees/{id}/password',
+  path: '/employees/password',
   summary: 'Change employee password',
   description: 'Change employee password',
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: idParamValidator,
     body: {
       content: {
         'application/json': {
