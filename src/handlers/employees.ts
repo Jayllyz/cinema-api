@@ -48,22 +48,24 @@ employees.openapi(getEmployees, async (c) => {
   }
 });
 
-employees.openapi(getEmployeeById, async (c) => {
+employees.openapi(changeEmployeePassword, async (c) => {
   const payload: PayloadValidator = c.get('jwtPayload');
   const token = c.req.header('authorization')?.split(' ')[1];
   await checkToken(payload, Role.STAFF, token);
 
-  const { id } = c.req.valid('param');
-  try {
-    const employee = await prisma.employees.findUnique({
-      select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
-      where: { id },
-    });
-    if (!employee) return c.json({ error: `Employee with id ${id} not found` }, 404);
+  const { id } = payload;
+  const { password } = c.req.valid('json');
 
-    return c.json(employee, 200);
+  try {
+    const staff = await prisma.employees.findUnique({ where: { id } });
+    if (!staff) return c.json({ error: `Employee with id ${payload.id} not found` }, 404);
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await prisma.employees.update({ where: { id }, data: { password: hashedPassword } });
+
+    return c.json({ message: 'Password updated' }, 200);
   } catch (error) {
-    console.error(error);
     return c.json({ error }, 500);
   }
 });
@@ -87,6 +89,26 @@ employees.openapi(insertEmployee, async (c) => {
       select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
     });
     return c.json(employee, 201);
+  } catch (error) {
+    console.error(error);
+    return c.json({ error }, 500);
+  }
+});
+
+employees.openapi(getEmployeeById, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.STAFF, token);
+
+  const { id } = c.req.valid('param');
+  try {
+    const employee = await prisma.employees.findUnique({
+      select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
+      where: { id },
+    });
+    if (!employee) return c.json({ error: `Employee with id ${id} not found` }, 404);
+
+    return c.json(employee, 200);
   } catch (error) {
     console.error(error);
     return c.json({ error }, 500);
@@ -137,29 +159,6 @@ employees.openapi(deleteEmployee, async (c) => {
     return c.json({ message: `Employee with id ${id} deleted` }, 200);
   } catch (error) {
     console.error(error);
-    return c.json({ error }, 500);
-  }
-});
-
-employees.openapi(changeEmployeePassword, async (c) => {
-  const payload: PayloadValidator = c.get('jwtPayload');
-  const token = c.req.header('authorization')?.split(' ')[1];
-  await checkToken(payload, Role.STAFF, token);
-
-  const { id } = c.req.valid('param');
-  if (payload.id !== id) return c.json({ error: 'You can only change your password' }, 403);
-  const { password } = c.req.valid('json');
-
-  try {
-    const staff = await prisma.employees.findUnique({ where: { id } });
-    if (!staff) return c.json({ error: `Employee with id ${payload.id} not found` }, 404);
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await prisma.employees.update({ where: { id }, data: { password: hashedPassword } });
-
-    return c.json({ message: 'Password updated' }, 200);
-  } catch (error) {
     return c.json({ error }, 500);
   }
 });

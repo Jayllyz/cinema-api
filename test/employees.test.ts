@@ -176,7 +176,7 @@ describe('Employees', () => {
   });
 
   test('Employee can change password', async () => {
-    const res = await app.request(`${path}/employees/${createdEmployeeId}/password`, {
+    const res = await app.request(`${path}/employees/password`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

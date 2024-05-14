@@ -72,6 +72,29 @@ users.openapi(getMe, async (c) => {
   }
 });
 
+users.openapi(changeUserPassword, async (c) => {
+  const payload: PayloadValidator = c.get('jwtPayload');
+  const token = c.req.header('authorization')?.split(' ')[1];
+  await checkToken(payload, Role.USER, token);
+
+  const id = payload.id;
+  const { password } = c.req.valid('json');
+
+  try {
+    const user = await prisma.users.findUnique({ where: { id } });
+    if (!user) return c.json({ error: `User with id ${id} not found` }, 404);
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await prisma.users.update({ where: { id }, data: { password: hashedPassword } });
+
+    return c.json({ message: 'Password updated' }, 200);
+  } catch (error) {
+    console.error(error);
+    return c.json({ error }, 500);
+  }
+});
+
 users.openapi(getUserById, async (c) => {
   const payload: PayloadValidator = c.get('jwtPayload');
   const token = c.req.header('authorization')?.split(' ')[1];
@@ -214,30 +237,6 @@ users.openapi(updateUser, async (c) => {
       data: { first_name, last_name, email },
     });
     return c.json(user, 200);
-  } catch (error) {
-    console.error(error);
-    return c.json({ error }, 500);
-  }
-});
-
-users.openapi(changeUserPassword, async (c) => {
-  const payload: PayloadValidator = c.get('jwtPayload');
-  const token = c.req.header('authorization')?.split(' ')[1];
-  await checkToken(payload, Role.USER, token);
-
-  const { id } = c.req.valid('param');
-  if (payload.id !== id) return c.json({ error: 'You can only change your password' }, 403);
-  const { password } = c.req.valid('json');
-
-  try {
-    const user = await prisma.users.findUnique({ where: { id } });
-    if (!user) return c.json({ error: `User with id ${id} not found` }, 404);
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await prisma.users.update({ where: { id }, data: { password: hashedPassword } });
-
-    return c.json({ message: 'Password updated' }, 200);
   } catch (error) {
     console.error(error);
     return c.json({ error }, 500);

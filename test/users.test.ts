@@ -112,7 +112,7 @@ describe('Users', () => {
   });
 
   test('User can change password', async () => {
-    const res = await app.request(`${path}/users/${toDelete}/password`, {
+    const res = await app.request(`${path}/users/password`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

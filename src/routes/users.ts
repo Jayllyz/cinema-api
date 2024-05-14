@@ -205,13 +205,12 @@ export const deleteUser = createRoute({
 
 export const changeUserPassword = createRoute({
   method: 'patch',
-  path: '/users/{id}/password',
+  path: '/users/password',
   summary: 'Change user password',
   description: 'Change user password',
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: idParamValidator,
     body: {
       content: {
         'application/json': {
