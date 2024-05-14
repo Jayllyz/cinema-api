@@ -23,7 +23,7 @@ export async function checkToken(
 
   if (payload.role === Role.USER) {
     const user = await prisma.users.findUnique({
-      where: { id: payload.id, token },
+      where: { id: Number(payload.id), token },
       select: { role: true },
     });
 
@@ -36,7 +36,7 @@ export async function checkToken(
 
   if (payload.role >= Role.STAFF) {
     const staff = await prisma.employees.findUnique({
-      where: { id: payload.id, token },
+      where: { id: Number(payload.id), token },
       select: { role: true },
     });
 

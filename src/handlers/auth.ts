@@ -32,7 +32,7 @@ auth.openapi(loginUser, async (c) => {
     const time_exp = user ? one_day : one_week;
     const payload = {
       id: user ? user?.id : staff?.id,
-      role: user ? user?.role : staff?.role,
+      role: user ? Number(user?.role) : Number(staff?.role),
       exp: new Date().getTime() + time_exp,
     };
     const secret = process.env.SECRET_KEY || 'secret';
