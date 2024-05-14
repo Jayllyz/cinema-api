@@ -82,12 +82,11 @@ describe('Auth tests', () => {
     expect(res.status).toBe(401);
   });
 
-  test('GET /users/me', async () => {
+  test('POST /users/me', async () => {
     const res = await app.request(`${path}/users/me`, {
-      method: 'GET',
+      method: 'post',
       headers: {
-        Authorization: `Bearer ${userToken}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userToken}`
       },
     });
     expect(res.status).toBe(200);

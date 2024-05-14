@@ -25,10 +25,6 @@ export const insertUserValidator = z.object({
   password: z.string().min(8),
 });
 
-export const idValidator = z.object({
-  id: z.coerce.number().int({ message: 'Invalid id' }).min(1, { message: 'Invalid id' }),
-});
-
 export const updateUserValidator = z.object({
   first_name: z.string().min(2).max(30).optional(),
   last_name: z.string().min(2).max(30).optional(),

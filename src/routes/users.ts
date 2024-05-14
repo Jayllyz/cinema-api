@@ -8,7 +8,6 @@ import {
   serverErrorSchema,
 } from '../validators/general.js';
 import {
-  idValidator,
   insertUserValidator,
   listUsersValidator,
   updateUserMoneyValidator,
@@ -49,7 +48,7 @@ export const getUserById = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: idValidator,
+    params: idParamValidator,
   },
   responses: {
     200: {
@@ -67,7 +66,7 @@ export const getUserById = createRoute({
 });
 
 export const getMe = createRoute({
-  method: 'get',
+  method: 'post',
   path: '/users/me',
   summary: 'Get my info',
   description: 'Get my informations',
@@ -129,7 +128,7 @@ export const updateUser = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: idValidator,
+    params: idParamValidator,
     body: {
       content: {
         'application/json': {
@@ -187,7 +186,7 @@ export const deleteUser = createRoute({
   middleware: authMiddleware,
   security: [{ Bearer: [] }],
   request: {
-    params: idValidator,
+    params: idParamValidator,
   },
   responses: {
     200: {
