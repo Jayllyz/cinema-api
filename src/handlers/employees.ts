@@ -55,18 +55,14 @@ employees.openapi(changeEmployeePassword, async (c) => {
   const { id } = payload;
   const { password } = c.req.valid('json');
 
-  try {
-    const staff = await prisma.employees.findUnique({ where: { id } });
-    if (!staff) return c.json({ error: `Employee with id ${payload.id} not found` }, 404);
+  const staff = await prisma.employees.findUnique({ where: { id } });
+  if (!staff) return c.json({ error: `Employee with id ${payload.id} not found` }, 404);
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-    await prisma.employees.update({ where: { id }, data: { password: hashedPassword } });
+  await prisma.employees.update({ where: { id }, data: { password: hashedPassword } });
 
-    return c.json({ message: 'Password updated' }, 200);
-  } catch (error) {
-    return c.json({ error }, 500);
-  }
+  return c.json({ message: 'Password updated' }, 200);
 });
 
 employees.openapi(insertEmployee, async (c) => {
@@ -75,22 +71,20 @@ employees.openapi(insertEmployee, async (c) => {
   await checkToken(payload, Role.ADMIN, token);
 
   const { first_name, last_name, phone_number, email, password } = c.req.valid('json');
-  try {
-    const userExist = await prisma.users.findUnique({ where: { email } });
-    if (userExist) return c.json({ error: 'email already used' }, 400);
 
-    const employeeFound = await prisma.employees.findUnique({ where: { email } });
-    if (employeeFound) return c.json({ error: 'email already used' }, 400);
+  const userExist = await prisma.users.findUnique({ where: { email } });
+  if (userExist) return c.json({ error: 'email already used' }, 400);
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const employee = await prisma.employees.create({
-      data: { first_name, last_name, phone_number, email, password: hashedPassword },
-      select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
-    });
-    return c.json(employee, 201);
-  } catch (error) {
-    return c.json({ error }, 500);
-  }
+  const employeeFound = await prisma.employees.findUnique({ where: { email } });
+  if (employeeFound) return c.json({ error: 'email already used' }, 400);
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const employee = await prisma.employees.create({
+    data: { first_name, last_name, phone_number, email, password: hashedPassword },
+    select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
+  });
+
+  return c.json(employee, 201);
 });
 
 employees.openapi(getEmployeeById, async (c) => {
@@ -99,17 +93,14 @@ employees.openapi(getEmployeeById, async (c) => {
   await checkToken(payload, Role.STAFF, token);
 
   const { id } = c.req.valid('param');
-  try {
-    const employee = await prisma.employees.findUnique({
-      select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
-      where: { id },
-    });
-    if (!employee) return c.json({ error: `Employee with id ${id} not found` }, 404);
 
-    return c.json(employee, 200);
-  } catch (error) {
-    return c.json({ error }, 500);
-  }
+  const employee = await prisma.employees.findUnique({
+    select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
+    where: { id },
+  });
+  if (!employee) return c.json({ error: `Employee with id ${id} not found` }, 404);
+
+  return c.json(employee, 200);
 });
 
 employees.openapi(updateEmployee, async (c) => {
@@ -119,25 +110,22 @@ employees.openapi(updateEmployee, async (c) => {
 
   const { id } = c.req.valid('param');
   const { first_name, last_name, phone_number, email, role } = c.req.valid('json');
-  try {
-    const employee = await prisma.employees.findUnique({ where: { id } });
-    if (!employee) return c.json({ error: `Employee with id ${id} not found` }, 404);
 
-    const res = await prisma.employees.update({
-      where: { id: Number(id) },
-      data: { first_name, last_name, phone_number, email, role },
-      select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
-    });
+  const employee = await prisma.employees.findUnique({ where: { id } });
+  if (!employee) return c.json({ error: `Employee with id ${id} not found` }, 404);
 
-    if (role) {
-      // If role is updated, remove token
-      await prisma.employees.update({ where: { id: Number(id) }, data: { token: null } });
-    }
+  const res = await prisma.employees.update({
+    where: { id: Number(id) },
+    data: { first_name, last_name, phone_number, email, role },
+    select: { id: true, first_name: true, last_name: true, email: true, phone_number: true, role: true },
+  });
 
-    return c.json(res, 200);
-  } catch (error) {
-    return c.json({ error }, 500);
+  if (role) {
+    // If role is updated, remove token
+    await prisma.employees.update({ where: { id: Number(id) }, data: { token: null } });
   }
+
+  return c.json(res, 200);
 });
 
 employees.openapi(deleteEmployee, async (c) => {

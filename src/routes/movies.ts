@@ -90,6 +90,7 @@ export const insertMovie = createRoute({
       },
     },
     400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['movies'],

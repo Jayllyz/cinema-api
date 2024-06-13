@@ -1,7 +1,7 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import authMiddleware from '../middlewares/token.js';
 import { loginValidator, signupValidator } from '../validators/auth.js';
-import { badRequestSchema, serverErrorSchema } from '../validators/general.js';
+import { badRequestSchema, notFoundSchema, serverErrorSchema } from '../validators/general.js';
 import { userValidator } from '../validators/users.js';
 
 export const loginUser = createRoute({
@@ -29,8 +29,18 @@ export const loginUser = createRoute({
         },
       },
     },
-    400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': {
+          schema: z.object({
+            error: z.string(),
+          }),
+        },
+      },
+    },
   },
   tags: ['auth'],
 });
@@ -50,7 +60,7 @@ export const signupUser = createRoute({
     },
   },
   responses: {
-    200: {
+    201: {
       description: 'Successful response',
       content: {
         'application/json': {

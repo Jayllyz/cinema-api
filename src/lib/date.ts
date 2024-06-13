@@ -3,7 +3,7 @@ const CLOSED_DAYS = {
   Sunday: 0,
 };
 
-export function validateDay(date: Date) {
+export function validateDay(date: Date): boolean {
   const day = date.getDay();
 
   if (day === CLOSED_DAYS.Saturday || day === CLOSED_DAYS.Sunday) {
@@ -13,12 +13,12 @@ export function validateDay(date: Date) {
   return true;
 }
 
-export function isBeforeHour(date: Date, hour: number) {
+export function isBeforeHour(date: Date, hour: number): boolean {
   if (date.getUTCHours() < hour) return true;
   return false;
 }
 
-export function isAfterHour(date: Date, hour: number) {
+export function isAfterHour(date: Date, hour: number): boolean {
   if (date.getUTCHours() > hour) {
     return true;
   }
@@ -30,7 +30,7 @@ export function isAfterHour(date: Date, hour: number) {
   return false;
 }
 
-export function isSameDay(date1: Date, date2: Date) {
+export function isSameDay(date1: Date, date2: Date): boolean {
   return (
     date1.getUTCFullYear() === date2.getUTCFullYear() &&
     date1.getUTCMonth() === date2.getUTCMonth() &&

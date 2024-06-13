@@ -105,7 +105,7 @@ export const insertUser = createRoute({
     },
   },
   responses: {
-    200: {
+    201: {
       description: 'Successful response',
       content: {
         'application/json': {
@@ -114,6 +114,7 @@ export const insertUser = createRoute({
       },
     },
     400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['users'],
@@ -147,6 +148,7 @@ export const updateUser = createRoute({
       },
     },
     400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['users'],
@@ -172,6 +174,7 @@ export const updateUserMoney = createRoute({
       },
     },
     400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['users'],
@@ -231,6 +234,7 @@ export const changeUserPassword = createRoute({
       },
     },
     400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['users'],

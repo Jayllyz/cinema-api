@@ -99,6 +99,7 @@ export const insertTicket = createRoute({
       },
     },
     400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['tickets'],
@@ -115,7 +116,7 @@ export const buyTicket = createRoute({
     params: idParamValidator,
   },
   responses: {
-    201: {
+    200: {
       description: 'Successful response',
       content: {
         'application/json': {

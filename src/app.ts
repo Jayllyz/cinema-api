@@ -1,6 +1,6 @@
 import { serve } from '@hono/node-server';
 import { swaggerUI } from '@hono/swagger-ui';
-import { OpenAPIHono, createRoute } from '@hono/zod-openapi';
+import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
 import type { Context } from 'hono';
 import { compress } from 'hono/compress';
 import { HTTPException } from 'hono/http-exception';
@@ -32,7 +32,7 @@ app.get('/', (c) => c.text('Welcome to the API!'));
 
 app.onError((err, c) => {
   if (err instanceof HTTPException) {
-    return err.getResponse();
+    return c.json({ error: err.message }, err.status || 500);
   }
   return c.json({ error: 'Internal server error' }, 500);
 });
@@ -47,7 +47,7 @@ const healthCheck = createRoute({
       description: 'Successful response',
       content: {
         'application/json': {
-          schema: { type: 'string' },
+          schema: z.string(),
         },
       },
     },

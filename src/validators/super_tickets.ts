@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@hono/zod-openapi';
 import { limitedUserValidator } from './users.js';
 
 export const superTicketValidator = z.object({

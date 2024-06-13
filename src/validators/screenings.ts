@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@hono/zod-openapi';
 import { validateDay } from '../lib/date.js';
 import { MovieValidator } from './movies.js';
 import { RoomValidator } from './rooms.js';

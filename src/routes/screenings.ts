@@ -65,6 +65,7 @@ export const insertScreening = createRoute({
       },
     },
     400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['screenings'],
@@ -96,7 +97,17 @@ export const updateScreening = createRoute({
         },
       },
     },
-    400: badRequestSchema,
+    400: {
+      description: 'Bad request',
+      content: {
+        'application/json': {
+          schema: z.object({
+            error: z.string(),
+            screening: responseScreeningValidator.optional(),
+          }),
+        },
+      },
+    },
     404: notFoundSchema,
     500: serverErrorSchema,
   },
