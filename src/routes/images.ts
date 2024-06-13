@@ -85,6 +85,7 @@ export const createImage = createRoute({
       },
     },
     400: badRequestSchema,
+    404: notFoundSchema,
     500: serverErrorSchema,
   },
   tags: ['images'],

@@ -19,23 +19,19 @@ rooms.openapi(getRooms, async (c) => {
   const where = search ? { name: { contains: search } } : {};
   const includeImages = { images: { select: { id: true, url: true, alt: true } } };
 
-  try {
-    if (all) {
-      const rooms = await prisma.rooms.findMany({ where, orderBy: { id: 'asc' }, include: includeImages });
-      return c.json(rooms, 200);
-    }
-
-    const rooms = await prisma.rooms.findMany({
-      where,
-      skip,
-      take,
-      orderBy: { id: 'asc' },
-      include: includeImages,
-    });
+  if (all) {
+    const rooms = await prisma.rooms.findMany({ where, orderBy: { id: 'asc' }, include: includeImages });
     return c.json(rooms, 200);
-  } catch (error) {
-    return c.json({ error }, 500);
   }
+
+  const rooms = await prisma.rooms.findMany({
+    where,
+    skip,
+    take,
+    orderBy: { id: 'asc' },
+    include: includeImages,
+  });
+  return c.json(rooms, 200);
 });
 
 rooms.openapi(getRoomById, async (c) => {
@@ -44,14 +40,11 @@ rooms.openapi(getRoomById, async (c) => {
   await checkToken(payload, Role.USER, token);
 
   const { id } = c.req.valid('param');
-  try {
-    const room = await prisma.rooms.findUnique({ where: { id }, include: includeImages });
-    if (!room) return c.json({ error: `Room with id ${id} not found` }, 404);
 
-    return c.json(room, 200);
-  } catch (error) {
-    return c.json({ error }, 500);
-  }
+  const room = await prisma.rooms.findUnique({ where: { id }, include: includeImages });
+  if (!room) return c.json({ error: `Room with id ${id} not found` }, 404);
+
+  return c.json(room, 200);
 });
 
 rooms.openapi(insertRoom, async (c) => {
@@ -60,18 +53,15 @@ rooms.openapi(insertRoom, async (c) => {
   await checkToken(payload, Role.ADMIN, token);
 
   const { name, description, capacity, type, open, handicap_access } = c.req.valid('json');
-  try {
-    const exist = await prisma.rooms.findUnique({ where: { name } });
-    if (exist) return c.json({ error: 'Room name already exists' }, 400);
 
-    const room = await prisma.rooms.create({
-      data: { name, description, capacity, type, open, handicap_access },
-      include: includeImages,
-    });
-    return c.json(room, 201);
-  } catch (error) {
-    return c.json({ error }, 500);
-  }
+  const exist = await prisma.rooms.findUnique({ where: { name } });
+  if (exist) return c.json({ error: 'Room name already exists' }, 400);
+
+  const room = await prisma.rooms.create({
+    data: { name, description, capacity, type, open, handicap_access },
+    include: includeImages,
+  });
+  return c.json(room, 201);
 });
 
 rooms.openapi(updateRoom, async (c) => {
@@ -81,20 +71,17 @@ rooms.openapi(updateRoom, async (c) => {
 
   const { id } = c.req.valid('param');
   const { name, description, capacity, type, open, handicap_access } = c.req.valid('json');
-  try {
-    const room = await prisma.rooms.findUnique({ where: { id } });
-    if (!room) return c.json({ error: `Room with id ${id} not found` }, 404);
 
-    const res = await prisma.rooms.update({
-      where: { id },
-      data: { name, description, capacity, type, open, handicap_access },
-      include: includeImages,
-    });
+  const room = await prisma.rooms.findUnique({ where: { id } });
+  if (!room) return c.json({ error: `Room with id ${id} not found` }, 404);
 
-    return c.json(res, 200);
-  } catch (error) {
-    return c.json({ error }, 500);
-  }
+  const res = await prisma.rooms.update({
+    where: { id },
+    data: { name, description, capacity, type, open, handicap_access },
+    include: includeImages,
+  });
+
+  return c.json(res, 200);
 });
 
 rooms.openapi(deleteRoom, async (c) => {
@@ -103,14 +90,11 @@ rooms.openapi(deleteRoom, async (c) => {
   await checkToken(payload, Role.ADMIN, token);
 
   const { id } = c.req.valid('param');
-  try {
-    const room = await prisma.rooms.findUnique({ where: { id } });
-    if (!room) return c.json({ error: `Room with id ${id} not found` }, 404);
 
-    await prisma.rooms.delete({ where: { id } });
+  const room = await prisma.rooms.findUnique({ where: { id } });
+  if (!room) return c.json({ error: `Room with id ${id} not found` }, 404);
 
-    return c.json({ message: `Room with id ${id} deleted` }, 200);
-  } catch (error) {
-    return c.json({ error }, 500);
-  }
+  await prisma.rooms.delete({ where: { id } });
+
+  return c.json({ message: `Room with id ${id} deleted` }, 200);
 });

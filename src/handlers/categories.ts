@@ -16,17 +16,14 @@ categories.openapi(getCategories, async (c) => {
 
   const where = search ? { name: { contains: search } } : {};
 
-  try {
-    if (all) {
-      const categories = await prisma.categories.findMany({ where, orderBy: { id: 'asc' } });
-      return c.json(categories, 200);
-    }
-
-    const categories = await prisma.categories.findMany({ where, skip, take, orderBy: { id: 'asc' } });
+  if (all) {
+    const categories = await prisma.categories.findMany({ where, orderBy: { id: 'asc' } });
     return c.json(categories, 200);
-  } catch (error) {
-    return c.json({ error }, 500);
   }
+
+  const categories = await prisma.categories.findMany({ where, skip, take, orderBy: { id: 'asc' } });
+
+  return c.json(categories, 200);
 });
 
 categories.openapi(getCategoryById, async (c) => {
@@ -35,14 +32,11 @@ categories.openapi(getCategoryById, async (c) => {
   await checkToken(payload, Role.USER, token);
 
   const { id } = c.req.valid('param');
-  try {
-    const category = await prisma.categories.findUnique({ where: { id } });
-    if (!category) return c.json({ error: `Category with id ${id} not found` }, 404);
 
-    return c.json(category, 200);
-  } catch (error) {
-    return c.json({ error }, 500);
-  }
+  const category = await prisma.categories.findUnique({ where: { id } });
+  if (!category) return c.json({ error: `Category with id ${id} not found` }, 404);
+
+  return c.json(category, 200);
 });
 
 categories.openapi(insertCategory, async (c) => {
@@ -51,16 +45,13 @@ categories.openapi(insertCategory, async (c) => {
   await checkToken(payload, Role.ADMIN, token);
 
   const { name } = c.req.valid('json');
-  try {
-    const exist = await prisma.categories.findUnique({ where: { name } });
-    if (exist) return c.json({ error: 'Category name already exists' }, 400);
 
-    const category = await prisma.categories.create({ data: { name } });
+  const exist = await prisma.categories.findUnique({ where: { name } });
+  if (exist) return c.json({ error: 'Category name already exists' }, 400);
 
-    return c.json(category, 201);
-  } catch (error) {
-    return c.json({ error }, 500);
-  }
+  const category = await prisma.categories.create({ data: { name } });
+
+  return c.json(category, 201);
 });
 
 categories.openapi(deleteCategory, async (c) => {
@@ -69,13 +60,11 @@ categories.openapi(deleteCategory, async (c) => {
   await checkToken(payload, Role.ADMIN, token);
 
   const { id } = c.req.valid('param');
-  try {
-    const category = await prisma.categories.findUnique({ where: { id } });
-    if (!category) return c.json({ error: `Category with id ${id} not found` }, 404);
 
-    await prisma.categories.delete({ where: { id } });
-    return c.json({ message: 'Category deleted successfully' }, 200);
-  } catch (error) {
-    return c.json({ error }, 500);
-  }
+  const category = await prisma.categories.findUnique({ where: { id } });
+  if (!category) return c.json({ error: `Category with id ${id} not found` }, 404);
+
+  await prisma.categories.delete({ where: { id } });
+
+  return c.json({ message: 'Category deleted successfully' }, 200);
 });
