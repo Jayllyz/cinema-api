@@ -4,6 +4,7 @@
 
 [![Docker Build](https://github.com/Jayllyz/cinema-api/actions/workflows/docker-build.yml/badge.svg)](https://github.com/Jayllyz/cinema-api/actions/workflows/docker-build.yml)
 [![CI](https://github.com/Jayllyz/cinema-api/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Jayllyz/cinema-api/actions/workflows/ci.yml)
+[![Biome Badge](https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome)](https://biomejs.dev/)
 
 This project implements all the necessary endpoints for a cinema, including:
 
