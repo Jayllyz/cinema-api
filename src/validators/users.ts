@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@hono/zod-openapi';
 
 export const userValidator = z.object({
   id: z.number().min(1),

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@hono/zod-openapi';
 import { screeningValidator } from './screenings.js';
 import { limitedUserValidator } from './users.js';
 
