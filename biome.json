@@ -30,16 +30,7 @@
     }
   },
   "files": {
-    "include": [
-      "**/*.js",
-      "**/*.ts",
-      "**/*.tsx",
-      "**/*.jsx",
-      "**/*.json"
-    ],
-    "ignore": [
-      "node_modules/**",
-      "dist/**"
-    ]
+    "include": ["**/*.js", "**/*.ts", "**/*.tsx", "**/*.jsx", "**/*.json"],
+    "ignore": ["node_modules/**", "dist/**"]
   }
 }
