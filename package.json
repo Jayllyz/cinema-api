@@ -18,28 +18,28 @@
     "type-coverage": "type-coverage --detail"
   },
   "dependencies": {
-    "@hono/node-server": "^1.11.4",
-    "@hono/swagger-ui": "^0.3.0",
-    "@hono/zod-openapi": "^0.14.5",
-    "@prisma/client": "^5.15.1",
+    "@hono/node-server": "^1.13.5",
+    "@hono/swagger-ui": "^0.4.1",
+    "@hono/zod-openapi": "^0.17.0",
+    "@prisma/client": "^5.22.0",
     "bcryptjs": "^2.4.3",
-    "hono": "^4.4.7",
+    "hono": "^4.6.9",
     "zod": "^3.23.8",
-    "zod-validation-error": "^3.3.0"
+    "zod-validation-error": "^3.4.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.8.2",
+    "@biomejs/biome": "1.9.4",
     "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^20.14.6",
+    "@types/node": "^22.9.0",
     "@types/swagger-ui-dist": "^3.30.5",
-    "prisma": "^5.15.1",
-    "tsx": "^4.15.6",
-    "type-coverage": "^2.29.0",
-    "typescript": "^5.5.2",
-    "vitest": "^1.6.0"
+    "prisma": "^5.22.0",
+    "tsx": "^4.19.2",
+    "type-coverage": "^2.29.7",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
   },
   "engines": {
-    "node": ">=20.11"
+    "node": "^22"
   },
-  "packageManager": "pnpm@9.3.0"
+  "packageManager": "pnpm@9.12.3"
 }

@@ -19,7 +19,7 @@ import { tickets } from './handlers/tickets.js';
 import { users } from './handlers/users.js';
 import { workingShift } from './handlers/working_shift.js';
 
-const port = Number(process.env.PORT || 3000);
+const port = Number(process.env.PORT || 3002);
 const app = new OpenAPIHono();
 
 if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
